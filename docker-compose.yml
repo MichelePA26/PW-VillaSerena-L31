@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  database:
+    image: mysql:8.0
+    container_name: museo_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "!MuseoVillaSerena@2026"
+      MYSQL_DATABASE: museo_villaserena
+      ports:
+        - "3306:3306"
+      volumes:
+        - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+        - museo_db_data:/var/lib/mysql

@@ -33,3 +33,22 @@ backend/target/
 .classpath
 .project
 *.class
+
+# Maven
+target/
+*.class
+
+# File di configurazione IDE
+.idea/
+.vscode/
+*.iml
+.settings/
+.classpath
+.project
+
+# Log
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
