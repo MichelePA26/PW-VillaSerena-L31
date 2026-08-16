@@ -7,7 +7,7 @@ CREATE DATABASE museo_villaserena CHARACTER SET utf8mb4;
 USE museo_villaserena;
 
 CREATE TABLE utente (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(100) NOT NULL,
   cognome VARCHAR(100) NOT NULL,
   email VARCHAR(150) UNIQUE NOT NULL,
@@ -17,8 +17,8 @@ CREATE TABLE utente (
 );
 
 CREATE TABLE dipendente (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  utente_id INT NOT NULL UNIQUE,
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  utente_id BIGINT NOT NULL UNIQUE,
   mansione VARCHAR(100),
   data_assunzione DATE NOT NULL,
   data_cessazione DATE NULL,
@@ -34,14 +34,14 @@ CREATE TABLE dipendente (
 );
 
 CREATE TABLE collezione (
-  id INT AUTO_INCREMENT PRIMARY KEY, 
+  id BIGINT AUTO_INCREMENT PRIMARY KEY, 
   nome VARCHAR(150) NOT NULL,
   descrizione TEXT  
 );
 
 CREATE TABLE opera (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  collezione_id INT,
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  collezione_id BIGINT,
   titolo VARCHAR(200) NOT NULL,
   autore VARCHAR(150),
   anno INT,
@@ -52,7 +52,7 @@ CREATE TABLE opera (
 );
 
 CREATE TABLE evento (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
   titolo VARCHAR (200) NOT NULL,
   descrizione TEXT,
   tipo ENUM('VISITA_GUIDATA','MOSTRA','LABORATORIO') NOT NULL,
@@ -62,9 +62,9 @@ CREATE TABLE evento (
 );
 
 CREATE TABLE prenotazione (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  utente_id int NOT NULL,
-  evento_id int NOT NULL,
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  utente_id BIGINT NOT NULL,
+  evento_id BIGINT NOT NULL,
   numero_posti INT NOT NULL DEFAULT 1,
   data_prenotazione DATETIME DEFAULT CURRENT_TIMESTAMP,
   stato ENUM('CONFERMATA','ANNULLATA') DEFAULT 'CONFERMATA',
@@ -73,9 +73,9 @@ CREATE TABLE prenotazione (
 );
 
 CREATE TABLE feedback (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  utente_id INT NOT NULL,
-  prenotazione_id INT NOT NULL,
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  utente_id BIGINT NOT NULL,
+  prenotazione_id BIGINT NOT NULL,
   voto INT NOT NULL CHECK (voto BETWEEN 1 AND 5),
   commento TEXT,
   data DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -84,30 +84,30 @@ CREATE TABLE feedback (
 );
 
 CREATE TABLE richiesta_ferie (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  dipendente_id INT NOT NULL,
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  dipendente_id BIGINT NOT NULL,
   tipo ENUM('FERIE','PERMESSO') NOT NULL,
   data_inizio DATE NOT NULL,
   data_fine DATE NOT NULL,
   stato ENUM('IN_ATTESA','APPROVATA','RIFIUTATA') DEFAULT 'IN_ATTESA',
-  approvata_da INT NULL,
+  approvata_da BIGINT NULL,
   FOREIGN KEY (dipendente_id) REFERENCES dipendente(id),
   FOREIGN KEY (approvata_da) REFERENCES dipendente(id)
 );
 
 CREATE TABLE turno (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  dipependente_id INT NOT NULL,
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  dipendente_id BIGINT NOT NULL,
   data DATE NOT NULL,
   ora_inizio TIME NOT NULL,
   ora_fine TIME NOT NULL,
   reparto varchar(100),
-  FOREIGN KEY (dipependente_id) REFERENCES dipendente(id)
+  FOREIGN KEY (dipendente_id) REFERENCES dipendente(id)
 );
 
 CREATE TABLE pagamento (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  prenotazione_id INT NOT NULL,
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  prenotazione_id BIGINT NOT NULL,
   importo DECIMAL(10,2) NOT NULL,
   valuta VARCHAR(10) NOT NULL DEFAULT 'EUR',
   stato ENUM('IN_ATTESA','COMPLETATO','FALLITO') DEFAULT 'IN_ATTESA',
@@ -162,7 +162,7 @@ INSERT INTO evento( titolo, descrizione, tipo, data_inizio, data_fine, capienza_
 ('Laboratorio arte digitale', 'Introduzione alle installazioni interattive per ragazzi', 'LABORATORIO', '2026-10-10 16:00:00', '2026-10-10 18:00:00', 12),
 ('Mostra: Arte contemporanea', 'Nuovo allestimento della collezione contemporanea', 'MOSTRA', '2026-10-18 17:00:00', '2026-10-18 20:00:00', 50);
 
-INSERT INTO turno(dipependente_id, data, ora_inizio, ora_fine, reparto) VALUES
+INSERT INTO turno(dipendente_id, data, ora_inizio, ora_fine, reparto) VALUES
 (2, '2026-09-05', '09:00:00', '13:00:00', 'Sala espositiva'),
 (2, '2026-09-05', '13:00:00', '17:00:00', 'Biglietteria'),
 (3, '2026-09-05', '09:00:00', '17:00:00', 'Curatela mostre'),
