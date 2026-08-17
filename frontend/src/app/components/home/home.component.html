@@ -1,0 +1,15 @@
+<div style="max-width: 480px; margin: 3rem auto; text-align: center;">
+  <h1>Museo "Villa Serena"</h1>
+
+  <ng-container *ngIf="auth.isAuthenticated(); else nonAutenticato">
+    <p class="successo">Sei autenticato! Ruolo: <strong>{{ auth.getRuolo() }}</strong></p>
+    <button (click)="logout()">Esci</button>
+  </ng-container>
+
+  <ng-template #nonAutenticato>
+    <p>Non hai ancora effettuato l'accesso.</p>
+    <p>
+      <a routerLink="/login">Accedi</a> &nbsp;|&nbsp; <a routerLink="/registrati">Registrati</a>
+    </p>
+  </ng-template>
+</div>

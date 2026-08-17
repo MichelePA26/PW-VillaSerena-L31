@@ -1,0 +1,79 @@
+<div class="login-wrapper">
+  <div class="flip-scene" [class.flipped]="flipped">
+    <div class="flip-card">
+
+      <!-- FRONT — LOGIN -->
+      <div class="glass-circle front">
+        <form class="login-form" (ngSubmit)="accedi()">
+          <h1>Login</h1>
+          <div class="subtitle">Accedi al tuo account</div>
+
+          <div class="input-box">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" placeholder="Email" [(ngModel)]="loginEmail" name="loginEmail" autocomplete="off" required>
+          </div>
+          
+          <div class="input-box">
+                <i class="fa-solid fa-lock"></i>
+                <input
+                [type]="mostraPasswordLogin ? 'text' : 'password'"
+                placeholder="Password"
+                [(ngModel)]="loginPassword" name="loginPassword" autocomplete="off" required>
+                <i class="fa-solid toggle-password"
+                    [class.fa-eye]="mostraPasswordLogin"
+                    [class.fa-eye-slash]="!mostraPasswordLogin"
+                    (click)="toggleMostraPasswordLogin()"></i>
+          </div>
+
+          <div class="forgot">
+            <div class="remember">
+              <div class="switch" [class.on]="ricordami" (click)="ricordami = !ricordami"></div>
+              Ricordami
+            </div>
+          </div>
+
+          <button type="submit">Accedi</button>
+          <p class="messaggio errore" *ngIf="erroreLogin">{{ erroreLogin }}</p>
+          <div class="signup-text">Non hai un account? <a (click)="vaiARegistrazione()">Registrati</a></div>
+        </form>
+      </div>
+
+      <!-- BACK — REGISTRAZIONE -->
+      <div class="glass-circle back">
+        <form class="login-form" (ngSubmit)="registrati()">
+          <h1>Registrati</h1>
+          <div class="subtitle">Crea il tuo account</div>
+
+          <div class="input-box">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" placeholder="Nome" [(ngModel)]="regNome" name="regNome" autocomplete="off" required>
+          </div>
+          <div class="input-box">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" placeholder="Cognome" [(ngModel)]="regCognome" name="regCognome" autocomplete="off" required>
+          </div>
+          <div class="input-box">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" placeholder="Email" [(ngModel)]="regEmail" name="regEmail" autocomplete="off" required>
+          </div>
+          <div class="input-box">
+                <i class="fa-solid fa-lock"></i>
+                <input
+                    [type]="mostraPasswordRegistrazione ? 'text' : 'password'"
+                    placeholder="Password"
+                    [(ngModel)]="regPassword" name="regPassword" autocomplete="off" required minlength="8">
+                <i class="fa-solid toggle-password"
+                    [class.fa-eye]="mostraPasswordRegistrazione"
+                    [class.fa-eye-slash]="!mostraPasswordRegistrazione"
+                    (click)="toggleMostraPasswordRegistrazione()"></i>
+          </div>
+
+          <button type="submit">Crea account</button>
+          <p class="messaggio" [class.errore]="!registrazioneRiuscita" [class.successo]="registrazioneRiuscita" *ngIf="messaggioRegistrazione">{{ messaggioRegistrazione }}</p>
+          <div class="signup-text">Hai già un account? <a (click)="vaiALogin()">Accedi</a></div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
