@@ -1,0 +1,743 @@
+:host {
+  --bruno-scuro: #2b2320;
+  --bruno-caldo: #3a2e26;
+  --oro: #c9a876;
+  --oro-chiaro: #e3cfa1;
+  --crema: #f5efe6;
+  --crema-tenue: #d8cdbd;
+  --panna: #faf7f2;
+  --testo-soft: #6b6259;
+  --testo-tenue: #a89a89;
+
+  display: block;
+  background: var(--panna);
+}
+
+/* --- Elemento firma: cornice ad angoli, richiama il motivo della "cornice" del quadro --- */
+.angolo {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--oro);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.angolo-tl { top: 1.5rem; left: 1.5rem; border-right: none; border-bottom: none; }
+.angolo-tr { top: 1.5rem; right: 1.5rem; border-left: none; border-bottom: none; }
+.angolo-bl { bottom: 1.5rem; left: 1.5rem; border-right: none; border-top: none; }
+.angolo-br { bottom: 1.5rem; right: 1.5rem; border-left: none; border-top: none; }
+
+/* --- Hero --- */
+.hero {
+  position: relative;
+  min-height: 92vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--crema);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(201, 168, 118, 0.15), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(201, 168, 118, 0.1), transparent 50%),
+    linear-gradient(165deg, rgba(33, 26, 23, 0.68) 0%, rgba(58, 46, 38, 0.62) 55%, rgba(43, 35, 32, 0.82) 100%),
+    url('/assets/foto-museo.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  background-image: repeating-linear-gradient(45deg, #fff 0px, transparent 1px, transparent 2px, #fff 3px);
+  pointer-events: none;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.04), transparent 65%);
+}
+
+.hero-cornice {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.hero-etichetta-verticale {
+  position: absolute;
+  right: 1.8rem;
+  top: 84%;
+  transform: translateY(-50%) rotate(90deg);
+  transform-origin: right center;
+  white-space: nowrap;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.35rem;
+  text-transform: uppercase;
+  color: rgba(245, 239, 230, 0.45);
+  z-index: 2;
+  margin: 0;
+}
+
+.hero-contenuto {
+  position: relative;
+  z-index: 3;
+  max-width: 680px;
+  padding: 2rem 1.5rem;
+}
+
+.hero-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+  font-size: clamp(0.7rem, 2vw, 0.85rem);
+  color: var(--oro);
+  margin-bottom: 0.9rem;
+}
+
+.hero-titolo {
+  display: flex;
+  flex-direction: column;
+  line-height: 0.95;
+  margin-bottom: 1.4rem;
+}
+
+.hero-titolo-sottile {
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.6rem;
+  text-transform: uppercase;
+  font-size: clamp(1rem, 3vw, 1.35rem);
+  color: var(--oro-chiaro);
+  margin-bottom: 0.5rem;
+}
+
+.hero-titolo-enfasi {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(3.4rem, 11vw, 6.8rem);
+  letter-spacing: 0.01rem;
+  color: var(--crema);
+}
+
+.hero-sottotitolo {
+  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+  color: var(--crema-tenue);
+  margin-bottom: 2.4rem;
+}
+
+.hero-azioni {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.8rem;
+  flex-wrap: wrap;
+}
+
+.hero-cta {
+  display: inline-block;
+  padding: 0.9rem 2.2rem;
+  border: 1px solid var(--oro);
+  color: var(--crema);
+  text-decoration: none;
+  letter-spacing: 0.05rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.hero-cta:hover {
+  background: var(--oro);
+  color: var(--bruno-scuro);
+}
+
+.hero-cta-secondaria {
+  color: var(--crema-tenue);
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.03rem;
+  border-bottom: 1px solid rgba(201, 168, 118, 0.5);
+  padding-bottom: 0.2rem;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.hero-cta-secondaria:hover {
+  color: var(--oro);
+  border-color: var(--oro);
+}
+
+.hero-scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+}
+
+.hero-scroll-hint span {
+  display: block;
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, var(--oro));
+  animation: scendi 2s ease-in-out infinite;
+}
+
+@keyframes scendi {
+  0%, 100% { opacity: 0.3; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(6px); }
+}
+
+/* --- Fascia statistiche --- */
+.statistiche {
+  background: var(--bruno-caldo);
+  border-top: 1px solid rgba(201, 168, 118, 0.25);
+  border-bottom: 1px solid rgba(201, 168, 118, 0.25);
+  padding: 2.6rem 1.5rem;
+}
+
+.statistiche-griglia {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.statistica {
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.statistica:not(:first-child) {
+  border-left: 1px solid rgba(201, 168, 118, 0.2);
+}
+
+.statistica-valore {
+  display: block;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  color: var(--oro);
+}
+
+.statistica-etichetta {
+  display: block;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08rem;
+  color: var(--crema-tenue);
+  margin-top: 0.3rem;
+}
+
+@media (max-width: 760px) {
+  .statistiche-griglia {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 1.8rem;
+  }
+
+  .statistica:nth-child(3) {
+    border-left: none;
+  }
+}
+
+/* --- Sezione storia --- */
+.storia {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 5.5rem 1.5rem;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 3.5rem;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+}
+
+.storia-testo .eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  font-size: 0.8rem;
+  color: var(--oro);
+  margin-bottom: 0.5rem;
+}
+
+.storia-testo h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  color: var(--bruno-scuro);
+  margin-bottom: 2.2rem;
+}
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.timeline-tappa {
+  display: flex;
+  gap: 1.4rem;
+}
+
+.timeline-marcatore {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 0.35rem;
+}
+
+.timeline-punto {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--oro);
+  box-shadow: 0 0 0 4px rgba(201, 168, 118, 0.15);
+  flex-shrink: 0;
+}
+
+.timeline-linea {
+  flex: 1;
+  width: 1px;
+  min-height: 2rem;
+  background: rgba(201, 168, 118, 0.35);
+  margin-top: 0.35rem;
+}
+
+.timeline-tappa:last-child .timeline-linea {
+  display: none;
+}
+
+.timeline-corpo {
+  padding-bottom: 2.2rem;
+}
+
+.timeline-anno {
+  display: block;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.1rem;
+  text-transform: uppercase;
+  color: var(--oro);
+  margin-bottom: 0.3rem;
+}
+
+.timeline-corpo h3 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.05rem;
+  color: var(--bruno-scuro);
+  margin-bottom: 0.4rem;
+}
+
+.timeline-corpo p {
+  color: var(--testo-soft);
+  line-height: 1.7;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.storia-visual {
+  display: flex;
+  justify-content: center;
+}
+
+.cornice {
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 3 / 4;
+  padding: 1.1rem;
+  background: var(--bruno-scuro);
+  box-shadow: 0 12px 30px rgba(43, 35, 32, 0.25);
+}
+
+.cornice-interno {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--oro);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(160deg, var(--bruno-caldo) 0%, var(--bruno-scuro) 100%);
+}
+
+.cornice-anno {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 2.8rem;
+  color: var(--oro);
+}
+
+.cornice-testo {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  color: var(--crema-tenue);
+  text-align: center;
+  padding: 0 1rem;
+}
+
+@media (max-width: 760px) {
+  .storia {
+    grid-template-columns: 1fr;
+    padding: 4rem 1.5rem;
+  }
+
+  .storia-visual {
+    order: -1;
+  }
+
+  .cornice {
+    max-width: 220px;
+    margin: 0 auto;
+  }
+}
+
+/* --- Sezione missione --- */
+.missione {
+  background: #c9a87640;
+  margin: 0 auto;
+  padding: 5rem 1.5rem;
+  text-align: center;
+}
+
+.missione .ornamento {
+  color: var(--oro);
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.missione-testo {
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  color: var(--bruno-scuro);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.missione-firma {
+  font-size: 0.8rem;
+  letter-spacing: 0.05rem;
+  text-transform: uppercase;
+  color: var(--testo-tenue);
+}
+
+/* --- Sezione percorso (opere in evidenza) --- */
+.percorso {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 2rem 0 5.5rem;
+  font-family: "Poppins", sans-serif;
+}
+
+.percorso-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto 2.5rem;
+  padding: 0 1.5rem;
+}
+
+.percorso-header .eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  font-size: 0.8rem;
+  color: var(--oro);
+  margin-bottom: 0.5rem;
+}
+
+.percorso-header h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  color: var(--bruno-scuro);
+}
+
+.percorso-controlli {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.percorso-freccia {
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  border: 1px solid var(--oro);
+  background: transparent;
+  color: var(--bruno-scuro);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.percorso-freccia:hover {
+  background: var(--oro);
+  color: var(--crema);
+}
+
+.percorso-freccia:focus-visible {
+  outline: 2px solid var(--bruno-scuro);
+  outline-offset: 2px;
+}
+
+.percorso-track {
+  display: flex;
+  gap: 1.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0.5rem 1.5rem 1.75rem;
+  margin-bottom: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--oro) transparent;
+  mask-image: linear-gradient(to right, transparent 0, #000 0%, #000 100%, transparent 100%);
+}
+
+.percorso-track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.percorso-track::-webkit-scrollbar-thumb {
+  background: var(--oro);
+  border-radius: 3px;
+}
+
+.percorso-track::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tappa-opera {
+  position: relative;
+  flex: 0 0 auto;
+  width: min(260px, 72vw);
+  scroll-snap-align: start;
+  text-align: left;
+}
+
+.tappa-numero {
+  position: absolute;
+  top: 0.7rem;
+  left: 0.7rem;
+  z-index: 2;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 0.85rem;
+  color: var(--crema);
+  background: rgba(43, 35, 32, 0.55);
+  padding: 0.25rem 0.55rem;
+  letter-spacing: 0.03rem;
+}
+
+.tappa-immagine {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #ece5da;
+  margin-bottom: 0.9rem;
+  border: 1px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.tappa-opera:hover .tappa-immagine {
+  border-color: var(--oro);
+}
+
+.tappa-immagine img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.tappa-opera:hover .tappa-immagine img {
+  transform: scale(1.06);
+}
+
+.segnaposto {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #ece5da 0%, #d8cdbd 100%);
+}
+
+.segnaposto span {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 2.5rem;
+  color: #ffffff;
+}
+
+.tappa-opera h3 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1rem;
+  color: var(--bruno-scuro);
+  margin-bottom: 0.2rem;
+}
+
+.tappa-opera p {
+  font-size: 0.8rem;
+  color: var(--testo-tenue);
+  margin: 0;
+}
+
+.tappa-tecnica {
+  font-style: italic;
+  font-size: 0.72rem;
+  opacity: 0.85;
+  margin-top: 0.15rem;
+}
+
+.link-vedi-tutto {
+  display: inline-block;
+  margin-left: 1.5rem;
+  color: var(--bruno-scuro);
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.03rem;
+  border-bottom: 1px solid var(--oro);
+  padding-bottom: 0.2rem;
+  transition: color 0.3s ease;
+}
+
+.link-vedi-tutto:hover {
+  color: var(--oro);
+}
+
+/* --- Sezione info --- */
+.info-museo {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 5.5rem;
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+}
+
+.sezione-header {
+  margin-bottom: 2.5rem;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  font-size: 0.8rem;
+  color: var(--oro);
+  margin-bottom: 0.5rem;
+}
+
+.sezione-header h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  color: var(--bruno-scuro);
+}
+
+.info-griglia {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.info-scheda {
+  text-align: center;
+  padding: 2.4rem 1.4rem;
+  background: #ffffff;
+  border: 1px solid rgba(43, 35, 32, 0.08);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.info-scheda:hover {
+  box-shadow: 0 14px 30px rgba(43, 35, 32, 0.08);
+  transform: translateY(-4px);
+}
+
+.info-icona {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--bruno-scuro);
+  color: var(--oro);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  margin: 0 auto 1.1rem;
+}
+
+.info-scheda h3 {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04rem;
+  color: var(--bruno-scuro);
+  margin-bottom: 0.6rem;
+}
+
+.info-scheda p {
+  color: #8a7f72;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* --- CTA finale --- */
+.cta-finale {
+  position: relative;
+  text-align: center;
+  padding: 6rem 1.5rem;
+  color: var(--crema);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(201, 168, 118, 0.14), transparent 60%),
+    var(--bruno-scuro);
+  overflow: hidden;
+}
+
+.cta-finale-cornice {
+  position: absolute;
+  inset: 0;
+}
+
+.cta-finale .ornamento {
+  color: var(--oro);
+  font-size: 1.2rem;
+  margin-bottom: 1.2rem;
+}
+
+.cta-finale h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  margin-bottom: 1rem;
+}
+
+.cta-finale-testo {
+  color: var(--crema-tenue);
+  font-size: 0.95rem;
+  margin-bottom: 2.2rem;
+}
+
+/* --- Accessibilità: rispetta le preferenze di movimento ridotto --- */
+@media (prefers-reduced-motion: reduce) {
+  .hero {
+    background-attachment: scroll;
+  }
+
+  .hero-scroll-hint span {
+    animation: none;
+    opacity: 0.6;
+  }
+
+  .tappa-immagine img,
+  .info-scheda,
+  .percorso-freccia,
+  .hero-cta,
+  .hero-cta-secondaria {
+    transition: none;
+  }
+}

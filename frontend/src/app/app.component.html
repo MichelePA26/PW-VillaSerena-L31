@@ -1,0 +1,23 @@
+<header class="topbar" *ngIf="mostraNavbar">
+  <a routerLink="/" class="logo-link">
+    <img src="assets/logo-villaserena.png" alt="Villa Serena" class="logo-img">
+  </a>
+
+  <nav [class.aperto]="menuAperto">
+    <a routerLink="/" routerLinkActive="attivo" [routerLinkActiveOptions]="{exact: true}">Home</a>
+    <a routerLink="/catalogo" routerLinkActive="attivo">Catalogo</a>
+    <a routerLink="/gestione-opere" routerLinkActive="attivo" *ngIf="ruolo === 'OPERATORE' || ruolo === 'HR'">Gestione opere</a>
+  </nav>
+
+  <div class="account">
+    <a routerLink="/login" *ngIf="!auth.isAuthenticated()">Accedi</a>
+    <button *ngIf="auth.isAuthenticated()" (click)="logout()">Esci</button>
+    <button class="hamburger" (click)="toggleMenu()" [class.aperto]="menuAperto" aria-label="Apri il menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <router-outlet></router-outlet>
+</main>

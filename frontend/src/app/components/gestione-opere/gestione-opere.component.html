@@ -1,0 +1,31 @@
+<div class="gestione-container">
+  <h2>Gestione catalogo (area operatore)</h2>
+
+  <form (ngSubmit)="salva()" class="form-opera">
+    <label>Titolo <input type="text" [(ngModel)]="operaCorrente.titolo" name="titolo" required></label>
+    <label>Autore <input type="text" [(ngModel)]="operaCorrente.autore" name="autore" required></label>
+    <label>Anno <input type="number" [(ngModel)]="operaCorrente.anno" name="anno" required></label>
+    <label>Tecnica <input type="text" [(ngModel)]="operaCorrente.tecnica" name="tecnica"></label>
+    <label>Descrizione <textarea [(ngModel)]="operaCorrente.descrizione" name="descrizione" rows="2"></textarea></label>
+    <label>URL immagine <input type="text" [(ngModel)]="operaCorrente.immagineUrl" name="immagineUrl" placeholder="https://..."></label>
+
+    <div class="azioni-form">
+      <button type="submit">{{ inModifica ? 'Aggiorna opera' : 'Aggiungi opera' }}</button>
+      <button type="button" *ngIf="inModifica" (click)="resetForm()">Annulla</button>
+    </div>
+  </form>
+  <p *ngIf="messaggio">{{ messaggio }}</p>
+
+  <table class="tabella-opere">
+    <tr><th>Titolo</th><th>Autore</th><th>Anno</th><th>Azioni</th></tr>
+    <tr *ngFor="let o of opere">
+      <td>{{ o.titolo }}</td>
+      <td>{{ o.autore }}</td>
+      <td>{{ o.anno }}</td>
+      <td>
+        <button (click)="modifica(o)">Modifica</button>
+        <button (click)="elimina(o.id!)">Elimina</button>
+      </td>
+    </tr>
+  </table>
+</div>

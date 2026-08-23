@@ -18,8 +18,8 @@
 
 
 .flip-scene {
-    width: clamp(300px, 88vw, 560px);
-    height: clamp(300px, 88vw, 560px);
+    width: clamp(300px, 88vw, 480px);
+    height: clamp(300px, 88vw, 480px);
     perspective: 1800px;
 }
 
@@ -310,9 +310,7 @@
     color: #2e7d32;
 }
 
-/* La faccia di registrazione ha più campi del login (nome, cognome,
-   email, password): comprimiamo un po' gli spazi verticali per farla
-   stare comodamente nella stessa circonferenza del login */
+
 .back .login-form h1 {
     font-size: clamp(1.3rem, 5vw, 2rem);
     margin-bottom: 0.15rem;

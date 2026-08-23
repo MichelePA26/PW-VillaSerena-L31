@@ -1,15 +1,142 @@
-<div style="max-width: 480px; margin: 3rem auto; text-align: center;">
-  <h1>Museo "Villa Serena"</h1>
+<section class="hero" id="hero">
+  <div class="hero-overlay"></div>
 
-  <ng-container *ngIf="auth.isAuthenticated(); else nonAutenticato">
-    <p class="successo">Sei autenticato! Ruolo: <strong>{{ auth.getRuolo() }}</strong></p>
-    <button (click)="logout()">Esci</button>
-  </ng-container>
+  <div class="hero-cornice" aria-hidden="true">
+    <span class="angolo angolo-tl"></span>
+    <span class="angolo angolo-tr"></span>
+    <span class="angolo angolo-bl"></span>
+    <span class="angolo angolo-br"></span>
+  </div>
 
-  <ng-template #nonAutenticato>
-    <p>Non hai ancora effettuato l'accesso.</p>
-    <p>
-      <a routerLink="/login">Accedi</a> &nbsp;|&nbsp; <a routerLink="/registrati">Registrati</a>
+  <p class="hero-etichetta-verticale" aria-hidden="true">Museo d'arte moderna e contemporanea</p>
+
+  <div class="hero-contenuto">
+    <p class="hero-eyebrow">Museo civico · dal {{ 1962 }}</p>
+    <h1 class="hero-titolo">
+      <span class="hero-titolo-sottile">Villa</span>
+      <span class="hero-titolo-enfasi">Serena</span>
+    </h1>
+    <p class="hero-sottotitolo">
+      Arte moderna e contemporanea custodita tra le sale di un'antica villa
+      ottocentesca, nel cuore della città.
     </p>
-  </ng-template>
-</div>
+    <div class="hero-azioni">
+      <a routerLink="/catalogo" class="hero-cta">Esplora il catalogo</a>
+      <a href="#storia" class="hero-cta-secondaria">Scopri la storia</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll-hint">
+    <span></span>
+  </div>
+</section>
+
+<section class="statistiche">
+  <div class="statistiche-griglia">
+    <div class="statistica" *ngFor="let stat of statistiche">
+      <span class="statistica-valore">{{ stat.valore }}</span>
+      <span class="statistica-etichetta">{{ stat.etichetta }}</span>
+    </div>
+  </div>
+</section>
+
+<section class="storia" id="storia">
+  <div class="storia-testo">
+    <p class="eyebrow">Dal 1887 a oggi</p>
+    <h2>La nostra storia</h2>
+
+    <ol class="timeline">
+      <li class="timeline-tappa" *ngFor="let tappa of tappeStoria">
+        <div class="timeline-marcatore" aria-hidden="true">
+          <span class="timeline-punto"></span>
+          <span class="timeline-linea"></span>
+        </div>
+        <div class="timeline-corpo">
+          <span class="timeline-anno">{{ tappa.anno }}</span>
+          <h3>{{ tappa.titolo }}</h3>
+          <p>{{ tappa.testo }}</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <div class="storia-visual">
+    <div class="cornice">
+      <div class="cornice-interno">
+        <span class="cornice-anno">1962</span>
+        <span class="cornice-testo">Anno di fondazione del museo</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="missione">
+  <p class="ornamento">✦</p>
+  <p class="missione-testo">
+    "Custodire la memoria dell'arte moderna e contemporanea, e renderla
+    viva per chi la visita, un'opera alla volta."
+  </p>
+  <p class="missione-firma">— Fondazione Museale Villa Serena</p>
+</section>
+
+<section class="percorso" *ngIf="opereInEvidenza.length > 0">
+  <header class="percorso-header">
+    <div>
+      <p class="eyebrow">Un assaggio della collezione</p>
+      <h2>Il percorso inizia qui</h2>
+    </div>
+    <div class="percorso-controlli">
+      <button type="button" class="percorso-freccia" (click)="scorriPercorso(-1)" aria-label="Scorri indietro">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <button type="button" class="percorso-freccia" (click)="scorriPercorso(1)" aria-label="Scorri avanti">
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="percorso-track" #percorsoTrack>
+    <article class="tappa-opera" *ngFor="let opera of opereInEvidenza; let i = index">
+      <span class="tappa-numero">{{ numeroTappa(i) }}</span>
+      <div class="tappa-immagine">
+        <img *ngIf="opera.immagineUrl" [src]="opera.immagineUrl" [alt]="opera.titolo">
+        <div class="segnaposto" *ngIf="!opera.immagineUrl">
+          <span>{{ opera.titolo.charAt(0) }}</span>
+        </div>
+      </div>
+      <h3>{{ opera.titolo }}</h3>
+      <p>{{ opera.autore }}, {{ opera.anno }}</p>
+      <p class="tappa-tecnica" *ngIf="opera.tecnica">{{ opera.tecnica }}</p>
+    </article>
+  </div>
+
+  <a routerLink="/catalogo" class="link-vedi-tutto">Vedi tutto il catalogo →</a>
+</section>
+
+<section class="info-museo">
+  <header class="sezione-header">
+    <p class="eyebrow">Informazioni utili</p>
+    <h2>Pianifica la visita</h2>
+  </header>
+
+  <div class="info-griglia">
+    <div class="info-scheda" *ngFor="let info of infoMuseo">
+      <span class="info-icona"><i [class]="info.icona"></i></span>
+      <h3>{{ info.titolo }}</h3>
+      <p *ngFor="let riga of info.righe">{{ riga }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta-finale">
+  <div class="cta-finale-cornice" aria-hidden="true">
+    <span class="angolo angolo-tl"></span>
+    <span class="angolo angolo-tr"></span>
+    <span class="angolo angolo-bl"></span>
+    <span class="angolo angolo-br"></span>
+  </div>
+  <p class="ornamento">✦</p>
+  <h2>Vi aspettiamo a Villa Serena</h2>
+  <p class="cta-finale-testo">Via delle Arti, 12 — aperti dal martedì alla domenica, dalle 9:00 alle 19:00.</p>
+  <a routerLink="/catalogo" class="hero-cta">Esplora il catalogo</a>
+</section>

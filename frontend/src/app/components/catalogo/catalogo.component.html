@@ -1,0 +1,26 @@
+<div class="pagina-catalogo">
+  <header class="catalogo-header">
+    <p class="eyebrow">Collezione</p>
+    <h1>Catalogo delle opere</h1>
+  </header>
+
+  <p class="stato" *ngIf="caricamento">Caricamento in corso...</p>
+  <p class="stato" *ngIf="!caricamento && opere.length === 0">Nessuna opera disponibile al momento.</p>
+
+  <div class="griglia-opere" *ngIf="!caricamento && opere.length > 0">
+    <article class="scheda-opera" *ngFor="let opera of opere">
+      <div class="scheda-immagine">
+        <img *ngIf="opera.immagineUrl" [src]="opera.immagineUrl" [alt]="opera.titolo">
+        <div class="segnaposto" *ngIf="!opera.immagineUrl">
+          <span>{{ opera.titolo.charAt(0) }}</span>
+        </div>
+      </div>
+      <div class="scheda-testo">
+        <h3>{{ opera.titolo }}</h3>
+        <p class="autore-anno">{{ opera.autore }}, {{ opera.anno }}</p>
+        <p class="tecnica">{{ opera.tecnica }}</p>
+        <p class="descrizione" *ngIf="opera.descrizione">{{ opera.descrizione }}</p>
+      </div>
+    </article>
+  </div>
+</div>
