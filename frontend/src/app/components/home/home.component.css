@@ -127,7 +127,7 @@
 }
 
 .hero-sottotitolo {
-  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+  font-size: clamp(0.88rem, 2.5vw, 1.15rem);
   color: var(--crema-tenue);
   margin-bottom: 2.4rem;
 }
@@ -142,12 +142,12 @@
 
 .hero-cta {
   display: inline-block;
-  padding: 0.9rem 2.2rem;
+  padding: 0.88rem 2.2rem;
   border: 1px solid var(--oro);
   color: var(--crema);
   text-decoration: none;
-  letter-spacing: 0.05rem;
-  font-size: 0.9rem;
+  letter-spacing: 0.02rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
   transition: background 0.3s ease, color 0.3s ease;
 }

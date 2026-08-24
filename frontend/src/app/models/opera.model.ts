@@ -7,4 +7,7 @@ export interface Opera {
   descrizione?: string;
   immagineUrl?: string;
   collezioneId?: number;
+  dataCreazione?: string;
+  dataModifica?: string;
+  creatoDaNome?: string;
 }

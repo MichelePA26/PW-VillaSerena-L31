@@ -1,31 +1,129 @@
-<div class="gestione-container">
-  <h2>Gestione catalogo (area operatore)</h2>
-
-  <form (ngSubmit)="salva()" class="form-opera">
-    <label>Titolo <input type="text" [(ngModel)]="operaCorrente.titolo" name="titolo" required></label>
-    <label>Autore <input type="text" [(ngModel)]="operaCorrente.autore" name="autore" required></label>
-    <label>Anno <input type="number" [(ngModel)]="operaCorrente.anno" name="anno" required></label>
-    <label>Tecnica <input type="text" [(ngModel)]="operaCorrente.tecnica" name="tecnica"></label>
-    <label>Descrizione <textarea [(ngModel)]="operaCorrente.descrizione" name="descrizione" rows="2"></textarea></label>
-    <label>URL immagine <input type="text" [(ngModel)]="operaCorrente.immagineUrl" name="immagineUrl" placeholder="https://..."></label>
-
-    <div class="azioni-form">
-      <button type="submit">{{ inModifica ? 'Aggiorna opera' : 'Aggiungi opera' }}</button>
-      <button type="button" *ngIf="inModifica" (click)="resetForm()">Annulla</button>
+<div class="pagina-gestione">
+  <header class="gestione-header">
+    <div>
+      <p class="eyebrow">Area operatore</p>
+      <h1>Gestione catalogo</h1>
     </div>
-  </form>
-  <p *ngIf="messaggio">{{ messaggio }}</p>
+    <button class="btn-primario" (click)="apriModaleNuova()">
+      <i class="fa-solid fa-plus"></i> Nuova opera
+    </button>
+  </header>
 
-  <table class="tabella-opere">
-    <tr><th>Titolo</th><th>Autore</th><th>Anno</th><th>Azioni</th></tr>
-    <tr *ngFor="let o of opere">
-      <td>{{ o.titolo }}</td>
-      <td>{{ o.autore }}</td>
-      <td>{{ o.anno }}</td>
-      <td>
-        <button (click)="modifica(o)">Modifica</button>
-        <button (click)="elimina(o.id!)">Elimina</button>
-      </td>
-    </tr>
-  </table>
+  <div class="pannello">
+    <div class="pannello-toolbar">
+      <h2>Elenco opere</h2>
+      <div class="campo-ricerca">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Cerca per titolo o autore..." [(ngModel)]="ricerca" (ngModelChange)="onRicercaCambiata()">
+      </div>
+    </div>
+
+    <div class="tabella-scroll">
+     <table class="tabella-gestione">
+        <thead>
+          <tr>
+            <th class="col-ordinabile" (click)="ordinaPer('titolo')">
+              Titolo <i [class]="iconaOrdinamento('titolo')"></i>
+            </th>
+            <th class="col-ordinabile" (click)="ordinaPer('autore')">
+              Autore <i [class]="iconaOrdinamento('autore')"></i>
+            </th>
+            <th class="col-ordinabile" (click)="ordinaPer('anno')">
+              Anno <i [class]="iconaOrdinamento('anno')"></i>
+            </th>
+            <th class="col-ordinabile" (click)="ordinaPer('collezione')">
+              Collezione <i [class]="iconaOrdinamento('collezione')"></i>
+            </th>
+            <th>Aggiunta da</th>
+            <th class="col-ordinabile" (click)="ordinaPer('dataModifica')">
+              Ultima modifica <i [class]="iconaOrdinamento('dataModifica')"></i>
+            </th>
+            <th class="col-azioni">Azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let o of operePaginate">
+            <td class="cella-titolo">{{ o.titolo }}</td>
+            <td>{{ o.autore }}</td>
+            <td>{{ o.anno }}</td>
+            <td>{{ nomeCollezione(o.collezioneId) }}</td>
+            <td>{{ o.creatoDaNome || '—' }}</td>
+            <td>{{ o.dataModifica ? (o.dataModifica | date:'dd/MM/yyyy HH:mm') : '—' }}</td>
+            <td class="col-azioni">
+              <a (click)="apriModaleModifica(o)">Modifica</a>
+              <span class="separatore">|</span>
+              <a class="link-elimina" (click)="elimina(o.id!)">Elimina</a>
+            </td>
+          </tr>
+          <tr *ngIf="operePaginate.length === 0">
+            <td colspan="7" class="riga-vuota">Nessuna opera trovata.</td>
+          </tr>
+        </tbody>
+    </table>
+    </div>
+
+    <div class="pannello-footer">
+      <span class="conteggio">
+        Da {{ indiceIniziale }} a {{ indiceFinale }} di {{ opereFiltrate.length }} opere
+      </span>
+      <div class="paginazione">
+        <button (click)="paginaPrecedente()" [disabled]="paginaCorrente === 1">Precedente</button>
+        <span class="pagina-numero">{{ paginaCorrente }}</span>
+        <button (click)="paginaSuccessiva()" [disabled]="paginaCorrente === totalePagine">Successiva</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALE -->
+<div class="modale-overlay" *ngIf="modaleAperta" (click)="chiudiModale()">
+  <div class="modale" (click)="$event.stopPropagation()">
+    <div class="modale-header">
+      <h2>{{ inModifica ? 'Modifica opera' : 'Nuova opera' }}</h2>
+      <button class="modale-chiudi" (click)="chiudiModale()" aria-label="Chiudi">&times;</button>
+    </div>
+
+    <form (ngSubmit)="salva()" class="form-opera">
+      <div class="form-riga">
+        <label>Titolo <input type="text" [(ngModel)]="operaCorrente.titolo" name="titolo" required></label>
+        <label>Autore <input type="text" [(ngModel)]="operaCorrente.autore" name="autore" required></label>
+      </div>
+      <div class="form-riga">
+        <label>Anno <input type="number" [(ngModel)]="operaCorrente.anno" name="anno" required></label>
+        <label>Tecnica <input type="text" [(ngModel)]="operaCorrente.tecnica" name="tecnica"></label>
+      </div>
+
+      <label>Collezione
+        <select [(ngModel)]="operaCorrente.collezioneId" name="collezioneId">
+          <option [ngValue]="undefined">Nessuna collezione</option>
+          <option *ngFor="let c of collezioni" [ngValue]="c.id">{{ c.nome }}</option>
+        </select>
+      </label>
+
+      <label>Descrizione <textarea [(ngModel)]="operaCorrente.descrizione" name="descrizione" rows="2"></textarea></label>
+
+      <label>Immagine
+        <input type="file" accept="image/*" (change)="onFileSelezionato($event)">
+      </label>
+      <div class="anteprima" *ngIf="anteprimaUrl" (click)="apriLightbox(anteprimaUrl)">
+        <img [src]="anteprimaUrl" alt="Anteprima">
+        <span class="anteprima-zoom"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+      </div>
+
+      <p class="messaggio-errore" *ngIf="messaggio">{{ messaggio }}</p>
+
+      <div class="modale-azioni">
+        <button type="button" class="btn-secondario" (click)="chiudiModale()">Annulla</button>
+        <button type="submit" class="btn-primario" [disabled]="caricamentoImmagine">
+          {{ caricamentoImmagine ? 'Caricamento...' : (inModifica ? 'Salva modifiche' : 'Aggiungi opera') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox-overlay" *ngIf="lightboxAperto" (click)="chiudiLightbox()">
+  <button class="lightbox-chiudi" (click)="chiudiLightbox()" aria-label="Chiudi anteprima">&times;</button>
+  <img [src]="lightboxUrl" alt="Anteprima ingrandita" (click)="$event.stopPropagation()">
 </div>
