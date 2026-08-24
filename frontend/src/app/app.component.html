@@ -6,6 +6,7 @@
   <nav [class.aperto]="menuAperto">
     <a routerLink="/" routerLinkActive="attivo" [routerLinkActiveOptions]="{exact: true}">Home</a>
     <a routerLink="/catalogo" routerLinkActive="attivo">Catalogo</a>
+    <a routerLink="/eventi" routerLinkActive="attivo">Eventi</a>
     <a routerLink="/gestione-opere" routerLinkActive="attivo" *ngIf="ruolo === 'OPERATORE' || ruolo === 'HR'">Gestione opere</a>
   </nav>
 

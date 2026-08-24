@@ -1,0 +1,56 @@
+<div class="pagina-eventi">
+  <header class="eventi-header">
+    <p class="eyebrow">Agenda del museo</p>
+    <h1>Eventi e visite guidate</h1>
+  </header>
+
+  <p class="stato" *ngIf="caricamento">Caricamento in corso...</p>
+  <p class="stato" *ngIf="!caricamento && eventi.length === 0">Nessun evento programmato al momento.</p>
+
+  <div class="griglia-eventi" *ngIf="!caricamento && eventi.length > 0">
+    <article class="scheda-evento" *ngFor="let evento of eventi">
+      <span class="badge-tipo">{{ etichettaTipo(evento.tipo) }}</span>
+      <h3>{{ evento.titolo }}</h3>
+      <p class="evento-data">
+        <i class="fa-regular fa-calendar"></i>
+        {{ evento.dataInizio | date:'d MMMM yyyy, HH:mm' }}
+      </p>
+      <p class="evento-descrizione" *ngIf="evento.descrizione">{{ evento.descrizione }}</p>
+      <p class="evento-capienza"><i class="fa-solid fa-users"></i> Capienza massima: {{ evento.capienzaMax }}</p>
+
+      <button *ngIf="auth.isAuthenticated()" class="btn-prenota" (click)="apriPrenotazione(evento)">
+        Prenota
+      </button>
+      <a *ngIf="!auth.isAuthenticated()" routerLink="/login" class="btn-prenota-link">
+        Accedi per prenotare
+      </a>
+    </article>
+  </div>
+</div>
+
+<!-- Modale di prenotazione -->
+<div class="modale-overlay" *ngIf="eventoSelezionato" (click)="chiudiPrenotazione()">
+  <div class="modale-prenotazione" (click)="$event.stopPropagation()">
+    <div class="modale-header">
+      <h2>Prenota: {{ eventoSelezionato.titolo }}</h2>
+      <button class="modale-chiudi" (click)="chiudiPrenotazione()" aria-label="Chiudi">&times;</button>
+    </div>
+
+    <form (ngSubmit)="confermaPrenotazione()" class="form-prenotazione">
+      <label>Numero posti
+        <input type="number" [(ngModel)]="numeroPosti" name="numeroPosti" min="1" required>
+      </label>
+
+      <p class="messaggio" [class.errore]="!prenotazioneRiuscita" [class.successo]="prenotazioneRiuscita" *ngIf="messaggioPrenotazione">
+        {{ messaggioPrenotazione }}
+      </p>
+
+      <div class="modale-azioni">
+        <button type="button" class="btn-secondario" (click)="chiudiPrenotazione()">Annulla</button>
+        <button type="submit" class="btn-primario" [disabled]="invioInCorso">
+          {{ invioInCorso ? 'Invio...' : 'Conferma prenotazione' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

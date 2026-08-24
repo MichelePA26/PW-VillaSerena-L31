@@ -1,0 +1,212 @@
+:host {
+  --bruno-scuro: #2b2320;
+  --oro: #c9a876;
+  --panna: #faf7f2;
+  --testo-soft: #6b6259;
+  --testo-tenue: #a89a89;
+
+  display: block;
+  background: var(--panna);
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+}
+
+.pagina-eventi {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+
+.eventi-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  font-size: 0.8rem;
+  color: var(--oro);
+  margin-bottom: 0.5rem;
+}
+
+.eventi-header h1 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  color: var(--bruno-scuro);
+}
+
+.stato {
+  text-align: center;
+  color: var(--testo-tenue);
+}
+
+.griglia-eventi {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.75rem;
+}
+
+.scheda-evento {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.6rem;
+  box-shadow: 0 6px 20px rgba(43, 35, 32, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+.badge-tipo {
+  align-self: flex-start;
+  background: var(--bruno-scuro);
+  color: var(--oro);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  margin-bottom: 0.9rem;
+}
+
+.scheda-evento h3 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.2rem;
+  color: var(--bruno-scuro);
+  margin-bottom: 0.6rem;
+}
+
+.evento-data, .evento-capienza {
+  font-size: 0.82rem;
+  color: var(--testo-soft);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.evento-data i, .evento-capienza i {
+  color: var(--oro);
+}
+
+.evento-descrizione {
+  font-size: 0.85rem;
+  color: var(--testo-soft);
+  line-height: 1.5;
+  margin-bottom: 1.2rem;
+  flex-grow: 1;
+}
+
+.btn-prenota, .btn-prenota-link {
+  display: block;
+  text-align: center;
+  background: var(--bruno-scuro);
+  color: var(--panna);
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem;
+  font-size: 0.85rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-prenota:hover, .btn-prenota-link:hover {
+  background: var(--oro);
+  color: var(--bruno-scuro);
+}
+
+/* --- Modale --- */
+.modale-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 35, 32, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1.5rem;
+}
+
+.modale-prenotazione {
+  background: #fff;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 50px rgba(43, 35, 32, 0.25);
+}
+
+.modale-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.3rem 1.5rem;
+  border-bottom: 1px solid #f0ebe3;
+}
+
+.modale-header h2 {
+  font-size: 1.05rem;
+  color: var(--bruno-scuro);
+}
+
+.modale-chiudi {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  color: var(--testo-tenue);
+  cursor: pointer;
+}
+
+.form-prenotazione {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-prenotazione label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.82rem;
+  color: var(--testo-soft);
+  gap: 0.4rem;
+}
+
+.form-prenotazione input {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #e5ddd0;
+  border-radius: 6px;
+}
+
+.messaggio {
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.messaggio.errore { color: #b0452f; }
+.messaggio.successo { color: #2e7d32; }
+
+.modale-azioni {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.7rem;
+}
+
+.btn-primario {
+  background: var(--bruno-scuro);
+  color: var(--panna);
+  border: 1px solid var(--bruno-scuro);
+  border-radius: 4px;
+  padding: 0.6rem 1.3rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.btn-secondario {
+  background: transparent;
+  border: 1px solid #ddd;
+  color: var(--testo-soft);
+  border-radius: 4px;
+  padding: 0.6rem 1.3rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
