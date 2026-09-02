@@ -1,0 +1,106 @@
+<div class="pagina-gestione">
+  <header class="gestione-header">
+    <div>
+      <p class="eyebrow">Area operatore</p>
+      <h1>Gestione eventi</h1>
+    </div>
+    <button class="btn-primario" (click)="apriModaleNuova()">
+      <i class="fa-solid fa-plus"></i> Nuovo evento
+    </button>
+  </header>
+
+  <div class="pannello">
+    <div class="pannello-toolbar">
+      <h2>Elenco eventi</h2>
+      <div class="campo-ricerca">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Cerca per titolo..." [(ngModel)]="ricerca" (ngModelChange)="onRicercaCambiata()">
+      </div>
+    </div>
+
+    <div class="tabella-scroll">
+      <table class="tabella-gestione">
+        <thead>
+          <tr>
+            <th class="col-ordinabile" (click)="ordinaPer('titolo')">
+              Titolo <i [class]="iconaOrdinamento('titolo')"></i>
+            </th>
+            <th class="col-ordinabile" (click)="ordinaPer('tipo')">
+              Tipo <i [class]="iconaOrdinamento('tipo')"></i>
+            </th>
+            <th class="col-ordinabile" (click)="ordinaPer('dataInizio')">
+              Data e ora <i [class]="iconaOrdinamento('dataInizio')"></i>
+            </th>
+            <th class="col-ordinabile" (click)="ordinaPer('capienzaMax')">
+              Capienza <i [class]="iconaOrdinamento('capienzaMax')"></i>
+            </th>
+            <th class="col-azioni">Azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let e of eventiPaginati">
+            <td class="cella-titolo">{{ e.titolo }}</td>
+            <td>{{ etichettaTipo(e.tipo) }}</td>
+            <td>{{ e.dataInizio | date:'d MMM yyyy, HH:mm' }}</td>
+            <td>{{ e.capienzaMax }}</td>
+            <td class="col-azioni">
+              <a (click)="apriModaleModifica(e)">Modifica</a>
+              <span class="separatore">|</span>
+              <a class="link-elimina" (click)="elimina(e.id!)">Elimina</a>
+            </td>
+          </tr>
+          <tr *ngIf="eventiPaginati.length === 0">
+            <td colspan="5" class="riga-vuota">Nessun evento trovato.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pannello-footer">
+      <span class="conteggio">
+        Da {{ indiceIniziale }} a {{ indiceFinale }} di {{ eventiFiltrati.length }} eventi
+      </span>
+      <div class="paginazione">
+        <button (click)="paginaPrecedente()" [disabled]="paginaCorrente === 1">Precedente</button>
+        <span class="pagina-numero">{{ paginaCorrente }}</span>
+        <button (click)="paginaSuccessiva()" [disabled]="paginaCorrente === totalePagine">Successiva</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALE -->
+<div class="modale-overlay" *ngIf="modaleAperta" (click)="chiudiModale()">
+  <div class="modale" (click)="$event.stopPropagation()">
+    <div class="modale-header">
+      <h2>{{ inModifica ? 'Modifica evento' : 'Nuovo evento' }}</h2>
+      <button class="modale-chiudi" (click)="chiudiModale()" aria-label="Chiudi">&times;</button>
+    </div>
+
+    <form (ngSubmit)="salva()" class="form-evento">
+      <label>Titolo <input type="text" [(ngModel)]="eventoCorrente.titolo" name="titolo" required></label>
+
+      <label>Tipo
+        <select [(ngModel)]="eventoCorrente.tipo" name="tipo" required>
+          <option *ngFor="let t of tipi" [value]="t.valore">{{ t.etichetta }}</option>
+        </select>
+      </label>
+
+      <label>Descrizione <textarea [(ngModel)]="eventoCorrente.descrizione" name="descrizione" rows="2"></textarea></label>
+
+      <div class="form-riga">
+        <label>Inizio <input type="datetime-local" [(ngModel)]="eventoCorrente.dataInizio" name="dataInizio" required></label>
+        <label>Fine <input type="datetime-local" [(ngModel)]="eventoCorrente.dataFine" name="dataFine" required></label>
+      </div>
+
+      <label>Capienza massima <input type="number" [(ngModel)]="eventoCorrente.capienzaMax" name="capienzaMax" min="1" required></label>
+
+      <p class="messaggio-errore" *ngIf="messaggio">{{ messaggio }}</p>
+
+      <div class="modale-azioni">
+        <button type="button" class="btn-secondario" (click)="chiudiModale()">Annulla</button>
+        <button type="submit" class="btn-primario">{{ inModifica ? 'Salva modifiche' : 'Crea evento' }}</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -5,6 +5,7 @@ import { EventiComponent } from './components/eventi/eventi.component';
 import { AuthComponent } from './components/auth/auth.component';
 import { GestioneOpereComponent } from './components/gestione-opere/gestione-opere.component';
 import { ruoloGuard } from './guards/ruolo.guard';
+import { GestioneEventiComponent } from './components/gestione-eventi/gestione-eventi.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -13,4 +14,5 @@ export const routes: Routes = [
   { path: 'login', component: AuthComponent, data: { modalitaIniziale: 'login' } },
   { path: 'registrati', component: AuthComponent, data: { modalitaIniziale: 'registrazione' } },
   { path: 'gestione-opere', component: GestioneOpereComponent, canActivate: [ruoloGuard(['OPERATORE', 'HR'])] },
+  { path: 'gestione-eventi', component: GestioneEventiComponent, canActivate: [ruoloGuard(['OPERATORE', 'HR'])] },
 ];
