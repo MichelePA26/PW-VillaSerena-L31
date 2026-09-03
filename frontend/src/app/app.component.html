@@ -9,6 +9,7 @@
     <a routerLink="/eventi" routerLinkActive="attivo">Eventi</a>
     <a routerLink="/gestione-opere" routerLinkActive="attivo" *ngIf="ruolo === 'OPERATORE' || ruolo === 'HR'">Gestione opere</a>
     <a routerLink="/gestione-eventi" routerLinkActive="attivo" *ngIf="ruolo === 'OPERATORE' || ruolo === 'HR'">Gestione eventi</a>
+    <a routerLink="/feedback" routerLinkActive="attivo" *ngIf="auth.isAuthenticated()">Feedback</a>
   </nav>
 
   <div class="account">

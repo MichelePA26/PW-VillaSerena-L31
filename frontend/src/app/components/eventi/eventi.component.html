@@ -17,6 +17,45 @@
       </p>
       <p class="evento-descrizione" *ngIf="evento.descrizione">{{ evento.descrizione }}</p>
       <p class="evento-capienza"><i class="fa-solid fa-users"></i> Capienza massima: {{ evento.capienzaMax }}</p>
+      <p class="evento-voto" *ngIf="votoMedio(evento.id!) as media">
+        <i class="fa-solid fa-star"></i>
+        {{ media }} / 5 <span class="numero-recensioni">({{ numeroRecensioni(evento.id!) }} recensioni)</span>
+      </p>
+
+      <button
+        *ngIf="numeroRecensioni(evento.id!) > 0"
+        type="button"
+        class="btn-recensioni"
+        (click)="apriRecensioni(evento)">
+        Leggi le recensioni <i class="fa-solid fa-chevron-right"></i>
+      </button>
+      <!-- Modale recensioni -->
+      <div class="modale-overlay" *ngIf="eventoRecensioniAperto" (click)="chiudiRecensioni()">
+        <div class="modale-recensioni" (click)="$event.stopPropagation()">
+          <div class="modale-header">
+            <div>
+              <h2>{{ eventoRecensioniAperto.titolo }}</h2>
+              <p class="modale-sottotitolo" *ngIf="votoMedio(eventoRecensioniAperto.id!) as media">
+                <i class="fa-solid fa-star"></i> {{ media }} / 5 · {{ numeroRecensioni(eventoRecensioniAperto.id!) }} recensioni
+              </p>
+            </div>
+            <button class="modale-chiudi" (click)="chiudiRecensioni()" aria-label="Chiudi">&times;</button>
+          </div>
+
+          <div class="modale-corpo">
+            <article class="recensione" *ngFor="let f of feedbackPerEvento.get(eventoRecensioniAperto.id!)">
+              <div class="recensione-header">
+                <span class="recensione-autore">{{ f.utenteNome }}</span>
+                <span class="recensione-stelle">
+                  <i class="fa-solid fa-star" *ngFor="let s of [1,2,3,4,5]" [class.piena]="s <= f.voto"></i>
+                </span>
+              </div>
+              <p class="recensione-commento" *ngIf="f.commento">{{ f.commento }}</p>
+              <p class="recensione-commento vuoto" *ngIf="!f.commento">Nessun commento lasciato.</p>
+            </article>
+          </div>
+        </div>
+      </div>
 
       <button *ngIf="auth.isAuthenticated()" class="btn-prenota" (click)="apriPrenotazione(evento)">
         Prenota

@@ -1,0 +1,47 @@
+<div class="pagina-feedback">
+  <header class="feedback-header">
+    <p class="eyebrow">La tua opinione conta</p>
+    <h1>Lascia un feedback</h1>
+    <p class="sottotitolo">Racconta la tua esperienza su una visita o un evento a cui hai partecipato.</p>
+  </header>
+
+  <p class="stato" *ngIf="caricamento">Caricamento in corso...</p>
+
+  <p class="stato" *ngIf="!caricamento && miePrenotazioni.length === 0">
+    Non hai ancora nessuna prenotazione su cui lasciare un feedback.
+    <a routerLink="/eventi">Scopri gli eventi in programma</a>.
+  </p>
+
+  <form *ngIf="!caricamento && miePrenotazioni.length > 0" (ngSubmit)="invia()" class="form-feedback">
+    <label>Visita o evento
+      <select [(ngModel)]="prenotazioneSelezionata" name="prenotazione" required>
+        <option [ngValue]="null" disabled>Seleziona una prenotazione...</option>
+        <option *ngFor="let p of miePrenotazioni" [ngValue]="p.id">
+          {{ p.eventoTitolo }} — {{ p.eventoDataInizio | date:'d MMM yyyy' }}
+        </option>
+      </select>
+    </label>
+
+    <label>Voto
+      <div class="selettore-voto">
+        <button type="button" *ngFor="let n of [1,2,3,4,5]"
+            [class.attivo]="voto >= n"
+            (click)="voto = n" [attr.aria-label]="'Vota ' + n">
+          <i class="fa-solid fa-star"></i>
+        </button>
+      </div>
+    </label>
+
+    <label>Commento (facoltativo)
+      <textarea [(ngModel)]="commento" name="commento" rows="4" placeholder="Raccontaci com'è andata..."></textarea>
+    </label>
+
+    <p class="messaggio" [class.errore]="!invioRiuscito" [class.successo]="invioRiuscito" *ngIf="messaggio">
+      {{ messaggio }}
+    </p>
+
+    <button type="submit" class="btn-invia" [disabled]="invioInCorso">
+      {{ invioInCorso ? 'Invio...' : 'Invia feedback' }}
+    </button>
+  </form>
+</div>

@@ -6,6 +6,8 @@ import { EventiService } from '../../services/eventi.service';
 import { PrenotazioniService } from '../../services/prenotazioni.service';
 import { AuthService } from '../../services/auth.service';
 import { RouterLink } from '@angular/router';
+import { FeedbackService } from '../../services/feedback.service';
+import { Feedback } from '../../models/feedback.model';
 
 @Component({
   selector: 'app-eventi',
@@ -23,18 +25,50 @@ export class EventiComponent implements OnInit {
   messaggioPrenotazione = '';
   prenotazioneRiuscita = false;
   invioInCorso = false;
+  feedbackPerEvento: Map<number, Feedback[]> = new Map();
+  eventoRecensioniAperto: Evento | null = null;
 
   constructor(
     private eventiService: EventiService,
     private prenotazioniService: PrenotazioniService,
+    private feedbackService: FeedbackService,
     public auth: AuthService
   ) {}
 
-  ngOnInit(): void {
+   ngOnInit(): void {
     this.eventiService.getEventi().subscribe({
-      next: eventi => { this.eventi = eventi; this.caricamento = false; },
+      next: eventi => {
+        this.eventi = eventi;
+        this.caricamento = false;
+        eventi.forEach(e => this.caricaFeedback(e.id!));
+      },
       error: () => this.caricamento = false
     });
+  }
+
+  private caricaFeedback(eventoId: number): void {
+    this.feedbackService.getPerEvento(eventoId).subscribe(feedback => {
+      this.feedbackPerEvento.set(eventoId, feedback);
+    });
+  }
+
+  votoMedio(eventoId: number): number | null {
+    const feedback = this.feedbackPerEvento.get(eventoId);
+    if (!feedback || feedback.length === 0) return null;
+    const somma = feedback.reduce((acc, f) => acc + f.voto, 0);
+    return Math.round((somma / feedback.length) * 10) / 10;
+  }
+
+  numeroRecensioni(eventoId: number): number {
+    return this.feedbackPerEvento.get(eventoId)?.length ?? 0;
+  }
+
+  apriRecensioni(evento: Evento): void {
+    this.eventoRecensioniAperto = evento;
+  }
+
+  chiudiRecensioni(): void {
+    this.eventoRecensioniAperto = null;
   }
 
   apriPrenotazione(evento: Evento): void {
