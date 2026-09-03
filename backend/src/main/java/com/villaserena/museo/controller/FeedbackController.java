@@ -29,4 +29,9 @@ public class FeedbackController {
     public List<FeedbackDTO> getAll() {
         return feedbackService.findAll();
     }
+
+     @GetMapping("/evento/{eventoId}")
+    public List<FeedbackDTO> byEvento(@PathVariable Long eventoId) {
+        return feedbackService.byEvento(eventoId);
+    }
 }

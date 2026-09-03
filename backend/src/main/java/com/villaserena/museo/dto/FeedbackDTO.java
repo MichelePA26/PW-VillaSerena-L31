@@ -17,7 +17,7 @@ public class FeedbackDTO {
         dto.id = f.getId();
         dto.prenotazioneId = f.getPrenotazione().getId();
         dto.eventoTitolo = f.getPrenotazione().getEvento().getTitolo();
-        dto.utenteNome = f.getUtente().getNome() + " " + f.getUtente().getCognome();
+        dto.utenteNome = f.getUtente().getNome() + " " + f.getUtente().getCognome().charAt(0) + ".";
         dto.voto = f.getVoto();
         dto.commento = f.getCommento();
         dto.data = f.getData();

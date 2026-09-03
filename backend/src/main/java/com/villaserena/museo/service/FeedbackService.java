@@ -64,4 +64,11 @@ public class FeedbackService {
         return utenteRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Utente autenticato non trovato"));
     }
+
+   public List<FeedbackDTO> byEvento(Long eventoId) {
+    return feedbackRepository.findAll().stream()
+            .filter(f -> f.getPrenotazione().getEvento().getId().equals(eventoId))
+            .map(FeedbackDTO::daEntita)
+            .collect(Collectors.toList());
+}
 }
