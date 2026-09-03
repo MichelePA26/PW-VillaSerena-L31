@@ -5,6 +5,7 @@ import com.villaserena.museo.model.Evento;
 import com.villaserena.museo.repository.EventoRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,15 @@ public class EventiService {
     }
 
     public void delete(Long id) {
+        Evento evento = eventoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Evento non trovato"));
+
+        if (evento.getDataFine().isAfter(LocalDateTime.now())) {
+            throw new RuntimeException(
+                "Non è possibile eliminare un evento ancora in corso. "
+            );
+        }
+
         eventoRepository.deleteById(id);
     }
 

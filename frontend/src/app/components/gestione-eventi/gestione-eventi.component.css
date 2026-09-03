@@ -417,3 +417,11 @@
     grid-template-columns: 1fr;
   }
 }
+
+.messaggio-pagina {
+  padding: 0.8rem 1.6rem;
+  color: #b0452f;
+  font-size: 0.85rem;
+  background: #fdf1ee;
+  border-bottom: 1px solid #f0ebe3;
+}

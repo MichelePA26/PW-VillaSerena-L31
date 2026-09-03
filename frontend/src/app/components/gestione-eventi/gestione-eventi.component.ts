@@ -159,7 +159,10 @@ export class GestioneEventiComponent implements OnInit {
 
   elimina(id: number): void {
     if (!confirm('Confermi la rimozione di questo evento?')) return;
-    this.eventiService.eliminaEvento(id).subscribe(() => this.carica());
+    this.eventiService.eliminaEvento(id).subscribe({
+      next: () => this.carica(),
+      error: err => this.messaggio = err.error?.errore || 'Impossibile eliminare l\'evento.'
+    });
   }
 
   private formVuoto(): Evento {
