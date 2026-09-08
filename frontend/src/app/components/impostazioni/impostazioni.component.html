@@ -1,0 +1,31 @@
+<div class="impostazioni-container">
+  <p class="eyebrow">Account</p>
+  <h1>Impostazioni</h1>
+
+  <section class="scheda" *ngIf="profilo">
+    <h2>I miei dati</h2>
+    <p class="sola-lettura"><strong>{{ profilo.nomeCompleto }}</strong> — {{ profilo.mansione }}</p>
+
+    <form (ngSubmit)="salvaProfilo()">
+      <label>Telefono <input type="tel" [(ngModel)]="telefono" name="telefono"></label>
+      <label>Indirizzo <input type="text" [(ngModel)]="indirizzo" name="indirizzo" placeholder="Lascia vuoto per non modificare"></label>
+      <button type="submit" class="btn-primario">Salva modifiche</button>
+      <p class="messaggio" [class.errore]="!successoProfilo" [class.successo]="successoProfilo" *ngIf="messaggioProfilo">
+        {{ messaggioProfilo }}
+      </p>
+    </form>
+  </section>
+
+  <section class="scheda">
+    <h2>Cambia password</h2>
+    <form (ngSubmit)="cambiaPassword()">
+      <label>Password attuale <input type="password" [(ngModel)]="passwordAttuale" name="passwordAttuale" required></label>
+      <label>Nuova password <input type="password" [(ngModel)]="nuovaPassword" name="nuovaPassword" required minlength="8"></label>
+      <label>Conferma nuova password <input type="password" [(ngModel)]="confermaPassword" name="confermaPassword" required></label>
+      <button type="submit" class="btn-primario">Aggiorna password</button>
+      <p class="messaggio" [class.errore]="!successoPassword" [class.successo]="successoPassword" *ngIf="messaggioPassword">
+        {{ messaggioPassword }}
+      </p>
+    </form>
+  </section>
+</div>

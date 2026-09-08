@@ -1,0 +1,91 @@
+:host {
+  --bruno-scuro: #2b2320;
+  --oro: #c9a876;
+  --testo-soft: #6b6259;
+  --testo-tenue: #a89a89;
+  display: block;
+  font-family: "Poppins", sans-serif;
+}
+
+.impostazioni-container {
+  max-width: 520px;
+  padding: 2.5rem 1.5rem;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  font-size: 0.8rem;
+  color: var(--oro);
+  margin-bottom: 0.4rem;
+}
+
+.impostazioni-container h1 {
+  font-family: "Playfair Display", Georgia, serif;
+  color: var(--bruno-scuro);
+  margin-bottom: 2rem;
+}
+
+.scheda {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.6rem;
+  box-shadow: 0 4px 16px rgba(43, 35, 32, 0.06);
+  margin-bottom: 1.5rem;
+}
+
+.scheda h2 {
+  font-size: 1rem;
+  color: var(--bruno-scuro);
+  margin-bottom: 1rem;
+}
+
+.sola-lettura {
+  font-size: 0.85rem;
+  color: var(--testo-soft);
+  margin-bottom: 1.2rem;
+}
+
+.scheda form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.scheda label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.82rem;
+  color: var(--testo-soft);
+  gap: 0.35rem;
+}
+
+.scheda input {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #e5ddd0;
+  border-radius: 6px;
+  font-family: inherit;
+}
+
+.btn-primario {
+  align-self: flex-start;
+  background: var(--bruno-scuro);
+  color: #faf7f2;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.3rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.btn-primario:hover {
+  background: var(--oro);
+  color: var(--bruno-scuro);
+}
+
+.messaggio {
+  font-size: 0.82rem;
+}
+
+.messaggio.errore { color: #b0452f; }
+.messaggio.successo { color: #2e7d32; }

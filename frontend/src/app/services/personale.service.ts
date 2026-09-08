@@ -25,4 +25,8 @@ export class PersonaleService {
   getMioProfilo(): Observable<Dipendente> {
     return this.http.get<Dipendente>(`${this.apiUrl}/me`);
   }
+
+  aggiornaMioProfilo(telefono: string, indirizzo: string): Observable<Dipendente> {
+    return this.http.put<Dipendente>(`${this.apiUrl}/me`, { telefono, indirizzo });
+  }
 }

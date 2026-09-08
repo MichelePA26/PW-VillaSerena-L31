@@ -45,4 +45,8 @@ export class AuthService {
   isAuthenticated(): boolean {
     return !!localStorage.getItem('token');
   }
+
+  cambiaPassword(passwordAttuale: string, nuovaPassword: string): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/password`, { passwordAttuale, nuovaPassword });
+  }
 }
