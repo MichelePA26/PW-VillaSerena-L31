@@ -15,6 +15,7 @@ public class DipendenteDTO {
     private String livelloInquadramento;
     private String telefono;
     private LocalDate dataNascita;
+    private String indirizzo; 
     private String codiceFiscaleMascherato;
     private String ibanMascherato;
 
@@ -31,6 +32,7 @@ public class DipendenteDTO {
         dto.livelloInquadramento = d.getLivelloInquadramento();
         dto.telefono = d.getTelefono();
         dto.dataNascita = d.getDataNascita();
+        dto.indirizzo = d.getIndirizzo();
         dto.codiceFiscaleMascherato = maschera(d.getCodiceFiscale(), 4);
         dto.ibanMascherato = maschera(d.getIban(), 4);
         return dto;
@@ -52,6 +54,7 @@ public class DipendenteDTO {
     public String getLivelloInquadramento() { return livelloInquadramento; }
     public String getTelefono() { return telefono; }
     public LocalDate getDataNascita() { return dataNascita; }
+     public String getIndirizzo() { return indirizzo; }
     public String getCodiceFiscaleMascherato() { return codiceFiscaleMascherato; }
     public String getIbanMascherato() { return ibanMascherato; }
 }

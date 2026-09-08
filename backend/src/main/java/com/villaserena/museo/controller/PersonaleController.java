@@ -2,6 +2,7 @@ package com.villaserena.museo.controller;
 
 import com.villaserena.museo.dto.AssunzioneRequest;
 import com.villaserena.museo.dto.DipendenteDTO;
+import com.villaserena.museo.dto.ResetPasswordRequest;
 import com.villaserena.museo.service.PersonaleService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -46,5 +47,15 @@ public class PersonaleController {
     @PreAuthorize("permitAll()")
     public DipendenteDTO aggiornaMioProfilo(@RequestBody AggiornaProfiloRequest request) {
         return personaleService.aggiornaMioProfilo(request.getTelefono(), request.getIndirizzo());
+    }
+
+    @PutMapping("/{id}")
+    public DipendenteDTO aggiorna(@PathVariable Long id, @RequestBody AssunzioneRequest request) {
+        return personaleService.aggiorna(id, request);
+    }
+
+    @PutMapping("/{id}/reset-password")
+    public void resetPassword(@PathVariable Long id, @RequestBody ResetPasswordRequest request) {
+        personaleService.resetPassword(id, request.getNuovaPassword());
     }
 }

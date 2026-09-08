@@ -8,6 +8,8 @@ import com.villaserena.museo.repository.DipendenteRepository;
 import com.villaserena.museo.repository.UtenteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,10 +19,23 @@ public class PersonaleService {
 
     private final DipendenteRepository dipendenteRepository;
     private final UtenteRepository utenteRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public PersonaleService(DipendenteRepository dipendenteRepository, UtenteRepository utenteRepository) {
+    public PersonaleService(DipendenteRepository dipendenteRepository, UtenteRepository utenteRepository, PasswordEncoder passwordEncoder) {
         this.dipendenteRepository = dipendenteRepository;
         this.utenteRepository = utenteRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public void resetPassword(Long dipendenteId, String nuovaPassword) {
+        if (nuovaPassword == null || nuovaPassword.length() < 8) {
+            throw new RuntimeException("La nuova password deve avere almeno 8 caratteri");
+        }
+        Dipendente dipendente = dipendenteRepository.findById(dipendenteId)
+                .orElseThrow(() -> new RuntimeException("Dipendente non trovato"));
+        Utente utente = dipendente.getUtente();
+        utente.setPasswordHash(passwordEncoder.encode(nuovaPassword));
+        utenteRepository.save(utente);
     }
 
     public List<DipendenteDTO> findAll() {
@@ -88,4 +103,27 @@ public class PersonaleService {
     public DipendenteDTO mio() {
         return DipendenteDTO.daEntita(dipendenteCorrente());
     }
+
+    public DipendenteDTO aggiorna(Long dipendenteId, AssunzioneRequest request) {
+    Dipendente dipendente = dipendenteRepository.findById(dipendenteId)
+            .orElseThrow(() -> new RuntimeException("Dipendente non trovato"));
+
+    dipendente.setMansione(request.getMansione());
+    dipendente.setDataNascita(request.getDataNascita());
+    dipendente.setTelefono(request.getTelefono());
+    dipendente.setIndirizzo(request.getIndirizzo());
+    dipendente.setTipoContratto(request.getTipoContratto());
+    dipendente.setLivelloInquadramento(request.getLivelloInquadramento());
+
+    // aggiorna i campi sensibili solo se HR ha scritto un nuovo valore,
+    // altrimenti mantiene quello già cifrato in database
+    if (request.getCodiceFiscale() != null && !request.getCodiceFiscale().isBlank()) {
+        dipendente.setCodiceFiscale(request.getCodiceFiscale());
+    }
+    if (request.getIban() != null && !request.getIban().isBlank()) {
+        dipendente.setIban(request.getIban());
+    }
+
+    return DipendenteDTO.daEntita(dipendenteRepository.save(dipendente));
+}
 }
