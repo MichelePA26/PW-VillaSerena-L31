@@ -44,7 +44,14 @@ export class AuthComponent {
   accedi(): void {
     this.erroreLogin = '';
     this.authService.login(this.loginEmail, this.loginPassword).subscribe({
-      next: () => this.router.navigate(['/']),
+      next: () => {
+        const ruolo = this.authService.getRuolo();
+        if (ruolo === 'HR') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/']);
+        }
+      },
       error: () => this.erroreLogin = 'Email o password non corrette.'
     });
   }

@@ -7,7 +7,7 @@ import com.villaserena.museo.model.Utente;
 import com.villaserena.museo.repository.DipendenteRepository;
 import com.villaserena.museo.repository.UtenteRepository;
 import org.springframework.stereotype.Service;
-
+import org.springframework.security.core.context.SecurityContextHolder;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,5 +68,14 @@ public class PersonaleService {
         Utente utente = dipendente.getUtente();
         utente.setRuolo(Utente.Ruolo.VISITATORE);
         utenteRepository.save(utente);
+    }
+
+    public DipendenteDTO mio() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Dipendente dipendente = dipendenteRepository.findAll().stream()
+                .filter(d -> d.getUtente().getEmail().equals(email))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Profilo dipendente non trovato per l'utente corrente"));
+        return DipendenteDTO.daEntita(dipendente);
     }
 }

@@ -11,6 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/personale")
 @PreAuthorize("hasRole('HR')")
+
 public class PersonaleController {
 
     private final PersonaleService personaleService;
@@ -32,5 +33,10 @@ public class PersonaleController {
     @DeleteMapping("/{id}")
     public void cessa(@PathVariable Long id) {
         personaleService.cessa(id);
+    }
+
+    @GetMapping("/me")
+    public DipendenteDTO mio() {
+        return personaleService.mio();
     }
 }

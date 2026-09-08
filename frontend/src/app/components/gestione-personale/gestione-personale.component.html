@@ -1,0 +1,126 @@
+<div class="pagina-gestione">
+  <header class="gestione-header">
+    <div>
+      <p class="eyebrow">Area HR</p>
+      <h1>Gestione personale</h1>
+    </div>
+    <button class="btn-primario" (click)="apriModaleNuova()">
+      <i class="fa-solid fa-user-plus"></i> Nuova assunzione
+    </button>
+  </header>
+
+  <div class="pannello">
+    <div class="pannello-toolbar">
+      <h2>Elenco dipendenti</h2>
+      <div class="campo-ricerca">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Cerca per nome o mansione..." [(ngModel)]="ricerca" (ngModelChange)="onRicercaCambiata()">
+      </div>
+    </div>
+
+    <div class="tabella-scroll">
+      <table class="tabella-gestione">
+        <thead>
+          <tr>
+            <th class="col-ordinabile" (click)="ordinaPer('nomeCompleto')">
+              Nome <i [class]="iconaOrdinamento('nomeCompleto')"></i>
+            </th>
+            <th class="col-ordinabile" (click)="ordinaPer('mansione')">
+              Mansione <i [class]="iconaOrdinamento('mansione')"></i>
+            </th>
+            <th>Contratto</th>
+            <th>Telefono</th>
+            <th>Cod. Fiscale</th>
+            <th>IBAN</th>
+            <th class="col-ordinabile" (click)="ordinaPer('stato')">
+              Stato <i [class]="iconaOrdinamento('stato')"></i>
+            </th>
+            <th class="col-azioni">Azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of dipendentiPaginati">
+            <td class="cella-titolo">{{ d.nomeCompleto }}</td>
+            <td>{{ d.mansione }}</td>
+            <td>{{ etichettaContratto(d.tipoContratto) }}</td>
+            <td>{{ d.telefono || '—' }}</td>
+            <td>{{ d.codiceFiscaleMascherato }}</td>
+            <td>{{ d.ibanMascherato }}</td>
+            <td>
+              <span class="badge-stato" [class.cessato]="d.stato === 'CESSATO'">{{ d.stato }}</span>
+            </td>
+            <td class="col-azioni">
+              <a class="link-elimina" *ngIf="d.stato === 'ATTIVO'" (click)="cessa(d)">Cessa rapporto</a>
+              <span *ngIf="d.stato === 'CESSATO'">—</span>
+            </td>
+          </tr>
+          <tr *ngIf="dipendentiPaginati.length === 0">
+            <td colspan="8" class="riga-vuota">Nessun dipendente trovato.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pannello-footer">
+      <span class="conteggio">
+        Da {{ indiceIniziale }} a {{ indiceFinale }} di {{ dipendentiFiltrati.length }} dipendenti
+      </span>
+      <div class="paginazione">
+        <button (click)="paginaPrecedente()" [disabled]="paginaCorrente === 1">Precedente</button>
+        <span class="pagina-numero">{{ paginaCorrente }}</span>
+        <button (click)="paginaSuccessiva()" [disabled]="paginaCorrente === totalePagine">Successiva</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALE ASSUNZIONE -->
+<div class="modale-overlay" *ngIf="modaleAperta" (click)="chiudiModale()">
+  <div class="modale" (click)="$event.stopPropagation()">
+    <div class="modale-header">
+      <h2>Nuova assunzione</h2>
+      <button class="modale-chiudi" (click)="chiudiModale()" aria-label="Chiudi">&times;</button>
+    </div>
+
+    <form (ngSubmit)="assumi()" class="form-opera">
+      <p class="nota-privacy">
+        Codice fiscale e IBAN vengono cifrati automaticamente dal server prima
+        di essere salvati, e non verranno mai mostrati in chiaro nell'elenco.
+      </p>
+
+      <label>ID utente da assumere
+        <input type="number" [(ngModel)]="nuovaAssunzione.utenteId" name="utenteId" required min="1">
+      </label>
+
+      <div class="form-riga">
+        <label>Mansione <input type="text" [(ngModel)]="nuovaAssunzione.mansione" name="mansione" required></label>
+        <label>Telefono <input type="tel" [(ngModel)]="nuovaAssunzione.telefono" name="telefono"></label>
+      </div>
+
+      <div class="form-riga">
+        <label>Codice fiscale <input type="text" [(ngModel)]="nuovaAssunzione.codiceFiscale" name="codiceFiscale" maxlength="16"></label>
+        <label>Data di nascita <input type="date" [(ngModel)]="nuovaAssunzione.dataNascita" name="dataNascita"></label>
+      </div>
+
+      <label>Indirizzo <input type="text" [(ngModel)]="nuovaAssunzione.indirizzo" name="indirizzo"></label>
+
+      <div class="form-riga">
+        <label>Tipo contratto
+          <select [(ngModel)]="nuovaAssunzione.tipoContratto" name="tipoContratto">
+            <option *ngFor="let t of tipiContratto" [value]="t.valore">{{ t.etichetta }}</option>
+          </select>
+        </label>
+        <label>Livello inquadramento <input type="text" [(ngModel)]="nuovaAssunzione.livelloInquadramento" name="livelloInquadramento" placeholder="es. Livello 3, Quadro..."></label>
+      </div>
+
+      <label>IBAN <input type="text" [(ngModel)]="nuovaAssunzione.iban" name="iban" placeholder="IT60X0542811101000000123456"></label>
+
+      <p class="messaggio-errore" *ngIf="messaggio">{{ messaggio }}</p>
+
+      <div class="modale-azioni">
+        <button type="button" class="btn-secondario" (click)="chiudiModale()">Annulla</button>
+        <button type="submit" class="btn-primario">Assumi</button>
+      </div>
+    </form>
+  </div>
+</div>

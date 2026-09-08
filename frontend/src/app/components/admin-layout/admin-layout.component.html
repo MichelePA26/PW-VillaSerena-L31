@@ -1,0 +1,46 @@
+<div class="admin-shell">
+  <button class="admin-hamburger" (click)="toggleMenuMobile()" aria-label="Apri menu">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <aside class="admin-sidebar" [class.aperta]="menuMobileAperto" (click)="chiudiMenuUtente()">
+    <div class="admin-brand">
+      <div class="admin-avatar" *ngIf="profilo">
+        {{ iniziali }}
+      </div>
+
+      <div class="admin-brand-testo" *ngIf="profilo">
+        <span class="admin-brand-nome">{{ profilo.nomeCompleto }}</span>
+        <span class="admin-brand-mansione">{{ profilo.mansione }}</span>
+      </div>
+    </div>
+
+    <nav class="admin-nav">
+      <a routerLink="/admin/personale" routerLinkActive="attivo">
+        <i class="fa-solid fa-users"></i> Personale
+      </a>
+      <a routerLink="/admin/opere" routerLinkActive="attivo">
+        <i class="fa-solid fa-palette"></i> Opere
+      </a>
+      <a routerLink="/admin/eventi" routerLinkActive="attivo">
+        <i class="fa-solid fa-calendar-days"></i> Eventi
+      </a>
+    </nav>
+
+    <div class="admin-sidebar-footer">
+      <a routerLink="/admin/impostazioni" routerLinkActive="attivo" class="admin-link-secondario">
+        <i class="fa-solid fa-gear"></i> Impostazioni
+      </a>
+      <button class="admin-link-secondario" (click)="torniAlSito()">
+        <i class="fa-solid fa-arrow-left"></i> Torna al sito
+      </button>
+      <button class="admin-link-secondario" (click)="logout()">
+        <i class="fa-solid fa-right-from-bracket"></i> Esci
+      </button>
+    </div>
+  </aside>
+
+  <main class="admin-contenuto">
+    <router-outlet></router-outlet>
+  </main>
+</div>
