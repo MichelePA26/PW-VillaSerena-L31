@@ -29,4 +29,12 @@ export class PersonaleService {
   aggiornaMioProfilo(telefono: string, indirizzo: string): Observable<Dipendente> {
     return this.http.put<Dipendente>(`${this.apiUrl}/me`, { telefono, indirizzo });
   }
+
+  aggiorna(id: number, request: AssunzioneRequest): Observable<Dipendente> {
+    return this.http.put<Dipendente>(`${this.apiUrl}/${id}`, request);
+  }
+
+  resetPassword(id: number, nuovaPassword: string): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/reset-password`, { nuovaPassword });
+  }
 }

@@ -14,6 +14,7 @@ export interface Dipendente {
   livelloInquadramento?: string;
   telefono?: string;
   dataNascita?: string;
+  indirizzo?: string;
   codiceFiscaleMascherato?: string;
   ibanMascherato?: string;
 }

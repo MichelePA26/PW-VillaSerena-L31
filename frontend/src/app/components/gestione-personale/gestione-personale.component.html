@@ -30,6 +30,7 @@
             </th>
             <th>Contratto</th>
             <th>Telefono</th>
+            <th>Indirizzo</th>
             <th>Cod. Fiscale</th>
             <th>IBAN</th>
             <th class="col-ordinabile" (click)="ordinaPer('stato')">
@@ -44,18 +45,25 @@
             <td>{{ d.mansione }}</td>
             <td>{{ etichettaContratto(d.tipoContratto) }}</td>
             <td>{{ d.telefono || '—' }}</td>
+            <td>{{ d.indirizzo || '—' }}</td>
             <td>{{ d.codiceFiscaleMascherato }}</td>
             <td>{{ d.ibanMascherato }}</td>
             <td>
               <span class="badge-stato" [class.cessato]="d.stato === 'CESSATO'">{{ d.stato }}</span>
             </td>
             <td class="col-azioni">
-              <a class="link-elimina" *ngIf="d.stato === 'ATTIVO'" (click)="cessa(d)">Cessa rapporto</a>
+              <ng-container *ngIf="d.stato === 'ATTIVO'">
+                <a (click)="apriModaleModifica(d)">Modifica</a>
+                <span class="separatore">|</span>
+                <a (click)="resetPassword(d)">Reset password</a>
+                <span class="separatore">|</span>
+                <a class="link-elimina" (click)="cessa(d)">Cessa</a>
+              </ng-container>
               <span *ngIf="d.stato === 'CESSATO'">—</span>
             </td>
           </tr>
           <tr *ngIf="dipendentiPaginati.length === 0">
-            <td colspan="8" class="riga-vuota">Nessun dipendente trovato.</td>
+            <td colspan="9" class="riga-vuota">Nessun dipendente trovato.</td>
           </tr>
         </tbody>
       </table>
@@ -78,17 +86,17 @@
 <div class="modale-overlay" *ngIf="modaleAperta" (click)="chiudiModale()">
   <div class="modale" (click)="$event.stopPropagation()">
     <div class="modale-header">
-      <h2>Nuova assunzione</h2>
+      <h2>{{ inModifica ? 'Modifica dipendente' : 'Nuova assunzione' }}</h2>
       <button class="modale-chiudi" (click)="chiudiModale()" aria-label="Chiudi">&times;</button>
     </div>
 
-    <form (ngSubmit)="assumi()" class="form-opera">
+    <form (ngSubmit)="salva()" class="form-opera">
       <p class="nota-privacy">
-        Codice fiscale e IBAN vengono cifrati automaticamente dal server prima
-        di essere salvati, e non verranno mai mostrati in chiaro nell'elenco.
+        Codice fiscale e IBAN vengono cifrati automaticamente dal server. In
+        modifica, lasciali vuoti per non cambiare il valore già salvato.
       </p>
 
-      <label>ID utente da assumere
+      <label *ngIf="!inModifica">ID utente da assumere
         <input type="number" [(ngModel)]="nuovaAssunzione.utenteId" name="utenteId" required min="1">
       </label>
 
@@ -98,7 +106,10 @@
       </div>
 
       <div class="form-riga">
-        <label>Codice fiscale <input type="text" [(ngModel)]="nuovaAssunzione.codiceFiscale" name="codiceFiscale" maxlength="16"></label>
+        <label>Codice fiscale
+          <input type="text" [(ngModel)]="nuovaAssunzione.codiceFiscale" name="codiceFiscale" maxlength="16"
+                [placeholder]="inModifica ? 'Lascia vuoto per non modificare' : ''">
+        </label>
         <label>Data di nascita <input type="date" [(ngModel)]="nuovaAssunzione.dataNascita" name="dataNascita"></label>
       </div>
 
@@ -110,16 +121,19 @@
             <option *ngFor="let t of tipiContratto" [value]="t.valore">{{ t.etichetta }}</option>
           </select>
         </label>
-        <label>Livello inquadramento <input type="text" [(ngModel)]="nuovaAssunzione.livelloInquadramento" name="livelloInquadramento" placeholder="es. Livello 3, Quadro..."></label>
+        <label>Livello inquadramento <input type="text" [(ngModel)]="nuovaAssunzione.livelloInquadramento" name="livelloInquadramento"></label>
       </div>
 
-      <label>IBAN <input type="text" [(ngModel)]="nuovaAssunzione.iban" name="iban" placeholder="IT60X0542811101000000123456"></label>
+      <label>IBAN
+        <input type="text" [(ngModel)]="nuovaAssunzione.iban" name="iban"
+              [placeholder]="inModifica ? 'Lascia vuoto per non modificare' : 'IT60X0542811101000000123456'">
+      </label>
 
       <p class="messaggio-errore" *ngIf="messaggio">{{ messaggio }}</p>
 
       <div class="modale-azioni">
         <button type="button" class="btn-secondario" (click)="chiudiModale()">Annulla</button>
-        <button type="submit" class="btn-primario">Assumi</button>
+        <button type="submit" class="btn-primario">{{ inModifica ? 'Salva modifiche' : 'Assumi' }}</button>
       </div>
     </form>
   </div>

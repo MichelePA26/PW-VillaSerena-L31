@@ -14,17 +14,19 @@ import { PersonaleService } from '../../services/personale.service';
 export class GestionePersonaleComponent implements OnInit {
   dipendenti: Dipendente[] = [];
 
-  //  Ricerca e paginazione 
+  //Ricerca e paginazione
   ricerca = '';
   paginaCorrente = 1;
   elementiPerPagina = 10;
 
-  //  Ordinamento
+  //Ordinamento
   colonnaOrdinamento: 'nomeCompleto' | 'mansione' | 'dataAssunzione' | 'stato' | null = null;
   direzioneOrdinamento: 'asc' | 'desc' = 'asc';
 
-  //Modale assunzione
+  //Modale
   modaleAperta = false;
+  inModifica = false;
+  dipendenteInModifica: Dipendente | null = null;
   messaggio = '';
 
   readonly tipiContratto: { valore: TipoContratto; etichetta: string }[] = [
@@ -118,10 +120,31 @@ export class GestionePersonaleComponent implements OnInit {
     return this.tipiContratto.find(t => t.valore === tipo)?.etichetta ?? '—';
   }
 
-  // Modale
+  //Modale: apertura in modalità "nuova assunzione"
   apriModaleNuova(): void {
     this.nuovaAssunzione = this.formVuoto();
+    this.inModifica = false;
+    this.dipendenteInModifica = null;
     this.messaggio = '';
+    this.modaleAperta = true;
+  }
+
+  //Modale: apertura in modalità "modifica dipendente esistente"
+  apriModaleModifica(dipendente: Dipendente): void {
+    this.dipendenteInModifica = dipendente;
+    this.inModifica = true;
+    this.messaggio = '';
+    this.nuovaAssunzione = {
+      utenteId: dipendente.utenteId,
+      mansione: dipendente.mansione,
+      codiceFiscale: '', // vuoto: si aggiorna solo se l'HR scrive un nuovo valore
+      dataNascita: dipendente.dataNascita || '',
+      telefono: dipendente.telefono || '',
+      indirizzo: dipendente.indirizzo || '',
+      tipoContratto: dipendente.tipoContratto || 'TEMPO_INDETERMINATO',
+      livelloInquadramento: dipendente.livelloInquadramento || '',
+      iban: '' // vuoto: stesso motivo
+    };
     this.modaleAperta = true;
   }
 
@@ -129,19 +152,37 @@ export class GestionePersonaleComponent implements OnInit {
     this.modaleAperta = false;
   }
 
-  assumi(): void {
-    this.personaleService.assumi(this.nuovaAssunzione).subscribe({
+  salva(): void {
+    const operazione = this.inModifica && this.dipendenteInModifica
+      ? this.personaleService.aggiorna(this.dipendenteInModifica.id, this.nuovaAssunzione)
+      : this.personaleService.assumi(this.nuovaAssunzione);
+
+    operazione.subscribe({
       next: () => {
         this.carica();
         this.modaleAperta = false;
       },
-      error: err => this.messaggio = err.error?.errore || 'Assunzione non riuscita. Verifica i dati inseriti.'
+      error: err => this.messaggio = err.error?.errore || 'Operazione non riuscita. Verifica i dati inseriti.'
     });
   }
 
   cessa(dipendente: Dipendente): void {
     if (!confirm(`Confermi la cessazione del rapporto di lavoro con ${dipendente.nomeCompleto}?`)) return;
     this.personaleService.cessa(dipendente.id).subscribe(() => this.carica());
+  }
+
+  //Reset password (HR genera una password temporanea per il dipendente)
+  resetPassword(dipendente: Dipendente): void {
+    const nuovaPassword = prompt(`Inserisci la nuova password temporanea per ${dipendente.nomeCompleto} (almeno 8 caratteri):`);
+    if (!nuovaPassword) return;
+    if (nuovaPassword.length < 8) {
+      alert('La password deve avere almeno 8 caratteri.');
+      return;
+    }
+    this.personaleService.resetPassword(dipendente.id, nuovaPassword).subscribe({
+      next: () => alert('Password aggiornata. Comunica la nuova password al dipendente in modo sicuro.'),
+      error: () => alert('Impossibile aggiornare la password.')
+    });
   }
 
   private formVuoto(): AssunzioneRequest {
