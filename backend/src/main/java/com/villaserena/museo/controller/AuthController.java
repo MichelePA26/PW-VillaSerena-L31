@@ -5,6 +5,7 @@ import com.villaserena.museo.dto.LoginRequest;
 import com.villaserena.museo.model.Utente;
 import com.villaserena.museo.service.AuthService;
 import org.springframework.web.bind.annotation.*;
+import com.villaserena.museo.dto.CambioPasswordRequest;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -24,5 +25,10 @@ public class AuthController {
     @PostMapping("/login")
     public AuthResponse login(@RequestBody LoginRequest request) {
         return authService.login(request);
+    }
+
+    @PutMapping("/password")
+    public void cambiaPassword(@RequestBody CambioPasswordRequest request) {
+        authService.cambiaPassword(request);
     }
 }

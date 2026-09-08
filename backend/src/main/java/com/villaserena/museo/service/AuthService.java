@@ -7,6 +7,8 @@ import com.villaserena.museo.repository.UtenteRepository;
 import com.villaserena.museo.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.context.SecurityContextHolder;
+import com.villaserena.museo.dto.CambioPasswordRequest;
 
 @Service
 public class AuthService {
@@ -35,5 +37,22 @@ public class AuthService {
         }
         String token = jwtUtil.generateToken(utente.getEmail(), utente.getRuolo().name());
         return new AuthResponse(token, utente.getRuolo().name());
+    }
+
+    public void cambiaPassword(CambioPasswordRequest request) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Utente utente = utenteRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+
+        if (!passwordEncoder.matches(request.getPasswordAttuale(), utente.getPasswordHash())) {
+            throw new RuntimeException("La password attuale non è corretta");
+        }
+
+        if (request.getNuovaPassword() == null || request.getNuovaPassword().length() < 8) {
+            throw new RuntimeException("La nuova password deve avere almeno 8 caratteri");
+        }
+
+        utente.setPasswordHash(passwordEncoder.encode(request.getNuovaPassword()));
+        utenteRepository.save(utente);
     }
 }

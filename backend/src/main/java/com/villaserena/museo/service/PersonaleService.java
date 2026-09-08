@@ -70,12 +70,22 @@ public class PersonaleService {
         utenteRepository.save(utente);
     }
 
-    public DipendenteDTO mio() {
+    public DipendenteDTO aggiornaMioProfilo(String telefono, String indirizzo) {
+        Dipendente dipendente = dipendenteCorrente();
+        dipendente.setTelefono(telefono);
+        dipendente.setIndirizzo(indirizzo);
+        return DipendenteDTO.daEntita(dipendenteRepository.save(dipendente));
+    }
+
+    private Dipendente dipendenteCorrente() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Dipendente dipendente = dipendenteRepository.findAll().stream()
+        return dipendenteRepository.findAll().stream()
                 .filter(d -> d.getUtente().getEmail().equals(email))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Profilo dipendente non trovato per l'utente corrente"));
-        return DipendenteDTO.daEntita(dipendente);
+    }
+
+    public DipendenteDTO mio() {
+        return DipendenteDTO.daEntita(dipendenteCorrente());
     }
 }
