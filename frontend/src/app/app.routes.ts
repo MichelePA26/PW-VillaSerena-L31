@@ -10,6 +10,8 @@ import { GestionePersonaleComponent } from './components/gestione-personale/gest
 import { AdminLayoutComponent } from './components/admin-layout/admin-layout.component';
 import { ruoloGuard } from './guards/ruolo.guard';
 import { ImpostazioniComponent } from './components/impostazioni/impostazioni.component';
+import { AreaPersonaleComponent } from './components/area-personale/area-personale.component';
+import { GestioneFerieComponent } from './components/gestione-ferie/gestione-ferie.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -22,6 +24,7 @@ export const routes: Routes = [
   // Rimangono qui per l'Operatore, raggiungibili dalla navbar del sito pubblico
   { path: 'gestione-opere', component: GestioneOpereComponent, canActivate: [ruoloGuard(['OPERATORE', 'HR'])] },
   { path: 'gestione-eventi', component: GestioneEventiComponent, canActivate: [ruoloGuard(['OPERATORE', 'HR'])] },
+  { path: 'area-personale', component: AreaPersonaleComponent, canActivate: [ruoloGuard(['OPERATORE', 'HR'])] },
 
   // Pannello amministrativo separato, riservato a HR
   {
@@ -34,6 +37,7 @@ export const routes: Routes = [
       { path: 'opere', component: GestioneOpereComponent },
       { path: 'eventi', component: GestioneEventiComponent },
       { path: 'impostazioni', component: ImpostazioniComponent },
+      { path: 'ferie', component: GestioneFerieComponent },
     ]
   },
 ];

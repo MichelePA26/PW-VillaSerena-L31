@@ -10,17 +10,17 @@
     <a routerLink="/gestione-opere" routerLinkActive="attivo" *ngIf="ruolo === 'OPERATORE' || ruolo === 'HR'">Gestione opere</a>
     <a routerLink="/gestione-eventi" routerLinkActive="attivo" *ngIf="ruolo === 'OPERATORE' || ruolo === 'HR'">Gestione eventi</a>
     <a routerLink="/feedback" routerLinkActive="attivo" *ngIf="auth.isAuthenticated()">Feedback</a>
-    <a routerLink="/admin" routerLinkActive="attivo" *ngIf="ruolo === 'HR'">
-      <i class="fa-solid fa-user-shield"></i> Pannello HR
-    </a>
+    <a routerLink="/area-personale" routerLinkActive="attivo" *ngIf="ruolo === 'OPERATORE' || ruolo === 'HR'"> Area personale</a>
   </nav>
 
   <div class="account">
+    <app-notifiche-dropdown *ngIf="auth.isAuthenticated()"></app-notifiche-dropdown>
+
+    <a routerLink="/admin" routerLinkActive="attivo" *ngIf="ruolo === 'HR'">
+      <i class="fa-solid fa-user-shield"></i> Pannello HR
+    </a>
     <a routerLink="/login" *ngIf="!auth.isAuthenticated()">Accedi</a>
     <button *ngIf="auth.isAuthenticated()" (click)="logout()">Esci</button>
-    <button class="hamburger" (click)="toggleMenu()" [class.aperto]="menuAperto" aria-label="Apri il menu">
-      <span></span><span></span><span></span>
-    </button>
   </div>
 </header>
 

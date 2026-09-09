@@ -4,11 +4,12 @@ import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/rou
 import { AuthService } from '../../services/auth.service';
 import { PersonaleService } from '../../services/personale.service';
 import { Dipendente } from '../../models/dipendente.model';
+import { NotificheDropdownComponent } from '../notifiche-dropdown/notifiche-dropdown.component';
 
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, NotificheDropdownComponent],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.css'
 })
@@ -16,6 +17,7 @@ export class AdminLayoutComponent implements OnInit {
   menuMobileAperto = false;
   menuUtenteAperto = false;
   profilo: Dipendente | null = null;
+  numeroNotifiche = 0;
 
   constructor(
     public auth: AuthService,

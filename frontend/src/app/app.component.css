@@ -173,3 +173,35 @@ nav a.attivo::after {
     font-size: 0.75rem;
   }
 }
+
+.campanella {
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: #d8cdbd;
+  font-size: 1.05rem;
+  text-decoration: none;
+  padding: 0.4rem;
+}
+
+.campanella:hover {
+  color: #f5efe6;
+}
+
+.badge-notifiche {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: #c0392b;
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 600;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  line-height: 1;
+}

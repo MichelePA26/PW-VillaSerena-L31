@@ -1,0 +1,85 @@
+<div class="pagina-area-personale">
+  <header class="area-header">
+    <div>
+      <p class="eyebrow">Area personale</p>
+      <h1>Ferie e permessi</h1>
+    </div>
+    <button class="btn-primario" (click)="apriModale()">
+      <i class="fa-solid fa-plus"></i> Richiedi ferie o permesso
+    </button>
+  </header>
+
+  <section class="scheda-notifiche" *ngIf="notifiche.length > 0">
+    <p class="scheda-titolo">Notifiche</p>
+    <div class="notifica" *ngFor="let n of notifiche">
+      <span>{{ n.testo }}</span>
+      <button class="btn-segna-letta" (click)="segnaComeLetta(n)" aria-label="Segna come letta">
+        <i class="fa-solid fa-check"></i>
+      </button>
+    </div>
+  </section>
+
+  <section class="scheda-richieste">
+    <p class="scheda-titolo">Le mie richieste</p>
+
+    <div class="richiesta" *ngFor="let r of richieste">
+      <div class="richiesta-info">
+        <span class="richiesta-tipo">{{ r.tipo === 'FERIE' ? 'Ferie' : 'Permesso' }}</span>
+        <span class="richiesta-periodo" *ngIf="r.tipo === 'FERIE'">{{ r.dataInizio | date:'d MMM' }} - {{ r.dataFine | date:'d MMM yyyy' }}</span>
+        <span class="richiesta-periodo" *ngIf="r.tipo === 'PERMESSO'">{{ r.dataInizio | date:'d MMM yyyy' }}, {{ r.oraInizio }} - {{ r.oraFine }}</span>
+        <span class="richiesta-motivo" *ngIf="r.motivo">{{ r.motivo }}</span>
+      </div>
+      <span class="badge-stato"
+            [class.attesa]="r.stato === 'IN_ATTESA'"
+            [class.approvata]="r.stato === 'APPROVATA'"
+            [class.rifiutata]="r.stato === 'RIFIUTATA'">
+        {{ r.stato === 'IN_ATTESA' ? 'In attesa' : r.stato === 'APPROVATA' ? 'Approvata' : 'Rifiutata' }}
+      </span>
+    </div>
+
+    <p class="riga-vuota" *ngIf="richieste.length === 0">Non hai ancora nessuna richiesta.</p>
+  </section>
+</div>
+
+<!-- Modale nuova richiesta -->
+<div class="modale-overlay" *ngIf="modaleAperta" (click)="chiudiModale()">
+  <div class="modale" (click)="$event.stopPropagation()">
+    <div class="modale-header">
+      <h2>Richiedi ferie o permesso</h2>
+      <button class="modale-chiudi" (click)="chiudiModale()" aria-label="Chiudi">&times;</button>
+    </div>
+
+    <form (ngSubmit)="invia()" class="form-richiesta">
+      <label>Tipo
+        <select [(ngModel)]="nuovaRichiesta.tipo" name="tipo" (ngModelChange)="onTipoCambiato()">
+          <option value="FERIE">Ferie</option>
+          <option value="PERMESSO">Permesso</option>
+        </select>
+      </label>
+
+      <div class="form-riga" *ngIf="nuovaRichiesta.tipo === 'FERIE'">
+        <label>Dal <input type="date" [(ngModel)]="nuovaRichiesta.dataInizio" name="dataInizio" required></label>
+        <label>Al <input type="date" [(ngModel)]="nuovaRichiesta.dataFine" name="dataFine" required></label>
+      </div>
+
+      <ng-container *ngIf="nuovaRichiesta.tipo === 'PERMESSO'">
+        <label>Data <input type="date" [(ngModel)]="nuovaRichiesta.dataInizio" name="dataInizio" required></label>
+        <div class="form-riga">
+          <label>Dalle ore <input type="time" [(ngModel)]="nuovaRichiesta.oraInizio" name="oraInizio" required></label>
+          <label>Alle ore <input type="time" [(ngModel)]="nuovaRichiesta.oraFine" name="oraFine" required></label>
+        </div>
+      </ng-container>
+
+      <label>Motivo {{ nuovaRichiesta.tipo === 'PERMESSO' ? '(obbligatorio)' : '(facoltativo)' }}
+        <textarea [(ngModel)]="nuovaRichiesta.motivo" name="motivo" rows="2" [required]="nuovaRichiesta.tipo === 'PERMESSO'"></textarea>
+      </label>
+
+      <p class="messaggio-errore" *ngIf="messaggio">{{ messaggio }}</p>
+
+      <div class="modale-azioni">
+        <button type="button" class="btn-secondario" (click)="chiudiModale()">Annulla</button>
+        <button type="submit" class="btn-primario">Invia richiesta</button>
+      </div>
+    </form>
+  </div>
+</div>

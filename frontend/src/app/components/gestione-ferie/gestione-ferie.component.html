@@ -1,0 +1,96 @@
+<div class="pagina-gestione">
+  <header class="gestione-header">
+    <div>
+      <p class="eyebrow">Area HR</p>
+      <h1>Ferie e permessi</h1>
+    </div>
+  </header>
+
+  <section class="scheda-notifiche" *ngIf="notifiche.length > 0">
+    <p class="scheda-titolo">Notifiche</p>
+    <div class="notifica" *ngFor="let n of notifiche">
+      <span>{{ n.testo }}</span>
+      <button class="btn-segna-letta" (click)="segnaComeLetta(n)" aria-label="Segna come letta">
+        <i class="fa-solid fa-check"></i>
+      </button>
+    </div>
+  </section>
+
+  <div class="pannello">
+    <div class="pannello-toolbar">
+      <h2>In attesa di approvazione ({{ inAttesa.length }})</h2>
+    </div>
+
+    <div class="tabella-scroll">
+      <table class="tabella-gestione">
+        <thead>
+          <tr>
+            <th>Dipendente</th>
+            <th>Tipo</th>
+            <th>Periodo</th>
+            <th>Motivo</th>
+            <th class="col-azioni">Azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of inAttesa">
+            <td class="cella-titolo">{{ r.dipendenteNome }}</td>
+            <td>{{ r.tipo === 'FERIE' ? 'Ferie' : 'Permesso' }}</td>
+            <td>
+              <span *ngIf="r.tipo === 'FERIE'">{{ r.dataInizio | date:'d MMM' }} - {{ r.dataFine | date:'d MMM yyyy' }}</span>
+              <span *ngIf="r.tipo === 'PERMESSO'">{{ r.dataInizio | date:'d MMM yyyy' }}, {{ r.oraInizio }} - {{ r.oraFine }}</span>
+            </td>
+            <td>{{ r.motivo || '—' }}</td>
+            <td class="col-azioni">
+              <a (click)="approva(r)">Approva</a>
+              <span class="separatore">|</span>
+              <a class="link-elimina" (click)="rifiuta(r)">Rifiuta</a>
+            </td>
+          </tr>
+          <tr *ngIf="inAttesa.length === 0">
+            <td colspan="5" class="riga-vuota">Nessuna richiesta in attesa.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="pannello" style="margin-top: 1.5rem;">
+    <div class="pannello-toolbar">
+      <h2>Storico decisioni</h2>
+    </div>
+
+    <div class="tabella-scroll">
+      <table class="tabella-gestione">
+        <thead>
+          <tr>
+            <th>Dipendente</th>
+            <th>Tipo</th>
+            <th>Periodo</th>
+            <th>Stato</th>
+            <th>Deciso da</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of decise">
+            <td class="cella-titolo">{{ r.dipendenteNome }}</td>
+            <td>{{ r.tipo === 'FERIE' ? 'Ferie' : 'Permesso' }}</td>
+            <td>
+              <span *ngIf="r.tipo === 'FERIE'">{{ r.dataInizio | date:'d MMM' }} - {{ r.dataFine | date:'d MMM yyyy' }}</span>
+              <span *ngIf="r.tipo === 'PERMESSO'">{{ r.dataInizio | date:'d MMM yyyy' }}, {{ r.oraInizio }} - {{ r.oraFine }}</span>
+            </td>
+            <td>
+              <span class="badge-stato" [class.approvata]="r.stato === 'APPROVATA'" [class.rifiutata]="r.stato === 'RIFIUTATA'">
+                {{ r.stato === 'APPROVATA' ? 'Approvata' : 'Rifiutata' }}
+              </span>
+            </td>
+            <td>{{ r.approvataDaNome || '—' }}</td>
+          </tr>
+          <tr *ngIf="decise.length === 0">
+            <td colspan="5" class="riga-vuota">Nessuna decisione presa finora.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

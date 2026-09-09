@@ -1,0 +1,16 @@
+<div class="notifiche-wrapper" (click)="$event.stopPropagation()">
+  <button class="campanella" [class.scuro]="variante === 'scuro'" (click)="toggle()" aria-label="Notifiche">
+    <i class="fa-solid fa-bell"></i>
+    <span class="badge" *ngIf="notifiche.length > 0">{{ notifiche.length }}</span>
+  </button>
+
+  <div class="tendina" [class.ancora-sinistra]="variante === 'scuro'" *ngIf="aperta">
+    <p class="tendina-titolo">Notifiche</p>
+    <div class="tendina-corpo">
+      <button class="notifica-riga" *ngFor="let n of notifiche" (click)="vaiA(n)">
+        {{ n.testo }}
+      </button>
+      <p class="nessuna-notifica" *ngIf="notifiche.length === 0">Nessuna notifica al momento.</p>
+    </div>
+  </div>
+</div>

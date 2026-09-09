@@ -1,0 +1,96 @@
+.notifiche-wrapper {
+  position: relative;
+}
+
+.campanella {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: #d8cdbd;
+  font-size: 1.05rem;
+  cursor: pointer;
+  padding: 0.4rem;
+}
+
+.campanella:hover { color: #f5efe6; }
+
+.campanella.scuro { color: rgba(245, 239, 230, 0.75); }
+.campanella.scuro:hover { color: #f5efe6; }
+
+.badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: #c0392b;
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 600;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  line-height: 1;
+}
+
+.tendina {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  right: 0;
+  width: 300px;
+  max-width: calc(100vw - 2rem);
+  max-height: 360px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+}
+
+.tendina.ancora-sinistra {
+  right: auto;
+  left: 0;
+}
+
+.tendina-titolo {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2b2320;
+  padding: 0.9rem 1.1rem 0.6rem;
+  margin: 0;
+}
+
+.tendina-corpo {
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+.notifica-riga {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-top: 0.5px solid #f0ebe3;
+  padding: 0.75rem 1.1rem;
+  font-size: 0.82rem;
+  color: #6b6259;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.notifica-riga:hover { background: #fbf8f4; }
+
+.nessuna-notifica {
+  padding: 0.9rem 1.1rem 1.1rem;
+  font-size: 0.82rem;
+  color: #a89a89;
+  font-style: italic;
+  margin: 0;
+}

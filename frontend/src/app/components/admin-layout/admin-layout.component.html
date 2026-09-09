@@ -13,6 +13,7 @@
         <span class="admin-brand-nome">{{ profilo.nomeCompleto }}</span>
         <span class="admin-brand-mansione">{{ profilo.mansione }}</span>
       </div>
+      <app-notifiche-dropdown variante="scuro" style="margin-left: auto;"></app-notifiche-dropdown>
     </div>
 
     <nav class="admin-nav">
@@ -24,6 +25,9 @@
       </a>
       <a routerLink="/admin/eventi" routerLinkActive="attivo">
         <i class="fa-solid fa-calendar-days"></i> Eventi
+      </a>
+      <a routerLink="/admin/ferie" routerLinkActive="attivo">
+          <i class="fa-solid fa-calendar-check"></i> Ferie
       </a>
     </nav>
 
