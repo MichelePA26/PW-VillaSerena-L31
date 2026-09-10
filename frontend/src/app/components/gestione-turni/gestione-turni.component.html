@@ -1,0 +1,122 @@
+<div class="pagina-gestione">
+  <header class="gestione-header">
+    <div>
+      <p class="eyebrow">Area HR</p>
+      <h1>Pianificazione turni</h1>
+    </div>
+    <div class="header-azioni">
+      <div class="toggle-vista">
+        <button [class.attivo]="vista === 'calendario'" (click)="vista = 'calendario'">
+          <i class="fa-solid fa-calendar-days"></i> Calendario
+        </button>
+        <button [class.attivo]="vista === 'lista'" (click)="vista = 'lista'">
+          <i class="fa-solid fa-list"></i> Lista
+        </button>
+      </div>
+      <button class="btn-primario" (click)="apriModaleNuova()">
+        <i class="fa-solid fa-plus"></i> Nuovo turno
+      </button>
+    </div>
+  </header>
+
+  <!-- VISTA CALENDARIO -->
+  <div class="pannello" *ngIf="vista === 'calendario'">
+    <div class="calendario-toolbar">
+      <button class="btn-nav" (click)="settimanaPrecedente()" aria-label="Settimana precedente">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <span class="calendario-intervallo">{{ etichettaSettimana }}</span>
+      <button class="btn-nav" (click)="settimanaSuccessiva()" aria-label="Settimana successiva">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <div class="griglia-calendario">
+      <div class="colonna-giorno" *ngFor="let giorno of giorni">
+        <div class="intestazione-giorno" [class.oggi]="giorno.oggi">
+          <span class="etichetta-giorno">{{ giorno.etichetta }}</span>
+          <span class="numero-giorno">{{ giorno.numero }}</span>
+        </div>
+        <div class="celle-giorno" (click)="apriModaleNuova(giorno.dataIso)">
+          <div class="pillola-turno" *ngFor="let t of turniDelGiorno(giorno.dataIso)"
+               [style.background]="colore(t.dipendenteId) + '22'"
+               [style.borderColor]="colore(t.dipendenteId)"
+               (click)="apriModaleModifica(t); $event.stopPropagation()">
+            <span class="pillola-nome" [style.color]="colore(t.dipendenteId)">{{ t.nomeDipendente }}</span>
+            <span class="pillola-orario">{{ t.oraInizio }}-{{ t.oraFine }}</span>
+            <span class="pillola-reparto">{{ t.reparto }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="suggerimento">Clicca su un giorno per assegnare un turno, su un turno esistente per modificarlo.</p>
+  </div>
+
+  <!-- VISTA LISTA -->
+  <div class="pannello" *ngIf="vista === 'lista'">
+    <div class="tabella-scroll">
+      <table class="tabella-gestione">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Dipendente</th>
+            <th>Orario</th>
+            <th>Reparto</th>
+            <th class="col-azioni">Azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of turniOrdinatiLista">
+            <td>{{ t.data | date:'d MMM yyyy' }}</td>
+            <td class="cella-titolo">{{ t.nomeDipendente }}</td>
+            <td>{{ t.oraInizio }} - {{ t.oraFine }}</td>
+            <td>{{ t.reparto }}</td>
+            <td class="col-azioni">
+              <a (click)="apriModaleModifica(t)">Modifica</a>
+              <span class="separatore">|</span>
+              <a class="link-elimina" (click)="elimina(t)">Elimina</a>
+            </td>
+          </tr>
+          <tr *ngIf="turniOrdinatiLista.length === 0">
+            <td colspan="5" class="riga-vuota">Nessun turno pianificato.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- MODALE -->
+<div class="modale-overlay" *ngIf="modaleAperta" (click)="chiudiModale()">
+  <div class="modale" (click)="$event.stopPropagation()">
+    <div class="modale-header">
+      <h2>{{ inModifica ? 'Modifica turno' : 'Nuovo turno' }}</h2>
+      <button class="modale-chiudi" (click)="chiudiModale()" aria-label="Chiudi">&times;</button>
+    </div>
+
+    <form (ngSubmit)="salva()" class="form-opera">
+      <label>Dipendente
+        <select [(ngModel)]="turnoCorrente.dipendenteId" name="dipendenteId" required>
+          <option [ngValue]="0" disabled>Seleziona un dipendente...</option>
+          <option *ngFor="let d of dipendenti" [ngValue]="d.id">{{ d.nomeCompleto }}</option>
+        </select>
+      </label>
+
+      <label>Data <input type="date" [(ngModel)]="turnoCorrente.data" name="data" required></label>
+
+      <div class="form-riga">
+        <label>Ora inizio <input type="time" [(ngModel)]="turnoCorrente.oraInizio" name="oraInizio" required></label>
+        <label>Ora fine <input type="time" [(ngModel)]="turnoCorrente.oraFine" name="oraFine" required></label>
+      </div>
+
+      <label>Reparto <input type="text" [(ngModel)]="turnoCorrente.reparto" name="reparto" placeholder="Sala espositiva, Biglietteria..."></label>
+
+      <p class="messaggio-errore" *ngIf="messaggio">{{ messaggio }}</p>
+
+      <div class="modale-azioni">
+        <button type="button" class="btn-secondario" (click)="chiudiModale()">Annulla</button>
+        <button type="submit" class="btn-primario">{{ inModifica ? 'Salva modifiche' : 'Assegna turno' }}</button>
+      </div>
+    </form>
+  </div>
+</div>

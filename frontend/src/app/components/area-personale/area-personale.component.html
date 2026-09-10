@@ -19,6 +19,58 @@
     </div>
   </section>
 
+  <section class="scheda-turni">
+    <div class="turni-toolbar">
+      <p class="scheda-titolo">I miei turni</p>
+      <div class="toggle-vista">
+        <button [class.attivo]="vistaTurni === 'calendario'" (click)="vistaTurni = 'calendario'">
+          <i class="fa-solid fa-calendar-days"></i>
+        </button>
+        <button [class.attivo]="vistaTurni === 'lista'" (click)="vistaTurni = 'lista'">
+          <i class="fa-solid fa-list"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Calendario -->
+    <div *ngIf="vistaTurni === 'calendario'">
+      <div class="calendario-toolbar">
+        <button class="btn-nav" (click)="settimanaPrecedente()" aria-label="Settimana precedente">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <span class="calendario-intervallo">{{ etichettaSettimana }}</span>
+        <button class="btn-nav" (click)="settimanaSuccessiva()" aria-label="Settimana successiva">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <div class="griglia-calendario">
+        <div class="colonna-giorno" *ngFor="let giorno of giorni">
+          <div class="intestazione-giorno" [class.oggi]="giorno.oggi">
+            <span class="etichetta-giorno">{{ giorno.etichetta }}</span>
+            <span class="numero-giorno">{{ giorno.numero }}</span>
+          </div>
+          <div class="celle-giorno">
+            <div class="pillola-turno" *ngFor="let t of turniDelGiorno(giorno.dataIso)">
+              <span class="pillola-orario">{{ t.oraInizio }}-{{ t.oraFine }}</span>
+              <span class="pillola-reparto">{{ t.reparto }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista -->
+    <div *ngIf="vistaTurni === 'lista'">
+      <div class="riga-turno" *ngFor="let t of turniOrdinatiLista">
+        <span class="turno-data">{{ t.data | date:'EEE d MMM yyyy' }}</span>
+        <span class="turno-orario">{{ t.oraInizio }} - {{ t.oraFine }}</span>
+        <span class="turno-reparto">{{ t.reparto }}</span>
+      </div>
+      <p class="riga-vuota" *ngIf="turniOrdinatiLista.length === 0">Nessun turno pianificato.</p>
+    </div>
+  </section>
+
   <section class="scheda-richieste">
     <p class="scheda-titolo">Le mie richieste</p>
 

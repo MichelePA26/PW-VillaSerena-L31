@@ -11,7 +11,7 @@
 }
 
 .pagina-area-personale {
-  max-width: 640px;
+  max-width: 740px;
   margin: 0 auto;
   padding: 3rem 1.5rem 4rem;
 }
@@ -178,3 +178,141 @@
 @media (max-width: 480px) {
   .form-riga { grid-template-columns: 1fr; }
 }
+
+
+.scheda-turni {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.4rem 1.6rem;
+  box-shadow: 0 4px 16px rgba(43, 35, 32, 0.06);
+  margin-bottom: 1.5rem;
+}
+
+.turni-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.toggle-vista {
+  display: flex;
+  border: 1px solid #e5ddd0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.toggle-vista button {
+  background: #fff;
+  border: none;
+  padding: 0.4rem 0.7rem;
+  color: var(--testo-soft);
+  cursor: pointer;
+}
+
+.toggle-vista button.attivo {
+  background: var(--bruno-scuro);
+  color: #faf7f2;
+}
+
+.calendario-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.btn-nav {
+  background: none;
+  border: 1px solid #e5ddd0;
+  border-radius: 50%;
+  width: 45px;
+  cursor: pointer;
+  color: var(--bruno-scuro);
+}
+
+.calendario-intervallo {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--bruno-scuro);
+  min-width: 120px;
+  text-align: center;
+}
+
+.griglia-calendario {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: #f0ebe3;
+  overflow-x: auto;
+  border-radius: 8px;
+}
+
+.colonna-giorno {
+  background: #fff;
+  min-width: 90px;
+}
+
+.intestazione-giorno {
+  text-align: center;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #f0ebe3;
+}
+
+.intestazione-giorno.oggi { background: #fbf3e6; }
+
+.etichetta-giorno {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--testo-tenue);
+  text-transform: uppercase;
+}
+
+.numero-giorno {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--bruno-scuro);
+}
+
+.celle-giorno {
+  min-height: 90px;
+  padding: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.pillola-turno {
+  background: #fdf3e3;
+  border: 1px solid var(--oro);
+  border-radius: 6px;
+  padding: 0.25rem 0.4rem;
+  font-size: 0.62rem;
+}
+
+.pillola-orario {
+  display: block;
+  font-weight: 600;
+  color: var(--bruno-scuro);
+}
+
+.pillola-reparto {
+  display: block;
+  color: var(--testo-soft);
+}
+
+.riga-turno {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.6rem 0;
+  border-bottom: 0.5px solid #f0ebe3;
+  font-size: 0.85rem;
+}
+
+.riga-turno:last-child { border-bottom: none; }
+
+.turno-data { color: var(--bruno-scuro); font-weight: 600; }
+.turno-orario, .turno-reparto { color: var(--testo-soft); }

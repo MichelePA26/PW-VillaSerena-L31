@@ -12,6 +12,7 @@ import { ruoloGuard } from './guards/ruolo.guard';
 import { ImpostazioniComponent } from './components/impostazioni/impostazioni.component';
 import { AreaPersonaleComponent } from './components/area-personale/area-personale.component';
 import { GestioneFerieComponent } from './components/gestione-ferie/gestione-ferie.component';
+import { GestioneTurniComponent } from './components/gestione-turni/gestione-turni.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -38,6 +39,7 @@ export const routes: Routes = [
       { path: 'eventi', component: GestioneEventiComponent },
       { path: 'impostazioni', component: ImpostazioniComponent },
       { path: 'ferie', component: GestioneFerieComponent },
+      { path: 'turni', component: GestioneTurniComponent },
     ]
   },
 ];

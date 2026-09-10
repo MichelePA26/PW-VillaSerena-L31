@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 interface AuthResponse {
   token: string;
   ruolo: string;
+  dipendenteId: number | null;
 }
 
 interface DatiRegistrazione {
@@ -23,8 +24,12 @@ export class AuthService {
   login(email: string, password: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, { email, password }).pipe(
       tap(res => {
+        //console.log('Risposta login:', res);
         localStorage.setItem('token', res.token);
         localStorage.setItem('ruolo', res.ruolo);
+        if (res.dipendenteId) {
+          localStorage.setItem('dipendenteId', res.dipendenteId.toString());
+        }
       })
     );
   }
@@ -36,8 +41,9 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('ruolo');
+    localStorage.removeItem('dipendenteId');
   }
-
+  
   getRuolo(): string | null {
     return localStorage.getItem('ruolo');
   }
@@ -48,5 +54,10 @@ export class AuthService {
 
   cambiaPassword(passwordAttuale: string, nuovaPassword: string): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/password`, { passwordAttuale, nuovaPassword });
+  }
+
+  getDipendenteId(): number | null {
+    const id = localStorage.getItem('dipendenteId');
+    return id ? Number(id) : null;
   }
 }
