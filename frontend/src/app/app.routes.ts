@@ -13,6 +13,7 @@ import { ImpostazioniComponent } from './components/impostazioni/impostazioni.co
 import { AreaPersonaleComponent } from './components/area-personale/area-personale.component';
 import { GestioneFerieComponent } from './components/gestione-ferie/gestione-ferie.component';
 import { GestioneTurniComponent } from './components/gestione-turni/gestione-turni.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -26,6 +27,7 @@ export const routes: Routes = [
   { path: 'gestione-opere', component: GestioneOpereComponent, canActivate: [ruoloGuard(['OPERATORE', 'HR'])] },
   { path: 'gestione-eventi', component: GestioneEventiComponent, canActivate: [ruoloGuard(['OPERATORE', 'HR'])] },
   { path: 'area-personale', component: AreaPersonaleComponent, canActivate: [ruoloGuard(['OPERATORE', 'HR'])] },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [ruoloGuard(['OPERATORE', 'HR'])] },
 
   // Pannello amministrativo separato, riservato a HR
   {
@@ -33,7 +35,7 @@ export const routes: Routes = [
     component: AdminLayoutComponent,
     canActivate: [ruoloGuard(['HR'])],
     children: [
-      { path: '', redirectTo: 'personale', pathMatch: 'full' },
+      { path: '', component: DashboardComponent },
       { path: 'personale', component: GestionePersonaleComponent },
       { path: 'opere', component: GestioneOpereComponent },
       { path: 'eventi', component: GestioneEventiComponent },

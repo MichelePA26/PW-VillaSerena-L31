@@ -39,13 +39,18 @@
   display: flex;
   flex-direction: column;
   padding: 1.6rem 0;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 .admin-brand {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
-  padding: 0 1.4rem 1.6rem;
+  gap: 0.4rem;
+  padding: 0 1.1rem 1.6rem;
   border-bottom: 1px solid rgba(201, 168, 118, 0.25);
   margin-bottom: 1.2rem;
 }
@@ -173,6 +178,10 @@
   overflow-x: auto;
 }
 
+.admin-overlay-mobile {
+  display: none;
+}
+
 @media (max-width: 860px) {
   .admin-hamburger {
     display: flex;
@@ -195,6 +204,14 @@
 
   .admin-contenuto {
     padding-top: 4.5rem;
+  }
+
+  .admin-overlay-mobile {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 50;
   }
 }
 

@@ -1,9 +1,11 @@
 <div class="admin-shell">
-  <button class="admin-hamburger" (click)="toggleMenuMobile()" aria-label="Apri menu">
+  <button *ngIf="!menuMobileAperto" class="admin-hamburger" (click)="toggleMenuMobile()" aria-label="Apri o chiudi il menu">
     <i class="fa-solid fa-bars"></i>
   </button>
 
-  <aside class="admin-sidebar" [class.aperta]="menuMobileAperto" (click)="chiudiMenuUtente()">
+  <div class="admin-overlay-mobile" *ngIf="menuMobileAperto" (click)="toggleMenuMobile()"></div>
+
+  <aside class="admin-sidebar" [class.aperta]="menuMobileAperto">
     <div class="admin-brand">
       <div class="admin-avatar" *ngIf="profilo">
         {{ iniziali }}
@@ -17,20 +19,23 @@
     </div>
 
     <nav class="admin-nav">
+      <a routerLink="/admin" routerLinkActive="attivo" [routerLinkActiveOptions]="{exact: true}">
+        <i class="fa-solid fa-chart-line"></i> Dashboard
+      </a>
       <a routerLink="/admin/personale" routerLinkActive="attivo">
         <i class="fa-solid fa-users"></i> Personale
+      </a>
+      <a routerLink="/admin/turni" routerLinkActive="attivo">
+        <i class="fa-solid fa-clock"></i> Turni
+      </a>
+      <a routerLink="/admin/ferie" routerLinkActive="attivo">
+        <i class="fa-solid fa-calendar-check"></i> Ferie
       </a>
       <a routerLink="/admin/opere" routerLinkActive="attivo">
         <i class="fa-solid fa-palette"></i> Opere
       </a>
       <a routerLink="/admin/eventi" routerLinkActive="attivo">
         <i class="fa-solid fa-calendar-days"></i> Eventi
-      </a>
-      <a routerLink="/admin/ferie" routerLinkActive="attivo">
-          <i class="fa-solid fa-calendar-check"></i> Ferie
-      </a>
-      <a routerLink="/admin/turni" routerLinkActive="attivo">
-        <i class="fa-solid fa-clock"></i> Turni
       </a>
     </nav>
 

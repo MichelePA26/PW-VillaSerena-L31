@@ -11,6 +11,7 @@
     <a routerLink="/gestione-eventi" routerLinkActive="attivo" *ngIf="ruolo === 'OPERATORE' || ruolo === 'HR'">Gestione eventi</a>
     <a routerLink="/feedback" routerLinkActive="attivo" *ngIf="auth.isAuthenticated()">Feedback</a>
     <a routerLink="/area-personale" routerLinkActive="attivo" *ngIf="ruolo === 'OPERATORE' || ruolo === 'HR'"> Area personale</a>
+    <a routerLink="/dashboard" routerLinkActive="attivo" *ngIf="ruolo === 'OPERATORE'">Dashboard</a>
   </nav>
 
   <div class="account">

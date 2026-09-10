@@ -37,6 +37,7 @@ export class AdminLayoutComponent implements OnInit {
 
   toggleMenuMobile(): void {
     this.menuMobileAperto = !this.menuMobileAperto;
+    console.log('Nuovo valore:', this.menuMobileAperto);
   }
 
   toggleMenuUtente(): void {

@@ -1,0 +1,128 @@
+<div class="pagina-dashboard">
+  <header class="dashboard-header">
+    <p class="eyebrow">{{ isHR ? 'Area HR' : 'Area operatore' }}</p>
+    <h1>Dashboard</h1>
+  </header>
+
+  <p class="stato" *ngIf="caricamento">Caricamento in corso...</p>
+
+  <ng-container *ngIf="!caricamento && dashboard">
+    <div class="griglia-card">
+      <div class="card-metrica">
+        <p class="metrica-etichetta">Opere</p>
+        <p class="metrica-valore">{{ dashboard.numeroOpere }}</p>
+      </div>
+      <div class="card-metrica">
+        <p class="metrica-etichetta">Collezioni</p>
+        <p class="metrica-valore">{{ dashboard.numeroCollezioni }}</p>
+      </div>
+      <div class="card-metrica">
+        <p class="metrica-etichetta">Eventi totali</p>
+        <p class="metrica-valore">{{ dashboard.numeroEventi }}</p>
+      </div>
+      <div class="card-metrica">
+        <p class="metrica-etichetta">Prenotazioni</p>
+        <p class="metrica-valore">{{ dashboard.numeroPrenotazioni }}</p>
+      </div>
+      <div class="card-metrica">
+        <p class="metrica-etichetta">Utenti registrati</p>
+        <p class="metrica-valore">{{ dashboard.numeroUtenti }}</p>
+      </div>
+      <div class="card-metrica">
+        <p class="metrica-etichetta">Voto medio</p>
+        <p class="metrica-valore">{{ dashboard.votoMedioFeedback | number:'1.1-1' }} <span class="metrica-su5">/5</span></p>
+      </div>
+    </div>
+
+    <div class="avviso-capienza" *ngIf="dashboard.eventiCapienzaRaggiunta.length > 0">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <span>
+        {{ dashboard.eventiCapienzaRaggiunta.length === 1
+          ? dashboard.eventiCapienzaRaggiunta[0] + ' ha raggiunto la capienza massima'
+          : dashboard.eventiCapienzaRaggiunta.length + ' eventi hanno raggiunto la capienza massima' }}
+      </span>
+    </div>
+
+    <div class="griglia-doppia">
+      <div class="blocco">
+        <p class="blocco-titolo">Occupazione media eventi</p>
+        <div class="card-occupazione">
+          <div class="occupazione-valore">
+            <span class="numero-grande">{{ dashboard.occupazioneMediaEventi }}%</span>
+            <span class="occupazione-etichetta">posti occupati</span>
+          </div>
+          <div class="barra-occupazione">
+            <div class="barra-occupazione-riempimento" [style.width.%]="dashboard.occupazioneMediaEventi"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="blocco">
+        <p class="blocco-titolo">Prossimi 7 giorni</p>
+        <div class="card-eventi-prossimi">
+          <div class="riga-evento-prossimo" *ngFor="let e of dashboard.eventiProssimi">
+            <span>{{ e.titolo }}</span>
+            <span class="evento-data">{{ e.data }}</span>
+          </div>
+          <p class="riga-vuota" *ngIf="dashboard.eventiProssimi.length === 0">Nessun evento nei prossimi 7 giorni.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="blocco-titolo">Prenotazioni per evento</p>
+    <div class="contenitore-grafico">
+      <canvas #graficoPrenotazioni></canvas>
+    </div>
+
+    <p class="blocco-titolo">Ultimi feedback</p>
+    <div class="lista-feedback">
+      <div class="riga-feedback" *ngFor="let f of feedbackPaginati">
+        <div class="feedback-header">
+          <span class="feedback-autore">{{ f.utenteNome }}</span>
+          <span class="feedback-voto"><i class="fa-solid fa-star"></i> {{ f.voto }}/5</span>
+        </div>
+        <p class="feedback-commento" *ngIf="f.commento">{{ f.commento }}</p>
+      </div>
+      <p class="riga-vuota" *ngIf="dashboard.ultimiFeedback.length === 0">Nessun feedback ricevuto finora.</p>
+    </div>
+    <div class="paginazione-feedback" *ngIf="dashboard.ultimiFeedback.length > elementiPerPagina">
+      <button (click)="paginaFeedbackPrecedente()" [disabled]="paginaFeedback === 0" aria-label="Feedback precedenti">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <span>{{ paginaFeedback + 1 }} di {{ totalePagineFeedback }}</span>
+      <button (click)="paginaFeedbackSuccessiva()" [disabled]="paginaFeedback === totalePagineFeedback - 1" aria-label="Feedback successivi">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <!-- Sezione riservata HR -->
+    <div class="sezione-hr" *ngIf="isHR">
+      <p class="eyebrow">Solo per HR</p>
+      <p class="blocco-titolo">Personale e organizzazione</p>
+
+      <div class="griglia-card">
+        <div class="card-metrica accento">
+          <p class="metrica-etichetta">Personale attivo</p>
+          <p class="metrica-valore">{{ dashboard.personaleAttivo }}</p>
+        </div>
+        <div class="card-metrica avviso">
+          <p class="metrica-etichetta">Ferie in attesa</p>
+          <p class="metrica-valore">{{ dashboard.ferieInAttesa }}</p>
+        </div>
+      </div>
+
+      <p class="blocco-titolo" style="margin-top:1.2rem;">Turni questa settimana</p>
+      <div class="griglia-turni-settimana">
+        <div class="giorno-turni" *ngFor="let g of dashboard.turniSettimana">
+          <p class="giorno-etichetta">{{ g.giorno }}</p>
+          <div class="giorno-numero" [class.vuoto]="g.numeroTurni === 0">{{ g.numeroTurni }}</div>
+        </div>
+      </div>
+
+      <div class="avviso-turni" *ngIf="dashboard.giorniSenzaTurni && dashboard.giorniSenzaTurni.length > 0">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>Nessun turno assegnato: {{ dashboard.giorniSenzaTurni.join(', ') }}</span>
+      </div>
+    </div>
+  </ng-container>
+</div>
