@@ -20,11 +20,16 @@ public class PersonaleService {
     private final DipendenteRepository dipendenteRepository;
     private final UtenteRepository utenteRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TurniService turniService;
 
-    public PersonaleService(DipendenteRepository dipendenteRepository, UtenteRepository utenteRepository, PasswordEncoder passwordEncoder) {
+    public PersonaleService(DipendenteRepository dipendenteRepository,
+                            UtenteRepository utenteRepository,
+                            PasswordEncoder passwordEncoder,
+                            TurniService turniService) {
         this.dipendenteRepository = dipendenteRepository;
         this.utenteRepository = utenteRepository;
         this.passwordEncoder = passwordEncoder;
+        this.turniService = turniService;
     }
 
     public void resetPassword(Long dipendenteId, String nuovaPassword) {
@@ -83,6 +88,8 @@ public class PersonaleService {
         Utente utente = dipendente.getUtente();
         utente.setRuolo(Utente.Ruolo.VISITATORE);
         utenteRepository.save(utente);
+
+        turniService.eliminaTurniFuturi(dipendenteId);
     }
 
     public DipendenteDTO aggiornaMioProfilo(String telefono, String indirizzo) {

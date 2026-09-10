@@ -10,22 +10,27 @@ import com.villaserena.museo.repository.RichiestaFerieRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class FerieService {
 
+    private static final DateTimeFormatter FORMATO_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final RichiestaFerieRepository richiestaFerieRepository;
     private final DipendenteRepository dipendenteRepository;
     private final NotificaAppService notificaAppService;
+    private final TurniService turniService;
 
     public FerieService(RichiestaFerieRepository richiestaFerieRepository,
-                         DipendenteRepository dipendenteRepository,
-                         NotificaAppService notificaAppService) {
+                        DipendenteRepository dipendenteRepository,
+                        NotificaAppService notificaAppService,
+                        TurniService turniService) {
         this.richiestaFerieRepository = richiestaFerieRepository;
         this.dipendenteRepository = dipendenteRepository;
         this.notificaAppService = notificaAppService;
+        this.turniService = turniService;
     }
 
     public RichiestaFerieDTO crea(RichiestaFerieRequest request) {
@@ -63,9 +68,10 @@ public class FerieService {
         String nomeDipendente = dipendente.getUtente().getNome() + " " + dipendente.getUtente().getCognome();
         String tipoTesto = request.getTipo() == RichiestaFerie.Tipo.FERIE ? "ferie" : "un permesso";
         dipendenteRepository.findAll().stream()
-                .filter(d -> d.getUtente().getRuolo() == Utente.Ruolo.HR)
-                .forEach(hr -> notificaAppService.crea(hr.getUtente(),
-                        nomeDipendente + " ha richiesto " + tipoTesto + " dal " + request.getDataInizio(), "/admin/ferie" ));
+            .filter(d -> d.getUtente().getRuolo() == Utente.Ruolo.HR)
+            .forEach(hr -> notificaAppService.crea(hr.getUtente(),
+                    nomeDipendente + " ha richiesto " + tipoTesto + " dal " + request.getDataInizio().format(FORMATO_DATA),
+                    "/admin/ferie"));
 
         return RichiestaFerieDTO.daEntita(salvata);
     }
@@ -95,9 +101,25 @@ public class FerieService {
 
         String esito = nuovoStato == RichiestaFerie.Stato.APPROVATA ? "approvata" : "rifiutata";
         notificaAppService.crea(richiesta.getDipendente().getUtente(),
-                "La tua richiesta del " + richiesta.getDataInizio() + " è stata " + esito, "/area-personale");
+        "La tua richiesta del " + richiesta.getDataInizio().format(FORMATO_DATA) + " è stata " + esito,
+        "/area-personale");
 
-        return RichiestaFerieDTO.daEntita(salvata);
+        RichiestaFerieDTO dto = RichiestaFerieDTO.daEntita(salvata);
+
+        // Se la richiesta è stata approvata, avvisa l'HR di eventuali turni
+        // già pianificati in quel periodo, che ora andrebbero rivisti a mano.
+        if (nuovoStato == RichiestaFerie.Stato.APPROVATA) {
+            var turniInConflitto = turniService.turniInConflittoConPeriodo(
+                    richiesta.getDipendente().getId(), richiesta.getDataInizio(), richiesta.getDataFine());
+            if (!turniInConflitto.isEmpty()) {
+                dto.setAvvisoTurniInConflitto(
+                    "Attenzione: il dipendente ha " + turniInConflitto.size() +
+                    " turno/i già pianificato/i in questo periodo, da rivedere manualmente."
+                );
+            }
+        }
+
+        return dto;
     }
 
     private Dipendente dipendenteCorrente() {

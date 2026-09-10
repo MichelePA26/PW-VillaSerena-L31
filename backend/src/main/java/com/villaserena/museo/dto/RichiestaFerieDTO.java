@@ -15,6 +15,7 @@ public class RichiestaFerieDTO {
     private String motivo;
     private RichiestaFerie.Stato stato;
     private String approvataDaNome;
+    private String avvisoTurniInConflitto;
 
     public static RichiestaFerieDTO daEntita(RichiestaFerie r) {
         RichiestaFerieDTO dto = new RichiestaFerieDTO();
@@ -43,4 +44,6 @@ public class RichiestaFerieDTO {
     public String getMotivo() { return motivo; }
     public RichiestaFerie.Stato getStato() { return stato; }
     public String getApprovataDaNome() { return approvataDaNome; }
+    public String getAvvisoTurniInConflitto() { return avvisoTurniInConflitto; }
+public void setAvvisoTurniInConflitto(String a) { this.avvisoTurniInConflitto = a; }
 }
