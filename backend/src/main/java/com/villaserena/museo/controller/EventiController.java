@@ -1,6 +1,7 @@
 package com.villaserena.museo.controller;
 
 import com.villaserena.museo.dto.EventoDTO;
+import com.villaserena.museo.model.Evento;
 import com.villaserena.museo.service.EventiService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -38,5 +39,11 @@ public class EventiController {
     @PreAuthorize("hasAnyRole('OPERATORE','HR')")
     public EventoDTO update(@PathVariable Long id, @RequestBody EventoDTO dto) {
         return eventiService.update(id, dto);
+    }
+
+    @PutMapping("/{id}/stato")
+    @PreAuthorize("hasAnyRole('OPERATORE','HR')")
+    public EventoDTO cambiaStato(@PathVariable Long id, @RequestParam Evento.Stato stato) {
+        return eventiService.cambiaStato(id, stato);
     }
 }

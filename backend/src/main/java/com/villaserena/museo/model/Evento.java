@@ -15,12 +15,14 @@ public class Evento {
 
     @Enumerated(EnumType.STRING)
     private Tipo tipo;
+    private Stato stato = Stato.PROGRAMMATO;
 
     private LocalDateTime dataInizio;
     private LocalDateTime dataFine;
     private Integer capienzaMax;
 
     public enum Tipo { VISITA_GUIDATA, MOSTRA, LABORATORIO }
+    public enum Stato { PROGRAMMATO, DA_RIPROGRAMMARE, ANNULLATO }
 
     public Long getId() { return id; }
     public String getTitolo() { return titolo; }
@@ -35,4 +37,6 @@ public class Evento {
     public void setDataFine(LocalDateTime d) { this.dataFine = d; }
     public Integer getCapienzaMax() { return capienzaMax; }
     public void setCapienzaMax(Integer c) { this.capienzaMax = c; }
+    public Stato getStato() { return stato; }
+    public void setStato(Stato stato) { this.stato = stato; }
 }

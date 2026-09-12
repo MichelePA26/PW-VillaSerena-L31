@@ -11,6 +11,7 @@ public class EventoDTO {
     private LocalDateTime dataInizio;
     private LocalDateTime dataFine;
     private Integer capienzaMax;
+    private Evento.Stato stato;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -26,4 +27,6 @@ public class EventoDTO {
     public void setDataFine(LocalDateTime d) { this.dataFine = d; }
     public Integer getCapienzaMax() { return capienzaMax; }
     public void setCapienzaMax(Integer c) { this.capienzaMax = c; }
+    public Evento.Stato getStato() { return stato; }
+    public void setStato(Evento.Stato stato) { this.stato = stato; }
 }

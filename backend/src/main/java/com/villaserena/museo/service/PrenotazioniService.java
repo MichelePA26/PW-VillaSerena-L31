@@ -60,7 +60,7 @@ public class PrenotazioniService {
                 .map(PrenotazioneDTO::daEntita)
                 .collect(Collectors.toList());
     }
-
+   
     private Utente utenteAutenticato() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return utenteRepository.findByEmail(email)

@@ -28,4 +28,5 @@ public class PrenotazioniController {
     public List<PrenotazioneDTO> mie() {
         return prenotazioniService.mie();
     }
+    
 }

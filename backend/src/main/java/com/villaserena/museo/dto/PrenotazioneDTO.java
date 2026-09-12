@@ -1,5 +1,6 @@
 package com.villaserena.museo.dto;
 
+import com.villaserena.museo.model.Evento;
 import com.villaserena.museo.model.Prenotazione;
 import java.time.LocalDateTime;
 
@@ -11,6 +12,7 @@ public class PrenotazioneDTO {
     private Integer numeroPosti;
     private LocalDateTime dataPrenotazione;
     private Prenotazione.Stato stato;
+    private Evento.Stato statoEvento;
 
     public static PrenotazioneDTO daEntita(Prenotazione p) {
         PrenotazioneDTO dto = new PrenotazioneDTO();
@@ -21,6 +23,7 @@ public class PrenotazioneDTO {
         dto.numeroPosti = p.getNumeroPosti();
         dto.dataPrenotazione = p.getDataPrenotazione();
         dto.stato = p.getStato();
+        dto.statoEvento = p.getEvento().getStato();
         return dto;
     }
 
@@ -31,4 +34,5 @@ public class PrenotazioneDTO {
     public Integer getNumeroPosti() { return numeroPosti; }
     public LocalDateTime getDataPrenotazione() { return dataPrenotazione; }
     public Prenotazione.Stato getStato() { return stato; }
+    public Evento.Stato getStatoEvento() { return statoEvento; }
 }
