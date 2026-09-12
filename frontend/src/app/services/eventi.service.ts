@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Evento } from '../models/evento.model';
+import { Evento, StatoEvento } from '../models/evento.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -24,5 +24,9 @@ export class EventiService {
 
   eliminaEvento(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  cambiaStato(id: number, stato: StatoEvento): Observable<Evento> {
+    return this.http.put<Evento>(`${this.apiUrl}/${id}/stato?stato=${stato}`, {});
   }
 }

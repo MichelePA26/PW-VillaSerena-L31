@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Evento, TipoEvento } from '../../models/evento.model';
+import { Evento, StatoEvento, TipoEvento } from '../../models/evento.model';
 import { EventiService } from '../../services/eventi.service';
 
 @Component({
@@ -157,9 +157,9 @@ export class GestioneEventiComponent implements OnInit {
     });
   }
 
-  elimina(id: number): void {
-    if (!confirm('Confermi la rimozione di questo evento?')) return;
-    this.eventiService.eliminaEvento(id).subscribe({
+  elimina(evento: Evento): void {
+    if (!confirm(`Confermi la rimozione dell'evento "${evento.titolo}"?`)) return;
+    this.eventiService.eliminaEvento(evento.id!).subscribe({
       next: () => this.carica(),
       error: err => this.messaggio = err.error?.errore || 'Impossibile eliminare l\'evento.'
     });
@@ -174,5 +174,21 @@ export class GestioneEventiComponent implements OnInit {
       dataFine: '',
       capienzaMax: 20
     };
+  }
+
+  cambiaStato(evento: Evento, stato: StatoEvento): void {
+    this.eventiService.cambiaStato(evento.id!, stato).subscribe({
+      next: () => this.carica(),
+      error: err => this.messaggio = err.error?.errore || 'Impossibile cambiare stato.'
+    });
+  }
+
+  etichettaStato(stato?: StatoEvento): string {
+    const etichette: Record<string, string> = {
+      PROGRAMMATO: 'Programmato',
+      DA_RIPROGRAMMARE: 'Da riprogrammare',
+      ANNULLATO: 'Annullato'
+    };
+    return etichette[stato || 'PROGRAMMATO'];
   }
 }

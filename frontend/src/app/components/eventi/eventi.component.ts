@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Evento } from '../../models/evento.model';
+import { Evento, StatoEvento } from '../../models/evento.model';
 import { EventiService } from '../../services/eventi.service';
 import { PrenotazioniService } from '../../services/prenotazioni.service';
 import { AuthService } from '../../services/auth.service';
@@ -106,5 +106,14 @@ export class EventiComponent implements OnInit {
       LABORATORIO: 'Laboratorio'
     };
     return etichette[tipo] || tipo;
+  }
+
+  etichettaStato(stato?: StatoEvento): string {
+    const etichette: Record<string, string> = {
+      PROGRAMMATO: 'Programmato',
+      DA_RIPROGRAMMARE: 'Da riprogrammare',
+      ANNULLATO: 'Annullato'
+    };
+    return etichette[stato || 'PROGRAMMATO'];
   }
 }

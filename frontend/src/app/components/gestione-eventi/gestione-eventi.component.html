@@ -23,18 +23,11 @@
       <table class="tabella-gestione">
         <thead>
           <tr>
-            <th class="col-ordinabile" (click)="ordinaPer('titolo')">
-              Titolo <i [class]="iconaOrdinamento('titolo')"></i>
-            </th>
-            <th class="col-ordinabile" (click)="ordinaPer('tipo')">
-              Tipo <i [class]="iconaOrdinamento('tipo')"></i>
-            </th>
-            <th class="col-ordinabile" (click)="ordinaPer('dataInizio')">
-              Data e ora <i [class]="iconaOrdinamento('dataInizio')"></i>
-            </th>
-            <th class="col-ordinabile" (click)="ordinaPer('capienzaMax')">
-              Capienza <i [class]="iconaOrdinamento('capienzaMax')"></i>
-            </th>
+            <th class="col-ordinabile" (click)="ordinaPer('titolo')">Titolo <i [class]="iconaOrdinamento('titolo')"></i></th>
+            <th class="col-ordinabile" (click)="ordinaPer('tipo')">Tipo <i [class]="iconaOrdinamento('tipo')"></i></th>
+            <th class="col-ordinabile" (click)="ordinaPer('dataInizio')">Data e ora <i [class]="iconaOrdinamento('dataInizio')"></i></th>
+            <th class="col-ordinabile" (click)="ordinaPer('capienzaMax')">Capienza <i [class]="iconaOrdinamento('capienzaMax')"></i></th>
+            <th>Stato</th>
             <th class="col-azioni">Azioni</th>
           </tr>
         </thead>
@@ -44,14 +37,27 @@
             <td>{{ etichettaTipo(e.tipo) }}</td>
             <td>{{ e.dataInizio | date:'d MMM yyyy, HH:mm' }}</td>
             <td>{{ e.capienzaMax }}</td>
+            <td>
+              <span class="badge-stato-evento"
+                    [class.programmato]="e.stato === 'PROGRAMMATO' || !e.stato"
+                    [class.da-riprogrammare]="e.stato === 'DA_RIPROGRAMMARE'"
+                    [class.annullato]="e.stato === 'ANNULLATO'">
+                {{ etichettaStato(e.stato) }}
+              </span>
+            </td>
             <td class="col-azioni">
               <a (click)="apriModaleModifica(e)">Modifica</a>
               <span class="separatore">|</span>
-              <a class="link-elimina" (click)="elimina(e.id!)">Elimina</a>
+              <a *ngIf="e.stato !== 'DA_RIPROGRAMMARE'" (click)="cambiaStato(e, 'DA_RIPROGRAMMARE')">Da riprogrammare</a>
+              <a *ngIf="e.stato !== 'DA_RIPROGRAMMARE'" class="separatore">|</a>
+              <a *ngIf="e.stato !== 'ANNULLATO'" (click)="cambiaStato(e, 'ANNULLATO')">Annulla</a>
+              <a *ngIf="e.stato === 'ANNULLATO'" (click)="cambiaStato(e, 'PROGRAMMATO')">Riattiva</a>
+              <span class="separatore">|</span>
+              <a class="link-elimina" (click)="elimina(e)">Elimina</a>
             </td>
           </tr>
           <tr *ngIf="eventiPaginati.length === 0">
-            <td colspan="5" class="riga-vuota">Nessun evento trovato.</td>
+            <td colspan="6" class="riga-vuota">Nessun evento trovato.</td>
           </tr>
         </tbody>
       </table>

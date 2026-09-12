@@ -14,11 +14,13 @@ import { AreaPersonaleComponent } from './components/area-personale/area-persona
 import { GestioneFerieComponent } from './components/gestione-ferie/gestione-ferie.component';
 import { GestioneTurniComponent } from './components/gestione-turni/gestione-turni.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { LeMiePrenotazioniComponent } from './components/le-mie-prenotazioni/le-mie-prenotazioni.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'catalogo', component: CatalogoComponent },
   { path: 'eventi', component: EventiComponent },
+  { path: 'le-mie-prenotazioni', component: LeMiePrenotazioniComponent, canActivate: [ruoloGuard(['VISITATORE', 'OPERATORE', 'HR'])] },
   { path: 'feedback', component: FeedbackComponent, canActivate: [ruoloGuard(['VISITATORE', 'OPERATORE', 'HR'])] },
   { path: 'login', component: AuthComponent, data: { modalitaIniziale: 'login' } },
   { path: 'registrati', component: AuthComponent, data: { modalitaIniziale: 'registrazione' } },

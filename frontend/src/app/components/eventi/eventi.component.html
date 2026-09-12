@@ -10,6 +10,9 @@
   <div class="griglia-eventi" *ngIf="!caricamento && eventi.length > 0">
     <article class="scheda-evento" *ngFor="let evento of eventi">
       <span class="badge-tipo">{{ etichettaTipo(evento.tipo) }}</span>
+      <span class="badge-stato-evento" *ngIf="evento.stato && evento.stato !== 'PROGRAMMATO'" [class.da-riprogrammare]="evento.stato === 'DA_RIPROGRAMMARE'" [class.annullato]="evento.stato === 'ANNULLATO'">
+        {{ etichettaStato(evento.stato) }}
+      </span>
       <h3>{{ evento.titolo }}</h3>
       <p class="evento-data">
         <i class="fa-regular fa-calendar"></i>
@@ -57,10 +60,14 @@
         </div>
       </div>
 
-      <button *ngIf="auth.isAuthenticated()" class="btn-prenota" (click)="apriPrenotazione(evento)">
+      <button *ngIf="auth.isAuthenticated() && (!evento.stato || evento.stato === 'PROGRAMMATO')"
+        class="btn-prenota" (click)="apriPrenotazione(evento)">
         Prenota
       </button>
-      <a *ngIf="!auth.isAuthenticated()" routerLink="/login" class="btn-prenota-link">
+      <p *ngIf="evento.stato && evento.stato !== 'PROGRAMMATO'" class="evento-non-prenotabile">
+        {{ evento.stato === 'ANNULLATO' ? 'Evento annullato' : 'In attesa di una nuova data' }}
+      </p>
+      <a *ngIf="!auth.isAuthenticated() && (!evento.stato || evento.stato === 'PROGRAMMATO')" routerLink="/login" class="btn-prenota-link">
         Accedi per prenotare
       </a>
     </article>

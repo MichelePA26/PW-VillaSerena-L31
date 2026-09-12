@@ -1,0 +1,26 @@
+<div class="pagina-prenotazioni">
+  <header class="prenotazioni-header">
+    <p class="eyebrow">Area personale</p>
+    <h1>Le mie prenotazioni</h1>
+  </header>
+
+  <p class="stato" *ngIf="caricamento">Caricamento in corso...</p>
+  <p class="stato" *ngIf="!caricamento && prenotazioni.length === 0">
+    Non hai ancora nessuna prenotazione. <a routerLink="/eventi">Scopri gli eventi in programma</a>.
+  </p>
+
+  <div class="lista-prenotazioni" *ngIf="!caricamento && prenotazioni.length > 0">
+    <article class="riga-prenotazione" *ngFor="let p of prenotazioni">
+      <div class="prenotazione-info">
+        <h3>{{ p.eventoTitolo }}</h3>
+        <p class="prenotazione-data">{{ p.eventoDataInizio | date:'d MMMM yyyy, HH:mm' }}</p>
+        <p class="prenotazione-posti">{{ p.numeroPosti }} {{ p.numeroPosti === 1 ? 'posto' : 'posti' }}</p>
+      </div>
+      <span class="badge-stato-prenotazione"
+            [class.attenzione]="p.statoEvento === 'DA_RIPROGRAMMARE'"
+            [class.annullato]="p.statoEvento === 'ANNULLATO'">
+        {{ etichettaStato(p.statoEvento) }}
+      </span>
+    </article>
+  </div>
+</div>

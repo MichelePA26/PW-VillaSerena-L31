@@ -425,3 +425,14 @@
   background: #fdf1ee;
   border-bottom: 1px solid #f0ebe3;
 }
+
+.badge-stato-evento {
+  font-size: 0.7rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+.badge-stato-evento.programmato { background: #e3f3e5; color: #2e7d32; }
+.badge-stato-evento.da-riprogrammare { background: #fdf3e3; color: #a5720b; }
+.badge-stato-evento.annullato { background: #fdf1ee; color: #b0452f; }

@@ -362,3 +362,23 @@
   flex-direction: column;
   gap: 1.1rem;
 }
+
+.badge-stato-evento {
+  align-self: flex-start;
+  font-size: 0.65rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  margin-left: 0.4rem;
+}
+
+.badge-stato-evento.da-riprogrammare { background: #fdf3e3; color: #a5720b; }
+.badge-stato-evento.annullato { background: #fdf1ee; color: #b0452f; }
+
+.evento-non-prenotabile {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--testo-tenue);
+  font-style: italic;
+}

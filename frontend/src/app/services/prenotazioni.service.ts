@@ -18,4 +18,7 @@ export class PrenotazioniService {
   getMiePrenotazioni(): Observable<Prenotazione[]> {
     return this.http.get<Prenotazione[]>(`${this.apiUrl}/mie`);
   }
+  getMie(): Observable<Prenotazione[]> {
+    return this.http.get<Prenotazione[]>(`${this.apiUrl}/mie`);
+  }
 }
