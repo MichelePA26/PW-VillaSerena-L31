@@ -2,8 +2,10 @@ package com.villaserena.museo.service;
 
 import com.villaserena.museo.dto.EventoDTO;
 import com.villaserena.museo.model.Evento;
+import com.villaserena.museo.model.Pagamento;
 import com.villaserena.museo.model.Prenotazione;
 import com.villaserena.museo.repository.EventoRepository;
+import com.villaserena.museo.repository.PagamentoRepository;
 import com.villaserena.museo.repository.PrenotazioneRepository;
 
 import org.springframework.stereotype.Service;
@@ -18,13 +20,19 @@ public class EventiService {
     private final EventoRepository eventoRepository;
     private final PrenotazioneRepository prenotazioneRepository;
     private final NotificaAppService notificaAppService;
+    private final PagamentoRepository pagamentoRepository;
+    private final PagamentiService pagamentiService;
 
     public EventiService(EventoRepository eventoRepository,
                         PrenotazioneRepository prenotazioneRepository,
-                        NotificaAppService notificaAppService) {
+                        NotificaAppService notificaAppService,
+                        PagamentoRepository pagamentoRepository,
+                        PagamentiService pagamentiService) {
         this.eventoRepository = eventoRepository;
         this.prenotazioneRepository = prenotazioneRepository;
         this.notificaAppService = notificaAppService;
+        this.pagamentoRepository = pagamentoRepository;
+        this.pagamentiService = pagamentiService;
     }
 
     public List<EventoDTO> findAll() {
@@ -67,6 +75,7 @@ public class EventiService {
         evento.setDataInizio(dto.getDataInizio());
         evento.setDataFine(dto.getDataFine());
         evento.setCapienzaMax(dto.getCapienzaMax());
+        evento.setPrezzo(dto.getPrezzo());
         if (dto.getStato() != null) {
             evento.setStato(dto.getStato());
         }
@@ -82,6 +91,7 @@ public class EventiService {
         dto.setDataFine(e.getDataFine());
         dto.setCapienzaMax(e.getCapienzaMax());
         dto.setStato(e.getStato());
+        dto.setPrezzo(e.getPrezzo());
         return dto;
     }
 
@@ -99,16 +109,38 @@ public class EventiService {
         evento.setStato(nuovoStato);
         Evento salvato = eventoRepository.save(evento);
 
-        // Se l'evento non è più regolarmente programmato, avvisa chi ha prenotato
-        if (nuovoStato == Evento.Stato.DA_RIPROGRAMMARE || nuovoStato == Evento.Stato.ANNULLATO) {
-            String messaggioStato = nuovoStato == Evento.Stato.ANNULLATO ? "annullato" : "rinviato, in attesa di una nuova data";
+        List<Prenotazione> prenotazioniAttive = prenotazioneRepository.findAll().stream()
+                .filter(p -> p.getEvento().getId().equals(id))
+                .filter(p -> p.getStato() == Prenotazione.Stato.CONFERMATA || p.getStato() == Prenotazione.Stato.IN_ATTESA_MIGRAZIONE)
+                .toList();
 
-            prenotazioneRepository.findAll().stream()
-                    .filter(p -> p.getEvento().getId().equals(id))
-                    .filter(p -> p.getStato() == Prenotazione.Stato.CONFERMATA)
-                    .forEach(p -> notificaAppService.crea(p.getUtente(),
-                            "L'evento \"" + evento.getTitolo() + "\" è stato " + messaggioStato,
-                            "/le-mie-prenotazioni"));
+        if (nuovoStato == Evento.Stato.DA_RIPROGRAMMARE) {
+            for (Prenotazione p : prenotazioniAttive) {
+                p.setStato(Prenotazione.Stato.IN_ATTESA_MIGRAZIONE);
+                p.setDataScadenzaRisposta(java.time.LocalDateTime.now().plusDays(7));
+                prenotazioneRepository.save(p);
+                notificaAppService.crea(p.getUtente(),
+                        "L'evento \"" + evento.getTitolo() + "\" è stato rinviato: scegli se accettare la nuova data o richiedere il rimborso",
+                        "/le-mie-prenotazioni");
+            }
+        } else if (nuovoStato == Evento.Stato.ANNULLATO) {
+            for (Prenotazione p : prenotazioniAttive) {
+                var pagamentoEsistente = pagamentoRepository.findByPrenotazioneId(p.getId())
+                        .filter(pag -> pag.getStato() == Pagamento.Stato.COMPLETATO);
+
+                if (pagamentoEsistente.isPresent()) {
+                    pagamentiService.rimborsa(pagamentoEsistente.get());
+                    p.setStato(Prenotazione.Stato.RIMBORSATA);
+                } else {
+                    p.setStato(Prenotazione.Stato.ANNULLATA);
+                }
+                prenotazioneRepository.save(p);
+
+                notificaAppService.crea(p.getUtente(),
+                        "L'evento \"" + evento.getTitolo() + "\" è stato annullato" +
+                        (pagamentoEsistente.isPresent() ? ": il pagamento è stato rimborsato" : ""),
+                        "/le-mie-prenotazioni");
+            }
         }
 
         return toDTO(salvato);

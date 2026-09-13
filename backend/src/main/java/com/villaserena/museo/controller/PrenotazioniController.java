@@ -28,5 +28,19 @@ public class PrenotazioniController {
     public List<PrenotazioneDTO> mie() {
         return prenotazioniService.mie();
     }
+
+    @PutMapping("/{id}/accetta-nuova-data")
+    public PrenotazioneDTO accettaNuovaData(@PathVariable Long id) {
+        return prenotazioniService.accettaNuovaData(id);
+    }
+
+    @PutMapping("/{id}/richiedi-rimborso")
+    public PrenotazioneDTO richiediRimborso(@PathVariable Long id) {
+        return prenotazioniService.richiediRimborso(id);
+    }
     
+    @PutMapping("/{id}/annulla")
+    public void annullaNonPagata(@PathVariable Long id) {
+        prenotazioniService.annullaNonPagata(id);
+    }
 }

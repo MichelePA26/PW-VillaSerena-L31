@@ -13,6 +13,10 @@ public class PrenotazioneDTO {
     private LocalDateTime dataPrenotazione;
     private Prenotazione.Stato stato;
     private Evento.Stato statoEvento;
+    private java.time.LocalDateTime dataScadenzaRisposta;
+    private java.math.BigDecimal prezzoEvento;
+    private String codiceBiglietto;
+
 
     public static PrenotazioneDTO daEntita(Prenotazione p) {
         PrenotazioneDTO dto = new PrenotazioneDTO();
@@ -24,6 +28,9 @@ public class PrenotazioneDTO {
         dto.dataPrenotazione = p.getDataPrenotazione();
         dto.stato = p.getStato();
         dto.statoEvento = p.getEvento().getStato();
+        dto.dataScadenzaRisposta = p.getDataScadenzaRisposta();
+        dto.prezzoEvento = p.getEvento().getPrezzo();
+        dto.codiceBiglietto = p.getCodiceBiglietto();
         return dto;
     }
 
@@ -35,4 +42,7 @@ public class PrenotazioneDTO {
     public LocalDateTime getDataPrenotazione() { return dataPrenotazione; }
     public Prenotazione.Stato getStato() { return stato; }
     public Evento.Stato getStatoEvento() { return statoEvento; }
+    public java.time.LocalDateTime getDataScadenzaRisposta() { return dataScadenzaRisposta; }
+    public java.math.BigDecimal getPrezzoEvento() { return prezzoEvento; }
+    public String getCodiceBiglietto() { return codiceBiglietto; }
 }

@@ -9,9 +9,12 @@ public class Evento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String titolo;
+    private java.math.BigDecimal prezzo;
+
+    @Column(columnDefinition = "TEXT")
     private String descrizione;
+    
 
     @Enumerated(EnumType.STRING)
     private Tipo tipo;
@@ -39,4 +42,6 @@ public class Evento {
     public void setCapienzaMax(Integer c) { this.capienzaMax = c; }
     public Stato getStato() { return stato; }
     public void setStato(Stato stato) { this.stato = stato; }
+    public java.math.BigDecimal getPrezzo() { return prezzo; }
+    public void setPrezzo(java.math.BigDecimal prezzo) { this.prezzo = prezzo; }
 }
