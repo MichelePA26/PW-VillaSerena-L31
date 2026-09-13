@@ -50,8 +50,9 @@
               <span class="separatore">|</span>
               <a *ngIf="e.stato !== 'DA_RIPROGRAMMARE'" (click)="cambiaStato(e, 'DA_RIPROGRAMMARE')">Da riprogrammare</a>
               <a *ngIf="e.stato !== 'DA_RIPROGRAMMARE'" class="separatore">|</a>
-              <a *ngIf="e.stato !== 'ANNULLATO'" (click)="cambiaStato(e, 'ANNULLATO')">Annulla</a>
-              <a *ngIf="e.stato === 'ANNULLATO'" (click)="cambiaStato(e, 'PROGRAMMATO')">Riattiva</a>
+              <a *ngIf="e.stato === 'PROGRAMMATO'" (click)="cambiaStato(e, 'ANNULLATO')">Annulla</a>
+              <a *ngIf="e.stato === 'PROGRAMMATO'" class="separatore">|</a>
+              <a *ngIf="e.stato === 'ANNULLATO' || e.stato === 'DA_RIPROGRAMMARE'" (click)="cambiaStato(e, 'PROGRAMMATO')">Riattiva</a>
               <span class="separatore">|</span>
               <a class="link-elimina" (click)="elimina(e)">Elimina</a>
             </td>
