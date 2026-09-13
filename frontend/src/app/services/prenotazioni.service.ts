@@ -21,4 +21,16 @@ export class PrenotazioniService {
   getMie(): Observable<Prenotazione[]> {
     return this.http.get<Prenotazione[]>(`${this.apiUrl}/mie`);
   }
+
+  accettaNuovaData(id: number): Observable<Prenotazione> {
+    return this.http.put<Prenotazione>(`${this.apiUrl}/${id}/accetta-nuova-data`, {});
+  }
+
+  richiediRimborso(id: number): Observable<Prenotazione> {
+    return this.http.put<Prenotazione>(`${this.apiUrl}/${id}/richiedi-rimborso`, {});
+  }
+
+  annullaNonPagata(id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/annulla`, {});
+  }
 }

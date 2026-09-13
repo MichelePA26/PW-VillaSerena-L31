@@ -1,0 +1,25 @@
+.riquadro-pagamento {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.2rem;
+  box-shadow: 0 2px 10px rgba(43, 35, 32, 0.06);
+  font-family: "Poppins", sans-serif;
+}
+
+.pagamento-importo {
+  font-size: 0.9rem;
+  color: #2b2320;
+  margin-bottom: 0.9rem;
+  text-align: center;
+}
+
+.pagamento-esito {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #2e7d32;
+  margin-top: 0.8rem;
+}
+
+.pagamento-esito.errore {
+  color: #b0452f;
+}

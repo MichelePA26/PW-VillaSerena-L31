@@ -1,0 +1,5 @@
+<div class="riquadro-pagamento">
+  <p class="pagamento-importo">Totale da pagare: <strong>{{ importo | number:'1.2-2' }} €</strong></p>
+  <div #paypalButtons></div>
+  <p class="pagamento-esito" [class.errore]="errore" *ngIf="esito">{{ esito }}</p>
+</div>

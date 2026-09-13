@@ -10,4 +10,5 @@ export interface Evento {
   dataFine: string;
   capienzaMax: number;
   stato?: StatoEvento;
+  prezzo?: number;
 }

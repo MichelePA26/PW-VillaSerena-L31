@@ -15,6 +15,9 @@
         <h3>{{ p.eventoTitolo }}</h3>
         <p class="prenotazione-data">{{ p.eventoDataInizio | date:'d MMMM yyyy, HH:mm' }}</p>
         <p class="prenotazione-posti">{{ p.numeroPosti }} {{ p.numeroPosti === 1 ? 'posto' : 'posti' }}</p>
+        <button *ngIf="p.stato === 'CONFERMATA'" class="btn-biglietto" (click)="apriBiglietto(p)">
+          <i class="fa-solid fa-ticket"></i> Visualizza biglietto
+        </button>
       </div>
       <span class="badge-stato-prenotazione"
             [class.attenzione]="p.statoEvento === 'DA_RIPROGRAMMARE'"
@@ -22,5 +25,12 @@
         {{ etichettaStato(p.statoEvento) }}
       </span>
     </article>
+
+    <app-biglietto
+      [prenotazione]="prenotazioneSelezionata"
+      [aperto]="bigliettoAperto"
+      (click)="chiudiBiglietto()">
+    </app-biglietto>
+
   </div>
 </div>

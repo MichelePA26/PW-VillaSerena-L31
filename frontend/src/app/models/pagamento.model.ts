@@ -1,0 +1,1 @@
+export type StatoPagamento = 'IN_ATTESA' | 'COMPLETATO' | 'FALLITO' | 'RIMBORSATO';

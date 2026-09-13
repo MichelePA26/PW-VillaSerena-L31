@@ -1,0 +1,33 @@
+<div class="modale-overlay" *ngIf="aperto">
+  <div class="biglietto" (click)="$event.stopPropagation()">
+    <div class="biglietto-intestazione">
+      <p class="biglietto-museo">Museo Villa Serena</p>
+      <p class="biglietto-evento">{{ prenotazione?.eventoTitolo }}</p>
+      <div class="biglietto-dettagli">
+        <div>
+          <p class="dettaglio-etichetta">Data</p>
+          <p class="dettaglio-valore">{{ prenotazione?.eventoDataInizio | date:'d MMM yyyy' }}</p>
+        </div>
+        <div>
+          <p class="dettaglio-etichetta">Ora</p>
+          <p class="dettaglio-valore">{{ prenotazione?.eventoDataInizio | date:'HH:mm' }}</p>
+        </div>
+        <div>
+          <p class="dettaglio-etichetta">Posti</p>
+          <p class="dettaglio-valore">{{ prenotazione?.numeroPosti }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="biglietto-qr">
+      <canvas #canvasQr></canvas>
+      <p class="qr-etichetta">Codice prenotazione</p>
+      <p class="qr-codice">{{ prenotazione?.codiceBiglietto }}</p>
+    </div>
+
+    <div class="biglietto-nota">
+      <i class="fa-solid fa-circle-info"></i>
+      <span>Mostra questo codice in biglietteria il giorno della visita.</span>
+    </div>
+  </div>
+</div>

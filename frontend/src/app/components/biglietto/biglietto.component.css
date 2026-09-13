@@ -1,0 +1,96 @@
+.modale-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 35, 32, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1.5rem;
+}
+
+.biglietto {
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 340px;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+  box-shadow: 0 20px 50px rgba(43, 35, 32, 0.25);
+}
+
+.biglietto-intestazione {
+  padding: 1.4rem 1.6rem;
+  border-bottom: 1px dashed #d8cdbd;
+}
+
+.biglietto-museo {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06rem;
+  color: #a89a89;
+  margin-bottom: 0.3rem;
+}
+
+.biglietto-evento {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.15rem;
+  color: #2b2320;
+  margin-bottom: 0.9rem;
+}
+
+.biglietto-dettagli {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dettaglio-etichetta {
+  font-size: 0.7rem;
+  color: #a89a89;
+  margin-bottom: 0.2rem;
+}
+
+.dettaglio-valore {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2b2320;
+}
+
+.biglietto-qr {
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qr-etichetta {
+  font-size: 0.7rem;
+  color: #a89a89;
+  margin: 0.6rem 0 0.1rem;
+}
+
+.qr-codice {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #2b2320;
+  font-family: monospace;
+}
+
+.biglietto-nota {
+  background: #faf7f2;
+  padding: 0.8rem 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.biglietto-nota i {
+  color: #6b6259;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.biglietto-nota span {
+  font-size: 0.75rem;
+  color: #6b6259;
+}

@@ -8,11 +8,13 @@ import { AuthService } from '../../services/auth.service';
 import { RouterLink } from '@angular/router';
 import { FeedbackService } from '../../services/feedback.service';
 import { Feedback } from '../../models/feedback.model';
+import { PagamentoComponent } from '../pagamento/pagamento.component';
+
 
 @Component({
   selector: 'app-eventi',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, PagamentoComponent],
   templateUrl: './eventi.component.html',
   styleUrl: './eventi.component.css'
 })
@@ -79,17 +81,26 @@ export class EventiComponent implements OnInit {
 
   chiudiPrenotazione(): void {
     this.eventoSelezionato = null;
+    this.prenotazioneCreata = null;
   }
+
+  prenotazioneCreata: { id: number; importo: number } | null = null;
 
   confermaPrenotazione(): void {
     if (!this.eventoSelezionato) return;
     this.invioInCorso = true;
     this.prenotazioniService.prenota(this.eventoSelezionato.id!, this.numeroPosti).subscribe({
-      next: () => {
+      next: (prenotazione: any) => {
         this.invioInCorso = false;
-        this.prenotazioneRiuscita = true;
-        this.messaggioPrenotazione = 'Prenotazione confermata!';
-        setTimeout(() => this.chiudiPrenotazione(), 1800);
+        const prezzo = this.eventoSelezionato!.prezzo || 0;
+        if (prezzo > 0) {
+          this.prenotazioneCreata = { id: prenotazione.id, importo: prezzo * this.numeroPosti };
+          this.messaggioPrenotazione = 'Prenotazione registrata: completa il pagamento per confermarla.';
+        } else {
+          this.prenotazioneRiuscita = true;
+          this.messaggioPrenotazione = 'Prenotazione confermata!';
+          setTimeout(() => this.chiudiPrenotazione(), 1800);
+        }
       },
       error: err => {
         this.invioInCorso = false;
@@ -97,6 +108,10 @@ export class EventiComponent implements OnInit {
         this.messaggioPrenotazione = err.error?.errore || 'Prenotazione non riuscita.';
       }
     });
+  }
+
+  onPagamentoCompletato(): void {
+    setTimeout(() => this.chiudiPrenotazione(), 1500);
   }
 
   etichettaTipo(tipo: string): string {
@@ -115,5 +130,12 @@ export class EventiComponent implements OnInit {
       ANNULLATO: 'Annullato'
     };
     return etichette[stato || 'PROGRAMMATO'];
+  }
+
+  annullaPrenotazioneInAttesa(): void {
+    if (!this.prenotazioneCreata) return;
+    this.prenotazioniService.annullaNonPagata(this.prenotazioneCreata.id).subscribe(() => {
+      this.chiudiPrenotazione();
+    });
   }
 }

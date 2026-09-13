@@ -79,3 +79,21 @@
 
 .badge-stato-prenotazione.attenzione { background: #fdf3e3; color: #a5720b; }
 .badge-stato-prenotazione.annullato { background: #fdf1ee; color: #b0452f; }
+
+.btn-biglietto {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: 1px solid var(--oro);
+  color: var(--bruno-scuro);
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.btn-biglietto:hover {
+  background: var(--oro);
+}

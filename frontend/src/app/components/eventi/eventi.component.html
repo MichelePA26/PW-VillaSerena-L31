@@ -20,6 +20,8 @@
       </p>
       <p class="evento-descrizione" *ngIf="evento.descrizione">{{ evento.descrizione }}</p>
       <p class="evento-capienza"><i class="fa-solid fa-users"></i> Capienza massima: {{ evento.capienzaMax }}</p>
+      <p class="evento-prezzo" *ngIf="evento.prezzo && evento.prezzo > 0">{{ evento.prezzo | number:'1.2-2' }} € a persona</p>
+      <p class="evento-prezzo gratuito" *ngIf="!evento.prezzo || evento.prezzo === 0">Ingresso gratuito</p>
       <p class="evento-voto" *ngIf="votoMedio(evento.id!) as media">
         <i class="fa-solid fa-star"></i>
         {{ media }} / 5 <span class="numero-recensioni">({{ numeroRecensioni(evento.id!) }} recensioni)</span>
@@ -82,7 +84,7 @@
       <button class="modale-chiudi" (click)="chiudiPrenotazione()" aria-label="Chiudi">&times;</button>
     </div>
 
-    <form (ngSubmit)="confermaPrenotazione()" class="form-prenotazione">
+    <form (ngSubmit)="confermaPrenotazione()" class="form-prenotazione" *ngIf="!prenotazioneCreata">
       <label>Numero posti
         <input type="number" [(ngModel)]="numeroPosti" name="numeroPosti" min="1" required>
       </label>
@@ -98,5 +100,17 @@
         </button>
       </div>
     </form>
+
+    <div *ngIf="prenotazioneCreata">
+      <app-pagamento
+        [prenotazioneId]="prenotazioneCreata.id"
+        [importo]="prenotazioneCreata.importo"
+        (pagamentoCompletato)="onPagamentoCompletato()">
+      </app-pagamento>
+
+      <button type="button" class="btn-secondario" style="margin-top: 0.8rem; width: 100%;" (click)="annullaPrenotazioneInAttesa()">
+        Annulla la prenotazione
+      </button>
+    </div>
   </div>
 </div>
