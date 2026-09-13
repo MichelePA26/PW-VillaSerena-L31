@@ -15,13 +15,17 @@ import { GestioneFerieComponent } from './components/gestione-ferie/gestione-fer
 import { GestioneTurniComponent } from './components/gestione-turni/gestione-turni.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LeMiePrenotazioniComponent } from './components/le-mie-prenotazioni/le-mie-prenotazioni.component';
+import { GestionePrenotazioniComponent } from './components/gestione-prenotazione/gestione-prenotazioni.component';
+import { CheckInComponent } from './components/check-in/check-in.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'catalogo', component: CatalogoComponent },
   { path: 'eventi', component: EventiComponent },
-  { path: 'le-mie-prenotazioni', component: LeMiePrenotazioniComponent, canActivate: [ruoloGuard(['VISITATORE', 'OPERATORE', 'HR'])] },
-  { path: 'feedback', component: FeedbackComponent, canActivate: [ruoloGuard(['VISITATORE', 'OPERATORE', 'HR'])] },
+  { path: 'le-mie-prenotazioni', component: LeMiePrenotazioniComponent, canActivate: [ruoloGuard(['VISITATORE'])] },
+  { path: 'feedback', component: FeedbackComponent, canActivate: [ruoloGuard(['VISITATORE'])] },
+  { path: 'gestione-prenotazioni', component: GestionePrenotazioniComponent, canActivate: [ruoloGuard(['OPERATORE'])] },
+  { path: 'check-in', component: CheckInComponent, canActivate: [ruoloGuard(['OPERATORE'])] },
   { path: 'login', component: AuthComponent, data: { modalitaIniziale: 'login' } },
   { path: 'registrati', component: AuthComponent, data: { modalitaIniziale: 'registrazione' } },
 

@@ -33,4 +33,17 @@ export class PrenotazioniService {
   annullaNonPagata(id: number): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/annulla`, {});
   }
+
+  getTutte(eventoId?: number): Observable<Prenotazione[]> {
+    const url = eventoId ? `${this.apiUrl}?eventoId=${eventoId}` : this.apiUrl;
+    return this.http.get<Prenotazione[]>(url);
+  }
+
+  cercaPerCodice(codice: string): Observable<Prenotazione> {
+    return this.http.get<Prenotazione>(`${this.apiUrl}/cerca-biglietto/${codice}`);
+  }
+
+  effettuaCheckIn(codice: string): Observable<Prenotazione> {
+    return this.http.put<Prenotazione>(`${this.apiUrl}/check-in/${codice}`, {});
+  }
 }

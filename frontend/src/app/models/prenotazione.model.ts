@@ -15,6 +15,9 @@ export interface Prenotazione {
   dataScadenzaRisposta?: string;
   prezzoEvento?: number;
   codiceBiglietto?: string;
+  utenteNome?: string;
+  checkInEffettuato?: boolean;
+  dataOraCheckin?: string;
 }
 
 

@@ -1,0 +1,70 @@
+<div class="pagina-gestione">
+  <header class="gestione-header">
+    <div>
+      <p class="eyebrow">Area operatore</p>
+      <h1>Prenotazioni</h1>
+    </div>
+  </header>
+
+  <div class="pannello">
+    <div class="pannello-toolbar">
+      <h2>Elenco prenotazioni</h2>
+      <div class="filtri-toolbar">
+        <select [(ngModel)]="eventoFiltro" (ngModelChange)="carica()">
+          <option [ngValue]="null">Tutti gli eventi</option>
+          <option *ngFor="let e of eventi" [ngValue]="e.id">{{ e.titolo }}</option>
+        </select>
+        <div class="campo-ricerca">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" placeholder="Cerca per nome o codice biglietto..." [(ngModel)]="ricerca">
+        </div>
+      </div>
+    </div>
+
+    <div class="tabella-scroll">
+      <table class="tabella-gestione">
+        <thead>
+          <tr>
+            <th>Visitatore</th>
+            <th>Evento</th>
+            <th>Posti</th>
+            <th>Codice biglietto</th>
+            <th>Stato</th>
+            <th>Check-in</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of prenotazioniPaginate">
+            <td class="cella-titolo">{{ p.utenteNome }}</td>
+            <td>{{ p.eventoTitolo }}</td>
+            <td>{{ p.numeroPosti }}</td>
+            <td><code>{{ p.codiceBiglietto }}</code></td>
+            <td>
+              <span class="badge-stato-prenotazione"
+                    [class.attenzione]="p.stato === 'IN_ATTESA_PAGAMENTO' || p.stato === 'IN_ATTESA_MIGRAZIONE'"
+                    [class.annullato]="p.stato === 'ANNULLATA' || p.stato === 'RIMBORSATA'">
+                {{ etichettaStato(p.stato) }}
+              </span>
+            </td>
+            <td>
+              <span *ngIf="p.checkInEffettuato" class="check-effettuato"><i class="fa-solid fa-circle-check"></i> Sì</span>
+              <span *ngIf="!p.checkInEffettuato" class="check-mancante">—</span>
+            </td>
+          </tr>
+          <tr *ngIf="prenotazioniPaginate.length === 0">
+            <td colspan="6" class="riga-vuota">Nessuna prenotazione trovata.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pannello-footer">
+      <span class="conteggio">Da {{ indiceIniziale }} a {{ indiceFinale }} di {{ prenotazioniFiltrate.length }} prenotazioni</span>
+      <div class="paginazione">
+        <button (click)="paginaPrecedente()" [disabled]="paginaCorrente === 1">Precedente</button>
+        <span class="pagina-numero">{{ paginaCorrente }}</span>
+        <button (click)="paginaSuccessiva()" [disabled]="paginaCorrente === totalePagine">Successiva</button>
+      </div>
+    </div>
+  </div>
+</div>

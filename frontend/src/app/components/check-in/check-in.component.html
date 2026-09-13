@@ -1,0 +1,37 @@
+<div class="pagina-checkin">
+  <header class="checkin-header">
+    <p class="eyebrow">Biglietteria</p>
+    <h1>Check-in visitatori</h1>
+  </header>
+
+  <form (ngSubmit)="cerca()" class="form-ricerca">
+    <input type="text" [(ngModel)]="codice" name="codice" placeholder="Inserisci il codice del biglietto (es. VS-3-12)" autofocus>
+    <button type="submit" class="btn-primario">Cerca</button>
+  </form>
+
+  <div class="risultato" *ngIf="ricercaFatta">
+    <div class="scheda-esito" *ngIf="prenotazione" [class.gia-usato]="prenotazione.checkInEffettuato">
+      <div class="esito-header">
+        <i class="fa-solid" [class.fa-circle-check]="!prenotazione.checkInEffettuato" [class.fa-triangle-exclamation]="prenotazione.checkInEffettuato"></i>
+        <span>{{ prenotazione.checkInEffettuato ? 'Biglietto già utilizzato' : 'Biglietto valido' }}</span>
+      </div>
+
+      <div class="esito-dettagli">
+        <p><strong>{{ prenotazione.utenteNome }}</strong></p>
+        <p>{{ prenotazione.eventoTitolo }}</p>
+        <p>{{ prenotazione.numeroPosti }} {{ prenotazione.numeroPosti === 1 ? 'posto' : 'posti' }}</p>
+        <p *ngIf="prenotazione.checkInEffettuato" class="dettaglio-checkin">
+          Ingresso registrato il {{ prenotazione.dataOraCheckin | date:'d MMM yyyy, HH:mm' }}
+        </p>
+      </div>
+
+      <button *ngIf="!prenotazione.checkInEffettuato" class="btn-primario" (click)="confermaIngresso()">
+        Conferma ingresso
+      </button>
+    </div>
+
+    <p class="messaggio-errore" *ngIf="!prenotazione && messaggio">{{ messaggio }}</p>
+
+    <button class="btn-secondario" (click)="nuovaRicerca()">Nuova ricerca</button>
+  </div>
+</div>

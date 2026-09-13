@@ -1,0 +1,124 @@
+:host {
+  --bruno-scuro: #2b2320;
+  --oro: #c9a876;
+  --panna: #faf7f2;
+  --testo-soft: #6b6259;
+  --testo-tenue: #a89a89;
+  display: block;
+  background: var(--panna);
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+}
+
+.pagina-checkin {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+
+.checkin-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  font-size: 0.8rem;
+  color: var(--oro);
+  margin-bottom: 0.4rem;
+}
+
+.checkin-header h1 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  color: var(--bruno-scuro);
+}
+
+.form-ricerca {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-ricerca input {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border: 1px solid #e5ddd0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.btn-primario {
+  background: var(--bruno-scuro);
+  color: var(--panna);
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.3rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-primario:hover { background: var(--oro); color: var(--bruno-scuro); }
+
+.btn-secondario {
+  display: block;
+  margin: 1rem auto 0;
+  background: none;
+  border: 1px solid #ddd;
+  color: var(--testo-soft);
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.scheda-esito {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.4rem;
+  box-shadow: 0 4px 16px rgba(43, 35, 32, 0.08);
+  border-left: 4px solid #2e7d32;
+}
+
+.scheda-esito.gia-usato {
+  border-left-color: #b0452f;
+}
+
+.esito-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #2e7d32;
+  margin-bottom: 1rem;
+}
+
+.scheda-esito.gia-usato .esito-header {
+  color: #b0452f;
+}
+
+.esito-dettagli p {
+  font-size: 0.88rem;
+  color: var(--testo-soft);
+  margin: 0.2rem 0;
+}
+
+.dettaglio-checkin {
+  font-style: italic;
+  color: var(--testo-tenue);
+  margin-top: 0.5rem;
+}
+
+.esito-dettagli .btn-primario,
+.scheda-esito .btn-primario {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.messaggio-errore {
+  text-align: center;
+  color: #b0452f;
+  font-size: 0.9rem;
+}
