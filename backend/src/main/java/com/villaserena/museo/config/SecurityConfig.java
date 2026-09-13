@@ -36,6 +36,7 @@ public class SecurityConfig {
 
     // Configura quali origini (domini/porte) possono chiamare le API.
     // In sviluppo permettiamo solo il frontend Angular su localhost:4200.
+    // aggiungi anche l'indirizzo IP locale per test su telefono in configuration.setAllowedOrigins, se necessario.
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
