@@ -29,6 +29,9 @@ public class Prenotazione {
     private Stato stato = Stato.CONFERMATA;
 
     public enum Stato { CONFERMATA, ANNULLATA, IN_ATTESA_PAGAMENTO, IN_ATTESA_MIGRAZIONE, RIMBORSATA}
+
+    private boolean checkInEffettuato = false;
+    private java.time.LocalDateTime dataOraCheckin;
     
 
     public Long getId() { return id; }
@@ -45,4 +48,8 @@ public class Prenotazione {
     public void setDataScadenzaRisposta(java.time.LocalDateTime d) { this.dataScadenzaRisposta = d; }
     public String getCodiceBiglietto() { return codiceBiglietto; }
     public void setCodiceBiglietto(String codice) { this.codiceBiglietto = codice; }
+    public boolean isCheckInEffettuato() { return checkInEffettuato; }
+    public void setCheckInEffettuato(boolean c) { this.checkInEffettuato = c; }
+    public java.time.LocalDateTime getDataOraCheckin() { return dataOraCheckin; }
+    public void setDataOraCheckin(java.time.LocalDateTime d) { this.dataOraCheckin = d; }
 }

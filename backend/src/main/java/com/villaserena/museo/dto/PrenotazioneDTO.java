@@ -16,6 +16,9 @@ public class PrenotazioneDTO {
     private java.time.LocalDateTime dataScadenzaRisposta;
     private java.math.BigDecimal prezzoEvento;
     private String codiceBiglietto;
+    private String utenteNome;
+    private boolean checkInEffettuato;
+    private java.time.LocalDateTime dataOraCheckin;
 
 
     public static PrenotazioneDTO daEntita(Prenotazione p) {
@@ -31,6 +34,9 @@ public class PrenotazioneDTO {
         dto.dataScadenzaRisposta = p.getDataScadenzaRisposta();
         dto.prezzoEvento = p.getEvento().getPrezzo();
         dto.codiceBiglietto = p.getCodiceBiglietto();
+        dto.utenteNome = p.getUtente().getNome() + " " + p.getUtente().getCognome();
+        dto.checkInEffettuato = p.isCheckInEffettuato();
+        dto.dataOraCheckin = p.getDataOraCheckin();
         return dto;
     }
 
@@ -45,4 +51,7 @@ public class PrenotazioneDTO {
     public java.time.LocalDateTime getDataScadenzaRisposta() { return dataScadenzaRisposta; }
     public java.math.BigDecimal getPrezzoEvento() { return prezzoEvento; }
     public String getCodiceBiglietto() { return codiceBiglietto; }
+    public String getUtenteNome() { return utenteNome; }
+    public boolean isCheckInEffettuato() { return checkInEffettuato; }
+    public java.time.LocalDateTime getDataOraCheckin() { return dataOraCheckin; }
 }

@@ -132,4 +132,40 @@ public class PrenotazioniService {
         prenotazioneRepository.save(p);
     }
 
+    // Vista d'insieme per Operatore/HR
+    public List<PrenotazioneDTO> findAll(Long eventoId) {
+        return prenotazioneRepository.findAll().stream()
+                .filter(p -> eventoId == null || p.getEvento().getId().equals(eventoId))
+                .sorted((a, b) -> b.getDataPrenotazione().compareTo(a.getDataPrenotazione()))
+                .map(PrenotazioneDTO::daEntita)
+                .collect(Collectors.toList());
+    }
+
+    // Ricerca per il check-in in biglietteria
+    public PrenotazioneDTO cercaPerCodiceBiglietto(String codice) {
+        Prenotazione p = prenotazioneRepository.findAll().stream()
+                .filter(pr -> codice.equalsIgnoreCase(pr.getCodiceBiglietto()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Nessuna prenotazione trovata con questo codice"));
+        return PrenotazioneDTO.daEntita(p);
+    }
+
+    public PrenotazioneDTO effettuaCheckIn(String codice) {
+        Prenotazione p = prenotazioneRepository.findAll().stream()
+                .filter(pr -> codice.equalsIgnoreCase(pr.getCodiceBiglietto()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Nessuna prenotazione trovata con questo codice"));
+
+        if (p.getStato() != Prenotazione.Stato.CONFERMATA) {
+            throw new RuntimeException("Questo biglietto non è valido (prenotazione non confermata)");
+        }
+        if (p.isCheckInEffettuato()) {
+            throw new RuntimeException("Biglietto già utilizzato il " + p.getDataOraCheckin());
+        }
+
+        p.setCheckInEffettuato(true);
+        p.setDataOraCheckin(java.time.LocalDateTime.now());
+        return PrenotazioneDTO.daEntita(prenotazioneRepository.save(p));
+    }
+
 }

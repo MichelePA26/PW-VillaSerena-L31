@@ -3,6 +3,8 @@ package com.villaserena.museo.controller;
 import com.villaserena.museo.dto.PrenotazioneDTO;
 import com.villaserena.museo.dto.PrenotazioneRequest;
 import com.villaserena.museo.service.PrenotazioniService;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,5 +44,23 @@ public class PrenotazioniController {
     @PutMapping("/{id}/annulla")
     public void annullaNonPagata(@PathVariable Long id) {
         prenotazioniService.annullaNonPagata(id);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('OPERATORE','HR')")
+    public List<PrenotazioneDTO> getAll(@RequestParam(required = false) Long eventoId) {
+        return prenotazioniService.findAll(eventoId);
+    }
+
+    @GetMapping("/cerca-biglietto/{codice}")
+    @PreAuthorize("hasAnyRole('OPERATORE','HR')")
+    public PrenotazioneDTO cercaPerCodiceBiglietto(@PathVariable String codice) {
+        return prenotazioniService.cercaPerCodiceBiglietto(codice);
+    }
+
+    @PutMapping("/check-in/{codice}")
+    @PreAuthorize("hasAnyRole('OPERATORE','HR')")
+    public PrenotazioneDTO effettuaCheckIn(@PathVariable String codice) {
+        return prenotazioniService.effettuaCheckIn(codice);
     }
 }
