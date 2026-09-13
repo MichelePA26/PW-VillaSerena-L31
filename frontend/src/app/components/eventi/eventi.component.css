@@ -382,3 +382,25 @@
   color: var(--testo-tenue);
   font-style: italic;
 }
+
+.btn-annulla-prenotazione {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 92%;
+  margin: 1rem;
+  background: #fdf1ee;
+  border: 1px solid #e0a897;
+  color: #b0452f;
+  border-radius: 8px;
+  padding: 0.7rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-annulla-prenotazione:hover {
+  background: #fbe3dd;
+}

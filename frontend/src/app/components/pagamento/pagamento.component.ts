@@ -32,7 +32,7 @@ export class PagamentoComponent implements AfterViewInit {
     return new Promise((resolve, reject) => {
       if (typeof paypal !== 'undefined') { resolve(); return; }
       const script = document.createElement('script');
-      script.src = `https://www.paypal.com/sdk/js?client-id=${environment.paypalClientId}&currency=EUR`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=${environment.paypalClientId}&currency=EUR&disable-funding=card,mybank,credit,paylater`;
       script.onload = () => resolve();
       script.onerror = () => reject(new Error('Impossibile caricare il PayPal JS SDK'));
       document.body.appendChild(script);

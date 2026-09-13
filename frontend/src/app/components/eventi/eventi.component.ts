@@ -29,6 +29,7 @@ export class EventiComponent implements OnInit {
   invioInCorso = false;
   feedbackPerEvento: Map<number, Feedback[]> = new Map();
   eventoRecensioniAperto: Evento | null = null;
+  pagamentoRiuscito = false;
 
   constructor(
     private eventiService: EventiService,
@@ -80,8 +81,14 @@ export class EventiComponent implements OnInit {
   }
 
   chiudiPrenotazione(): void {
+    if (this.prenotazioneCreata && !this.pagamentoRiuscito) {
+      this.prenotazioniService.annullaNonPagata(this.prenotazioneCreata.id).subscribe({
+        error: () => {} // la prenotazione potrebbe già essere stata annullata: nessun problema
+      });
+    }
     this.eventoSelezionato = null;
     this.prenotazioneCreata = null;
+    this.pagamentoRiuscito = false;
   }
 
   prenotazioneCreata: { id: number; importo: number } | null = null;
@@ -89,6 +96,7 @@ export class EventiComponent implements OnInit {
   confermaPrenotazione(): void {
     if (!this.eventoSelezionato) return;
     this.invioInCorso = true;
+    this.pagamentoRiuscito = false;
     this.prenotazioniService.prenota(this.eventoSelezionato.id!, this.numeroPosti).subscribe({
       next: (prenotazione: any) => {
         this.invioInCorso = false;
@@ -111,8 +119,10 @@ export class EventiComponent implements OnInit {
   }
 
   onPagamentoCompletato(): void {
+    this.pagamentoRiuscito = true;
     setTimeout(() => this.chiudiPrenotazione(), 1500);
   }
+  
 
   etichettaTipo(tipo: string): string {
     const etichette: Record<string, string> = {
@@ -132,10 +142,10 @@ export class EventiComponent implements OnInit {
     return etichette[stato || 'PROGRAMMATO'];
   }
 
-  annullaPrenotazioneInAttesa(): void {
+  /* annullaPrenotazioneInAttesa(): void {
     if (!this.prenotazioneCreata) return;
     this.prenotazioniService.annullaNonPagata(this.prenotazioneCreata.id).subscribe(() => {
       this.chiudiPrenotazione();
     });
-  }
+  } */
 }

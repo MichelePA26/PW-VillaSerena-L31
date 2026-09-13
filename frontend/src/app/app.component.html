@@ -18,6 +18,9 @@
   </nav>
 
   <div class="account">
+     <button class="hamburger" (click)="toggleMenu()" [class.aperto]="menuAperto" aria-label="Apri il menu">
+      <span></span><span></span><span></span>
+    </button>
     <app-notifiche-dropdown *ngIf="auth.isAuthenticated()"></app-notifiche-dropdown>
 
     <a routerLink="/admin" routerLinkActive="attivo" *ngIf="ruolo === 'HR'">
@@ -25,6 +28,7 @@
     </a>
     <a routerLink="/login" *ngIf="!auth.isAuthenticated()">Accedi</a>
     <button *ngIf="auth.isAuthenticated()" (click)="logout()">Esci</button>
+   
   </div>
 </header>
 
