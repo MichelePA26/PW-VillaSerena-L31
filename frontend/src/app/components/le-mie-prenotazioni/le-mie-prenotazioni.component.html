@@ -11,26 +11,87 @@
 
   <div class="lista-prenotazioni" *ngIf="!caricamento && prenotazioni.length > 0">
     <article class="riga-prenotazione" *ngFor="let p of prenotazioni">
-      <div class="prenotazione-info">
-        <h3>{{ p.eventoTitolo }}</h3>
-        <p class="prenotazione-data">{{ p.eventoDataInizio | date:'d MMMM yyyy, HH:mm' }}</p>
-        <p class="prenotazione-posti">{{ p.numeroPosti }} {{ p.numeroPosti === 1 ? 'posto' : 'posti' }}</p>
-        <button *ngIf="p.stato === 'CONFERMATA'" class="btn-biglietto" (click)="apriBiglietto(p)">
-          <i class="fa-solid fa-ticket"></i> Visualizza biglietto
-        </button>
+      <div class="riga-prenotazione-header">
+        <div class="prenotazione-info">
+          <h3>{{ p.eventoTitolo }}</h3>
+          <p class="prenotazione-data">{{ p.eventoDataInizio | date:'d MMMM yyyy, HH:mm' }}</p>
+          <p class="prenotazione-posti">{{ p.numeroPosti }} {{ p.numeroPosti === 1 ? 'posto' : 'posti' }}</p>
+        </div>
+        <span class="badge-stato-prenotazione"
+              [class.attenzione]="p.stato === 'IN_ATTESA_PAGAMENTO' || p.stato === 'IN_ATTESA_MIGRAZIONE'"
+              [class.annullato]="p.stato === 'ANNULLATA' || p.stato === 'RIMBORSATA'">
+          {{ etichettaStato(p) }}
+        </span>
       </div>
-      <span class="badge-stato-prenotazione"
-            [class.attenzione]="p.statoEvento === 'DA_RIPROGRAMMARE'"
-            [class.annullato]="p.statoEvento === 'ANNULLATO'">
-        {{ etichettaStato(p.statoEvento) }}
-      </span>
+
+      <!-- Evento riprogrammato: richiede una decisione -->
+      <div class="avviso-migrazione" *ngIf="p.stato === 'IN_ATTESA_MIGRAZIONE'">
+        <p class="avviso-testo">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span>
+            Questo evento è stato rinviato.
+            <ng-container *ngIf="p.dataScadenzaRisposta">Rispondi entro il {{ p.dataScadenzaRisposta | date:'d MMMM yyyy' }}.</ng-container>
+          </span>
+        </p>
+        <div class="avviso-azioni">
+          <button class="btn-primario" [disabled]="elaborazioneInCorso" (click)="accettaNuovaData(p)">
+            Accetta nuova data
+          </button>
+          <button *ngIf="isPagato(p)" class="btn-secondario" [disabled]="elaborazioneInCorso" (click)="apriDialogoRimborso(p)">
+            Richiedi rimborso
+          </button>
+          <button *ngIf="!isPagato(p)" class="btn-secondario" [disabled]="elaborazioneInCorso" (click)="annullaGratuita(p)">
+            Annulla prenotazione
+          </button>
+        </div>
+      </div>
+
+      <button *ngIf="p.stato === 'CONFERMATA'" class="btn-biglietto" (click)="apriBiglietto(p)">
+        <i class="fa-solid fa-ticket"></i> Visualizza biglietto
+      </button>
     </article>
+  </div>
+</div>
 
-    <app-biglietto
-      [prenotazione]="prenotazioneSelezionata"
-      [aperto]="bigliettoAperto"
-      (click)="chiudiBiglietto()">
-    </app-biglietto>
+<app-biglietto
+  [prenotazione]="prenotazioneSelezionata"
+  [aperto]="bigliettoAperto"
+  (click)="chiudiBiglietto()">
+</app-biglietto>
 
+<!-- Dialogo di conferma rimborso (solo eventi a pagamento) -->
+<div class="modale-overlay" *ngIf="dialogoRimborsoAperto" (click)="chiudiDialogoRimborso()">
+  <div class="dialogo-rimborso" (click)="$event.stopPropagation()">
+    <p class="dialogo-titolo">Richiedere il rimborso?</p>
+    <p class="dialogo-sottotitolo" *ngIf="prenotazionePerRimborso">
+      {{ prenotazionePerRimborso.eventoTitolo }} · {{ prenotazionePerRimborso.numeroPosti }} {{ prenotazionePerRimborso.numeroPosti === 1 ? 'posto' : 'posti' }}
+    </p>
+
+    <div class="dialogo-dettagli" *ngIf="prenotazionePerRimborso">
+      <div class="dettaglio-riga">
+        <span>Importo rimborsato</span>
+        <strong>{{ importoTotale(prenotazionePerRimborso) | number:'1.2-2' }} € (totale)</strong>
+      </div>
+      <div class="dettaglio-riga">
+        <span>Rimborso parziale</span>
+        <span>Non disponibile</span>
+      </div>
+      <div class="dettaglio-riga">
+        <span>Tempi di accredito</span>
+        <span>Secondo i tempi PayPal</span>
+      </div>
+    </div>
+
+    <p class="dialogo-nota">
+      <i class="fa-solid fa-circle-info"></i>
+      L'operazione è irreversibile e libera subito il tuo posto per l'evento.
+    </p>
+
+    <div class="dialogo-azioni">
+      <button class="btn-secondario" [disabled]="elaborazioneInCorso" (click)="chiudiDialogoRimborso()">Annulla</button>
+      <button class="btn-pericolo" [disabled]="elaborazioneInCorso" (click)="confermaRimborso()">
+        {{ elaborazioneInCorso ? 'Elaborazione...' : 'Conferma rimborso' }}
+      </button>
+    </div>
   </div>
 </div>
