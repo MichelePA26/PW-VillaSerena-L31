@@ -32,6 +32,11 @@ public class Prenotazione {
 
     private boolean checkInEffettuato = false;
     private java.time.LocalDateTime dataOraCheckin;
+
+    @Enumerated(EnumType.STRING)
+    private DecisoDa decisoDa;
+
+    public enum DecisoDa { UTENTE, OPERATORE }
     
 
     public Long getId() { return id; }
@@ -52,4 +57,6 @@ public class Prenotazione {
     public void setCheckInEffettuato(boolean c) { this.checkInEffettuato = c; }
     public java.time.LocalDateTime getDataOraCheckin() { return dataOraCheckin; }
     public void setDataOraCheckin(java.time.LocalDateTime d) { this.dataOraCheckin = d; }
+    public DecisoDa getDecisoDa() { return decisoDa; }
+    public void setDecisoDa(DecisoDa d) { this.decisoDa = d; }  
 }

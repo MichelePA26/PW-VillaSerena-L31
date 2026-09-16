@@ -23,17 +23,20 @@ public class PrenotazioniService {
     private final UtenteRepository utenteRepository;
     private final PagamentoRepository pagamentoRepository;
     private final PagamentiService pagamentiService;
+    private final NotificaAppService notificaAppService;
 
     public PrenotazioniService(PrenotazioneRepository prenotazioneRepository,
                                 EventoRepository eventoRepository,
                                 UtenteRepository utenteRepository,
                                 PagamentoRepository pagamentoRepository,
-                                PagamentiService pagamentiService) {
+                                PagamentiService pagamentiService,
+                                NotificaAppService notificaAppService) {
         this.prenotazioneRepository = prenotazioneRepository;
         this.eventoRepository = eventoRepository;
         this.utenteRepository = utenteRepository;
         this.pagamentoRepository = pagamentoRepository;
         this.pagamentiService = pagamentiService;
+        this.notificaAppService = notificaAppService;
     }
 
     public PrenotazioneDTO crea(PrenotazioneRequest request) {
@@ -90,9 +93,11 @@ public class PrenotazioniService {
             throw new RuntimeException("Questa prenotazione non è in attesa di una decisione");
         }
         p.setStato(Prenotazione.Stato.CONFERMATA);
+        p.setDecisoDa(Prenotazione.DecisoDa.UTENTE);
         p.setDataScadenzaRisposta(null);
         return PrenotazioneDTO.daEntita(prenotazioneRepository.save(p));
     }
+
 
     public PrenotazioneDTO richiediRimborso(Long prenotazioneId) {
         Prenotazione p = prenotazioneCorrenteDiProprieta(prenotazioneId);
@@ -109,6 +114,7 @@ public class PrenotazioniService {
         } else {
             p.setStato(Prenotazione.Stato.ANNULLATA);
         }
+        p.setDecisoDa(Prenotazione.DecisoDa.UTENTE);
         p.setDataScadenzaRisposta(null);
         return PrenotazioneDTO.daEntita(prenotazioneRepository.save(p));
     }
@@ -166,6 +172,51 @@ public class PrenotazioniService {
         p.setCheckInEffettuato(true);
         p.setDataOraCheckin(java.time.LocalDateTime.now());
         return PrenotazioneDTO.daEntita(prenotazioneRepository.save(p));
+    }
+
+    public PrenotazioneDTO risolviDOfficio(Long prenotazioneId, String decisione) {
+        Prenotazione p = prenotazioneRepository.findById(prenotazioneId)
+                .orElseThrow(() -> new RuntimeException("Prenotazione non trovata"));
+
+        if (p.getStato() != Prenotazione.Stato.IN_ATTESA_MIGRAZIONE) {
+            throw new RuntimeException("Questa prenotazione non è in attesa di una decisione");
+        }
+        if (p.getDataScadenzaRisposta() == null || p.getDataScadenzaRisposta().isAfter(java.time.LocalDateTime.now())) {
+            throw new RuntimeException("Il termine per la risposta del cliente non è ancora scaduto");
+        }
+
+        if ("ACCETTA".equalsIgnoreCase(decisione)) {
+            p.setStato(Prenotazione.Stato.CONFERMATA);
+            p.setDecisoDa(Prenotazione.DecisoDa.OPERATORE);
+            p.setDataScadenzaRisposta(null);
+            prenotazioneRepository.save(p);
+            notificaAppService.crea(p.getUtente(),
+                    "Il nostro staff ha confermato la tua prenotazione per \"" + p.getEvento().getTitolo() + "\" alla nuova data",
+                    "/le-mie-prenotazioni");
+
+        } else if ("RIMBORSA".equalsIgnoreCase(decisione)) {
+            var pagamentoEsistente = pagamentoRepository.findByPrenotazioneId(prenotazioneId)
+                    .filter(pag -> pag.getStato() == Pagamento.Stato.COMPLETATO);
+
+            if (pagamentoEsistente.isPresent()) {
+                pagamentiService.rimborsa(pagamentoEsistente.get());
+                p.setStato(Prenotazione.Stato.RIMBORSATA);
+            } else {
+                p.setStato(Prenotazione.Stato.ANNULLATA);
+            }
+            p.setDecisoDa(Prenotazione.DecisoDa.OPERATORE);
+            p.setDataScadenzaRisposta(null);
+            prenotazioneRepository.save(p);
+
+            notificaAppService.crea(p.getUtente(),
+                    "Il nostro staff ha gestito la tua prenotazione per \"" + p.getEvento().getTitolo() + "\": " +
+                    (pagamentoEsistente.isPresent() ? "pagamento rimborsato" : "prenotazione annullata"),
+                    "/le-mie-prenotazioni");
+        } else {
+            throw new RuntimeException("Decisione non valida");
+        }
+
+        return PrenotazioneDTO.daEntita(p);
     }
 
 }

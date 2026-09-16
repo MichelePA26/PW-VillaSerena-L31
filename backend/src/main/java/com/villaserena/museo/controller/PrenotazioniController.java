@@ -63,4 +63,10 @@ public class PrenotazioniController {
     public PrenotazioneDTO effettuaCheckIn(@PathVariable String codice) {
         return prenotazioniService.effettuaCheckIn(codice);
     }
+
+    @PutMapping("/{id}/risolvi-ufficio")
+    @PreAuthorize("hasRole('OPERATORE')")
+    public PrenotazioneDTO risolviDOfficio(@PathVariable Long id, @RequestParam String decisione) {
+        return prenotazioniService.risolviDOfficio(id, decisione);
+    }
 }

@@ -1,5 +1,6 @@
 package com.villaserena.museo.service;
 
+import org.springframework.web.client.HttpClientErrorException;
 import com.villaserena.museo.model.Pagamento;
 import com.villaserena.museo.model.Prenotazione;
 import com.villaserena.museo.repository.PagamentoRepository;
@@ -95,7 +96,20 @@ public class PagamentiService {
         if (pagamento.getIdCatturaPaypal() == null) {
             throw new RuntimeException("Impossibile rimborsare: nessuna cattura PayPal registrata");
         }
-        payPalService.rimborsaCattura(pagamento.getIdCatturaPaypal());
+
+        try {
+            payPalService.rimborsaCattura(pagamento.getIdCatturaPaypal());
+        } catch (HttpClientErrorException e) {
+            String corpo = e.getResponseBodyAsString();
+            if (corpo != null && corpo.contains("CAPTURE_FULLY_REFUNDED")) {
+                // Il rimborso era già stato eseguito in precedenza (es. per un errore
+                // avvenuto dopo la chiamata a PayPal ma prima del salvataggio locale):
+                // sincronizziamo comunque il nostro stato, senza considerarlo un errore.
+            } else {
+                throw e;
+            }
+        }
+
         pagamento.setStato(Pagamento.Stato.RIMBORSATO);
         pagamentoRepository.save(pagamento);
     }

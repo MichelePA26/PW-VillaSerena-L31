@@ -38,10 +38,12 @@ public class PayPalService {
         body.add("grant_type", "client_credentials");
 
         HttpEntity<MultiValueMap<String, String>> richiesta = new HttpEntity<>(body, headers);
+        @SuppressWarnings("rawtypes")
         ResponseEntity<Map> risposta = restTemplate.postForEntity(baseUrl + "/v1/oauth2/token", richiesta, Map.class);
         return (String) risposta.getBody().get("access_token");
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, Object> creaOrdine(BigDecimal importo, String valuta, Long prenotazioneId) {
         String token = ottieniAccessToken();
 
@@ -58,10 +60,12 @@ public class PayPalService {
         );
 
         HttpEntity<Map<String, Object>> richiesta = new HttpEntity<>(corpo, headers);
+        @SuppressWarnings("rawtypes")
         ResponseEntity<Map> risposta = restTemplate.postForEntity(baseUrl + "/v2/checkout/orders", richiesta, Map.class);
         return risposta.getBody();
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, Object> catturaOrdine(String orderId) {
         String token = ottieniAccessToken();
         HttpHeaders headers = new HttpHeaders();
@@ -69,12 +73,14 @@ public class PayPalService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<Void> richiesta = new HttpEntity<>(headers);
+        @SuppressWarnings("rawtypes")
         ResponseEntity<Map> risposta = restTemplate.postForEntity(
                 baseUrl + "/v2/checkout/orders/" + orderId + "/capture", richiesta, Map.class);
         return risposta.getBody();
     }
 
     // Rimborso totale di una cattura già effettuata
+    @SuppressWarnings("unchecked")
     public Map<String, Object> rimborsaCattura(String captureId) {
         String token = ottieniAccessToken();
         HttpHeaders headers = new HttpHeaders();
@@ -82,6 +88,7 @@ public class PayPalService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<Map<String, Object>> richiesta = new HttpEntity<>(Map.of(), headers);
+        @SuppressWarnings("rawtypes")
         ResponseEntity<Map> risposta = restTemplate.postForEntity(
                 baseUrl + "/v2/payments/captures/" + captureId + "/refund", richiesta, Map.class);
         return risposta.getBody();

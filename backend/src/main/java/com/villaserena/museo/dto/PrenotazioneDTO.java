@@ -19,6 +19,7 @@ public class PrenotazioneDTO {
     private String utenteNome;
     private boolean checkInEffettuato;
     private java.time.LocalDateTime dataOraCheckin;
+    private Prenotazione.DecisoDa decisoDa;
 
 
     public static PrenotazioneDTO daEntita(Prenotazione p) {
@@ -37,6 +38,7 @@ public class PrenotazioneDTO {
         dto.utenteNome = p.getUtente().getNome() + " " + p.getUtente().getCognome();
         dto.checkInEffettuato = p.isCheckInEffettuato();
         dto.dataOraCheckin = p.getDataOraCheckin();
+        dto.decisoDa = p.getDecisoDa();
         return dto;
     }
 
@@ -54,4 +56,5 @@ public class PrenotazioneDTO {
     public String getUtenteNome() { return utenteNome; }
     public boolean isCheckInEffettuato() { return checkInEffettuato; }
     public java.time.LocalDateTime getDataOraCheckin() { return dataOraCheckin; }
+    public Prenotazione.DecisoDa getDecisoDa() { return decisoDa; }
 }
