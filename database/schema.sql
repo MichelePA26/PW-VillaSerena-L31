@@ -23,20 +23,20 @@ CREATE TABLE dipendente (
   data_assunzione DATE NOT NULL,
   data_cessazione DATE NULL,
   stato ENUM('ATTIVO','CESSATO') DEFAULT 'ATTIVO',
-  codice_fiscale VARCHAR(255), -- cifrato
+  codice_fiscale VARCHAR(255),
   data_nascita DATE,
   telefono VARCHAR(30),
   indirizzo VARCHAR(255),
   tipo_contratto ENUM('TEMPO_DETERMINATO','TEMPO_INDETERMINATO','PART_TIME','STAGIONALE'),
   livello_inquadramento VARCHAR(50),
-  iban VARCHAR(255), -- cifrato
+  iban VARCHAR(255),
   FOREIGN KEY (utente_id) REFERENCES utente(id)
 );
 
 CREATE TABLE collezione (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY, 
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(150) NOT NULL,
-  descrizione TEXT  
+  descrizione TEXT
 );
 
 CREATE TABLE opera (
@@ -47,19 +47,28 @@ CREATE TABLE opera (
   anno INT,
   tecnica VARCHAR(150),
   descrizione TEXT,
-  immagine_url VARCHAR(255),
-  FOREIGN KEY (collezione_id) REFERENCES collezione(id)
+  immagine_url VARCHAR(500),
+  data_creazione DATETIME,
+  data_modifica DATETIME,
+  creato_da BIGINT,
+  FOREIGN KEY (collezione_id) REFERENCES collezione(id),
+  FOREIGN KEY (creato_da) REFERENCES utente(id)
 );
 
 CREATE TABLE evento (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  titolo VARCHAR (200) NOT NULL,
+  titolo VARCHAR(200) NOT NULL,
   descrizione TEXT,
   tipo ENUM('VISITA_GUIDATA','MOSTRA','LABORATORIO') NOT NULL,
   data_inizio DATETIME NOT NULL,
   data_fine DATETIME NOT NULL,
-  capienza_max INT NOT NULL
+  capienza_max INT NOT NULL,
+  stato ENUM('PROGRAMMATO','DA_RIPROGRAMMARE','ANNULLATO') NOT NULL DEFAULT 'PROGRAMMATO',
+  prezzo DECIMAL(10,2) NULL
 );
+
+-- PRENOTAZIONE
+-- codice_biglietto: generato come VS-{eventoId}-{prenotazioneId}
 
 CREATE TABLE prenotazione (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -67,7 +76,12 @@ CREATE TABLE prenotazione (
   evento_id BIGINT NOT NULL,
   numero_posti INT NOT NULL DEFAULT 1,
   data_prenotazione DATETIME DEFAULT CURRENT_TIMESTAMP,
-  stato ENUM('CONFERMATA','ANNULLATA') DEFAULT 'CONFERMATA',
+  stato ENUM('CONFERMATA','ANNULLATA','IN_ATTESA_PAGAMENTO','IN_ATTESA_MIGRAZIONE','RIMBORSATA') DEFAULT 'CONFERMATA',
+  data_scadenza_risposta DATETIME NULL,
+  codice_biglietto VARCHAR(50) UNIQUE,
+  check_in_effettuato BOOLEAN NOT NULL DEFAULT FALSE,
+  data_ora_checkin DATETIME NULL,
+  deciso_da ENUM('UTENTE','OPERATORE') NULL,
   FOREIGN KEY (utente_id) REFERENCES utente(id),
   FOREIGN KEY (evento_id) REFERENCES evento(id)
 );
@@ -89,6 +103,9 @@ CREATE TABLE richiesta_ferie (
   tipo ENUM('FERIE','PERMESSO') NOT NULL,
   data_inizio DATE NOT NULL,
   data_fine DATE NOT NULL,
+  ora_inizio TIME NULL,
+  ora_fine TIME NULL,
+  motivo VARCHAR(500),
   stato ENUM('IN_ATTESA','APPROVATA','RIFIUTATA') DEFAULT 'IN_ATTESA',
   approvata_da BIGINT NULL,
   FOREIGN KEY (dipendente_id) REFERENCES dipendente(id),
@@ -101,23 +118,48 @@ CREATE TABLE turno (
   data DATE NOT NULL,
   ora_inizio TIME NOT NULL,
   ora_fine TIME NOT NULL,
-  reparto varchar(100),
+  reparto VARCHAR(100),
   FOREIGN KEY (dipendente_id) REFERENCES dipendente(id)
 );
 
+
+-- NOTIFICA
+-- Notifiche in-app generiche: qualsiasi Utente può essere destinatario
+-- (dipendenti per ferie/turni, chiunque per pagamenti/eventi annullati).
+
+CREATE TABLE notifica (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  destinatario_id BIGINT NOT NULL,
+  testo VARCHAR(500) NOT NULL,
+  letta BOOLEAN NOT NULL DEFAULT FALSE,
+  data DATETIME DEFAULT CURRENT_TIMESTAMP,
+  link VARCHAR(255),
+  FOREIGN KEY (destinatario_id) REFERENCES utente(id)
+);
+
+
+-- PAGAMENTO
+-- id_cattura_paypal è necessario (oltre a id_ordine_paypal) per poter
+-- effettuare un eventuale rimborso tramite le API PayPal.
+
 CREATE TABLE pagamento (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  prenotazione_id BIGINT NOT NULL,
+  prenotazione_id BIGINT NOT NULL UNIQUE,
   importo DECIMAL(10,2) NOT NULL,
-  valuta VARCHAR(10) NOT NULL DEFAULT 'EUR',
-  stato ENUM('IN_ATTESA','COMPLETATO','FALLITO') DEFAULT 'IN_ATTESA',
+  valuta VARCHAR(3) NOT NULL DEFAULT 'EUR',
+  stato ENUM('IN_ATTESA','COMPLETATO','FALLITO','RIMBORSATO') DEFAULT 'IN_ATTESA',
   id_ordine_paypal VARCHAR(50),
+  id_cattura_paypal VARCHAR(50),
   data DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (prenotazione_id) REFERENCES prenotazione(id)
 );
 
-
--- Esempio di dati
+-- Dati di esempio
+-- Nota: i campi cifrati (codice_fiscale, iban) sono lasciati NULL in
+-- questo script perché la cifratura avviene a livello applicativo
+-- (JPA AttributeConverter): un valore inserito qui in chiaro via SQL
+-- non verrebbe letto correttamente dall'applicazione. Per popolarli,
+-- usare l'endpoint POST /api/personale.
 
 INSERT INTO utente (nome, cognome, email, password_hash, ruolo) VALUES
 ('Maria', 'Rossi', 'maria.rossi@example.com', '$2a$10$examplehash1', 'HR'),
@@ -129,7 +171,7 @@ INSERT INTO utente (nome, cognome, email, password_hash, ruolo) VALUES
 ('Chiara', 'Romano', 'chiara.romano@example.com', '$2a$10$examplehash6', 'OPERATORE'),
 ('Marco', 'Greco', 'marco.greco@example.com', '$2a$10$examplehash7', 'OPERATORE');
 
-INSERT INTO dipendente (utente_id, mansione, data_assunzione, tipo_contratto, livello_inquadramento ) VALUES
+INSERT INTO dipendente (utente_id, mansione, data_assunzione, tipo_contratto, livello_inquadramento) VALUES
 (1, 'Responsabile HR', '2019-03-01', 'TEMPO_INDETERMINATO', 'Quadro'),
 (2, 'Operatore di sala', '2021-06-15', 'TEMPO_INDETERMINATO', 'Livello 3'),
 (4, 'Curatrice collezioni', '2020-01-10', 'TEMPO_INDETERMINATO', 'Livello 4'),
@@ -143,24 +185,24 @@ INSERT INTO collezione (nome, descrizione) VALUES
 ('Fotografia moderna', 'Percorso fotografico dagli anni Sessanta a oggi'),
 ('Arte digitale e new media', 'Installazioni interattive e opere generative');
 
-INSERT INTO opera (collezione_id, titolo, autore, anno, tecnica, descrizione) VALUES
-(1, 'Composizione n.3', 'A. Ferretti', 1965, 'Olio su tela', 'Composizione astratta a colori caldi, esempio della fase matura dell''artista.'),
-(1, 'Ritratto senza volto', 'E. Marchetti', 1978, 'Tecnica mista su tavola', 'Ritratto che elude i tratti del volto, riflessione sull''identità e l''anonimato.'),
-(1, 'Studio per una piazza', 'G. Bruno', 1958, 'Olio su tela', 'Studio preparatorio per un dipinto di più ampio respiro dedicato agli spazi urbani.'),
-(2, 'Frammenti urbani', 'S. Conti', 2018, 'Installazione mista', 'Installazione che assembla materiali di recupero raccolti in contesti metropolitani.'),
-(2, 'Silenzio metropolitano', 'L. De Angelis', 2021, 'Acrilico su tela', 'Paesaggio urbano notturno, giocato su toni freddi e atmosfere sospese.'),
-(2, 'Geometrie sospese', 'F. Rinaldi', 2019, 'Scultura in acciaio', 'Scultura modulare in acciaio che esplora l''equilibrio tra vuoto e pieno.'),
-(3, 'Volti della città', 'P. Moretti', 1985, 'Stampa fotografica b/n', 'Reportage fotografico sulla vita quotidiana nei quartieri storici.'),
-(3, 'Istanti', 'R. Galli', 2002, 'Stampa fotografica a colori', 'Serie di scatti che catturano momenti fugaci della vita urbana contemporanea.'),
-(4, 'Flusso #1', 'Collettivo Nimbus', 2023, 'Installazione video generativa', 'Installazione generativa che rielabora in tempo reale i dati di affluenza del museo.');
+INSERT INTO opera (collezione_id, titolo, autore, anno, tecnica, descrizione, data_creazione, data_modifica, creato_da) VALUES
+(1, 'Composizione n.3', 'A. Ferretti', 1965, 'Olio su tela', 'Composizione astratta a colori caldi, esempio della fase matura dell''artista.', NOW(), NOW(), 1),
+(1, 'Ritratto senza volto', 'E. Marchetti', 1978, 'Tecnica mista su tavola', 'Ritratto che elude i tratti del volto, riflessione sull''identità e l''anonimato.', NOW(), NOW(), 1),
+(1, 'Studio per una piazza', 'G. Bruno', 1958, 'Olio su tela', 'Studio preparatorio per un dipinto di più ampio respiro dedicato agli spazi urbani.', NOW(), NOW(), 1),
+(2, 'Frammenti urbani', 'S. Conti', 2018, 'Installazione mista', 'Installazione che assembla materiali di recupero raccolti in contesti metropolitani.', NOW(), NOW(), 1),
+(2, 'Silenzio metropolitano', 'L. De Angelis', 2021, 'Acrilico su tela', 'Paesaggio urbano notturno, giocato su toni freddi e atmosfere sospese.', NOW(), NOW(), 1),
+(2, 'Geometrie sospese', 'F. Rinaldi', 2019, 'Scultura in acciaio', 'Scultura modulare in acciaio che esplora l''equilibrio tra vuoto e pieno.', NOW(), NOW(), 1),
+(3, 'Volti della città', 'P. Moretti', 1985, 'Stampa fotografica b/n', 'Reportage fotografico sulla vita quotidiana nei quartieri storici.', NOW(), NOW(), 1),
+(3, 'Istanti', 'R. Galli', 2002, 'Stampa fotografica a colori', 'Serie di scatti che catturano momenti fugaci della vita urbana contemporanea.', NOW(), NOW(), 1),
+(4, 'Flusso #1', 'Collettivo Nimbus', 2023, 'Installazione video generativa', 'Installazione generativa che rielabora in tempo reale i dati di affluenza del museo.', NOW(), NOW(), 1);
 
-INSERT INTO evento( titolo, descrizione, tipo, data_inizio, data_fine, capienza_max) VALUES
-('Visita guidata collezione permanente', 'Percorso guidato tra le opere del Novecento', 'VISITA_GUIDATA', '2026-09-05 10:00:00', '2026-09-05 11:30:00', 20),
-('Laboratorio per famiglie', 'Attività creativa dedicata a bambini e famiglie', 'LABORATORIO', '2026-09-12 15:00:00', '2026-09-12 17:00:00', 15),
-('Mostra: Fotografia moderna', 'Apertura della mostra temporanea di fotografia', 'MOSTRA', '2026-09-20 18:00:00', '2026-09-20 21:00:00', 60),
-('Visita guidata serale', 'Apertura straordinaria serale con visita guidata', 'VISITA_GUIDATA', '2026-10-03 19:00:00', '2026-10-03 20:30:00', 25),
-('Laboratorio arte digitale', 'Introduzione alle installazioni interattive per ragazzi', 'LABORATORIO', '2026-10-10 16:00:00', '2026-10-10 18:00:00', 12),
-('Mostra: Arte contemporanea', 'Nuovo allestimento della collezione contemporanea', 'MOSTRA', '2026-10-18 17:00:00', '2026-10-18 20:00:00', 50);
+INSERT INTO evento( titolo, descrizione, tipo, data_inizio, data_fine, capienza_max, stato, prezzo) VALUES
+('Visita guidata collezione permanente', 'Percorso guidato tra le opere del Novecento', 'VISITA_GUIDATA', '2026-09-05 10:00:00', '2026-09-05 11:30:00', 20, 'PROGRAMMATO', NULL),
+('Laboratorio per famiglie', 'Attività creativa dedicata a bambini e famiglie', 'LABORATORIO', '2026-09-12 15:00:00', '2026-09-12 17:00:00', 15, 'PROGRAMMATO', NULL),
+('Mostra: Fotografia moderna', 'Apertura della mostra temporanea di fotografia', 'MOSTRA', '2026-09-20 18:00:00', '2026-09-20 21:00:00', 60, 'PROGRAMMATO', 15.00),
+('Visita guidata serale', 'Apertura straordinaria serale con visita guidata', 'VISITA_GUIDATA', '2026-10-03 19:00:00', '2026-10-03 20:30:00', 25, 'PROGRAMMATO', 10.00),
+('Laboratorio arte digitale', 'Introduzione alle installazioni interattive per ragazzi', 'LABORATORIO', '2026-10-10 16:00:00', '2026-10-10 18:00:00', 12, 'PROGRAMMATO', NULL),
+('Mostra: Arte contemporanea', 'Nuovo allestimento della collezione contemporanea', 'MOSTRA', '2026-10-18 17:00:00', '2026-10-18 20:00:00', 50, 'PROGRAMMATO', 15.00);
 
 INSERT INTO turno(dipendente_id, data, ora_inizio, ora_fine, reparto) VALUES
 (2, '2026-09-05', '09:00:00', '13:00:00', 'Sala espositiva'),
