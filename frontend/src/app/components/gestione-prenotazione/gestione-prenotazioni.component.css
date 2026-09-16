@@ -474,3 +474,87 @@
 
 .check-effettuato { color: #2e7d32; font-size: 0.82rem; }
 .check-mancante { color: #a89a89; }
+
+.badge-stato-prenotazione.scaduta {
+  background: #fdf1ee;
+  color: #b0452f;
+  font-weight: 600;
+}
+
+.nota-decisione {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--testo-tenue);
+  margin-top: 0.2rem;
+}
+
+.modale-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 35, 32, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1.5rem;
+}
+
+.dialogo-ufficio {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 20px 50px rgba(43, 35, 32, 0.25);
+}
+
+.dialogo-titolo {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.1rem;
+  color: var(--bruno-scuro);
+  margin: 0 0 0.2rem;
+}
+
+.dialogo-sottotitolo {
+  font-size: 0.82rem;
+  color: var(--testo-tenue);
+  margin: 0 0 0.8rem;
+}
+
+.dialogo-testo {
+  font-size: 0.85rem;
+  color: var(--testo-soft);
+  margin: 0 0 1.2rem;
+}
+
+.dialogo-azioni-verticali {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.dialogo-azioni-verticali button {
+  padding: 0.65rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primario {
+  background: var(--bruno-scuro);
+  color: #faf7f2;
+}
+
+.btn-pericolo {
+  background: #b0452f;
+  color: #fff;
+}
+
+.btn-secondario {
+  background: #fff;
+  border: 1px solid #ddd !important;
+  color: var(--testo-soft);
+}
+
+button:disabled { opacity: 0.6; cursor: not-allowed; }

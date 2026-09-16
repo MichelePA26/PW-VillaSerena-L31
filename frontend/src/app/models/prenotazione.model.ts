@@ -1,6 +1,7 @@
 import { StatoEvento } from "./evento.model";
 
 export type StatoPrenotazione = 'CONFERMATA' | 'ANNULLATA' | 'IN_ATTESA_PAGAMENTO' | 'IN_ATTESA_MIGRAZIONE' | 'RIMBORSATA';
+export type DecisoDa = 'UTENTE' | 'OPERATORE';
 export { StatoEvento };
 
 export interface Prenotazione {
@@ -18,6 +19,7 @@ export interface Prenotazione {
   utenteNome?: string;
   checkInEffettuato?: boolean;
   dataOraCheckin?: string;
+  decisoDa?: DecisoDa;
 }
 
 

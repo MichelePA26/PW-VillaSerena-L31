@@ -46,4 +46,8 @@ export class PrenotazioniService {
   effettuaCheckIn(codice: string): Observable<Prenotazione> {
     return this.http.put<Prenotazione>(`${this.apiUrl}/check-in/${codice}`, {});
   }
+
+  risolviDOfficio(id: number, decisione: 'ACCETTA' | 'RIMBORSA'): Observable<Prenotazione> {
+    return this.http.put<Prenotazione>(`${this.apiUrl}/${id}/risolvi-ufficio?decisione=${decisione}`, {});
+  }
 }

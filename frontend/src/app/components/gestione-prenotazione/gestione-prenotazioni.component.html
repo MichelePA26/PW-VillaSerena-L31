@@ -31,6 +31,7 @@
             <th>Codice biglietto</th>
             <th>Stato</th>
             <th>Check-in</th>
+            <th class="col-azioni">Azioni</th>
           </tr>
         </thead>
         <tbody>
@@ -41,18 +42,24 @@
             <td><code>{{ p.codiceBiglietto }}</code></td>
             <td>
               <span class="badge-stato-prenotazione"
-                    [class.attenzione]="p.stato === 'IN_ATTESA_PAGAMENTO' || p.stato === 'IN_ATTESA_MIGRAZIONE'"
+                    [class.attenzione]="(p.stato === 'IN_ATTESA_PAGAMENTO' || p.stato === 'IN_ATTESA_MIGRAZIONE') && !isScaduta(p)"
+                    [class.scaduta]="isScaduta(p)"
                     [class.annullato]="p.stato === 'ANNULLATA' || p.stato === 'RIMBORSATA'">
-                {{ etichettaStato(p.stato) }}
+                {{ isScaduta(p) ? 'Scaduta' : etichettaStato(p.stato) }}
               </span>
+              <span class="nota-decisione" *ngIf="p.decisoDa">{{ etichettaDecisoDa(p) }}</span>
             </td>
             <td>
               <span *ngIf="p.checkInEffettuato" class="check-effettuato"><i class="fa-solid fa-circle-check"></i> Sì</span>
               <span *ngIf="!p.checkInEffettuato" class="check-mancante">—</span>
             </td>
+            <td class="col-azioni">
+              <a *ngIf="isScaduta(p)" (click)="apriDialogoUfficio(p)">Risolvi d'ufficio</a>
+              <span *ngIf="!isScaduta(p)">—</span>
+            </td>
           </tr>
           <tr *ngIf="prenotazioniPaginate.length === 0">
-            <td colspan="6" class="riga-vuota">Nessuna prenotazione trovata.</td>
+            <td colspan="7" class="riga-vuota">Nessuna prenotazione trovata.</td>
           </tr>
         </tbody>
       </table>
@@ -65,6 +72,31 @@
         <span class="pagina-numero">{{ paginaCorrente }}</span>
         <button (click)="paginaSuccessiva()" [disabled]="paginaCorrente === totalePagine">Successiva</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="modale-overlay" *ngIf="dialogoUfficioAperto" (click)="chiudiDialogoUfficio()">
+  <div class="dialogo-ufficio" (click)="$event.stopPropagation()">
+    <p class="dialogo-titolo">Risolvi d'ufficio</p>
+    <p class="dialogo-sottotitolo" *ngIf="prenotazionePerUfficio">
+      {{ prenotazionePerUfficio.utenteNome }} — {{ prenotazionePerUfficio.eventoTitolo }}
+    </p>
+    <p class="dialogo-testo">
+     Il cliente non ha risposto entro il termine previsto.
+     Dopo aver provato a contattarlo senza ricevere risposta, puoi procedere con il rimborso.
+    </p>
+
+    <div class="dialogo-azioni-verticali">
+      <button class="btn-primario" [disabled]="elaborazioneInCorso" (click)="risolviUfficio('ACCETTA')">
+        Conferma la nuova data
+      </button>
+      <button class="btn-pericolo" [disabled]="elaborazioneInCorso" (click)="risolviUfficio('RIMBORSA')">
+        {{ elaborazioneInCorso ? 'Elaborazione...' : 'Procedi con il rimborso' }}
+      </button>
+      <button class="btn-secondario" [disabled]="elaborazioneInCorso" (click)="chiudiDialogoUfficio()">
+        Annulla
+      </button>
     </div>
   </div>
 </div>

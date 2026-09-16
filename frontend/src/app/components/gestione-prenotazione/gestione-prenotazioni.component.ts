@@ -22,6 +22,10 @@ export class GestionePrenotazioniComponent implements OnInit {
   paginaCorrente = 1;
   elementiPerPagina = 10;
 
+  dialogoUfficioAperto = false;
+  prenotazionePerUfficio: Prenotazione | null = null;
+  elaborazioneInCorso = false;
+
   constructor(
     private prenotazioniService: PrenotazioniService,
     private eventiService: EventiService
@@ -77,5 +81,41 @@ export class GestionePrenotazioniComponent implements OnInit {
       RIMBORSATA: 'Rimborsata'
     };
     return etichette[stato || ''] || stato || '';
+  }
+
+  isScaduta(p: Prenotazione): boolean {
+    if (p.stato !== 'IN_ATTESA_MIGRAZIONE' || !p.dataScadenzaRisposta) return false;
+    return new Date(p.dataScadenzaRisposta) < new Date();
+  }
+
+  apriDialogoUfficio(p: Prenotazione): void {
+    this.prenotazionePerUfficio = p;
+    this.dialogoUfficioAperto = true;
+  }
+
+  chiudiDialogoUfficio(): void {
+    this.dialogoUfficioAperto = false;
+    this.prenotazionePerUfficio = null;
+  }
+
+  risolviUfficio(decisione: 'ACCETTA' | 'RIMBORSA'): void {
+    if (!this.prenotazionePerUfficio) return;
+    this.elaborazioneInCorso = true;
+    this.prenotazioniService.risolviDOfficio(this.prenotazionePerUfficio.id!, decisione).subscribe({
+      next: () => {
+        this.elaborazioneInCorso = false;
+        this.chiudiDialogoUfficio();
+        this.carica();
+      },
+      error: err => {
+        this.elaborazioneInCorso = false;
+        alert(err.error?.errore || 'Operazione non riuscita.');
+      }
+    });
+  }
+
+  etichettaDecisoDa(p: Prenotazione): string {
+    if (!p.decisoDa) return '';
+    return p.decisoDa === 'OPERATORE' ? ' (decisione operatore)' : ' (decisione utente)';
   }
 }
