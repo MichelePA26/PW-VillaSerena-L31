@@ -6,10 +6,41 @@ services:
     container_name: museo_db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: "!MuseoVillaSerena@2026"
-      MYSQL_DATABASE: museo_villaserena
-      ports:
-        - "3306:3306"
-      volumes:
-        - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
-        - museo_db_data:/var/lib/mysql
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - museo_db_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    container_name: museo_backend
+    restart: unless-stopped
+    environment:
+      DB_HOST: database
+      DB_PORT: ${DB_PORT:-3306}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID}
+      PAYPAL_CLIENT_SECRET: ${PAYPAL_CLIENT_SECRET}
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    depends_on:
+      - database
+
+  frontend:
+    build: ./frontend
+    container_name: museo_frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-4200}:80"
+    depends_on:
+      - backend
+
+volumes:
+  museo_db_data:
