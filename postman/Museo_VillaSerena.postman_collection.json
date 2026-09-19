@@ -1,0 +1,402 @@
+{
+  "info": {
+    "name": "Museo Villa Serena - API",
+    "description": "Collezione di richieste per testare le API REST del prototipo (Project Work - Digitalizzazione impresa culturale). L'utente autenticato viene sempre ricavato dal token JWT: nessuna richiesta richiede di specificare un utenteId o dipendenteId nel body o nella query string. L'importo dei pagamenti è sempre ricalcolato lato server e non viene mai inviato dal client.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Registrazione visitatore",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/register?password=Password123",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nome\": \"Giulia\",\n  \"cognome\": \"Verdi\",\n  \"email\": \"giulia.verdi@example.com\"\n}" }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"giulia.verdi@example.com\",\n  \"password\": \"Password123\"\n}" }
+          }
+        },
+        {
+          "name": "Cambia password",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/auth/password",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"passwordAttuale\": \"Password123\",\n  \"nuovaPassword\": \"NuovaPassword456\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Catalogo",
+      "item": [
+        { "name": "Elenco opere", "request": { "method": "GET", "url": "{{baseUrl}}/api/opere" } },
+        {
+          "name": "Crea opera (Operatore/HR)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/opere",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"titolo\": \"Nuova opera\",\n  \"autore\": \"Mario Rossi\",\n  \"anno\": 2020,\n  \"tecnica\": \"Acrilico su tela\",\n  \"descrizione\": \"Opera di esempio\",\n  \"collezioneId\": 1\n}" }
+          }
+        },
+        {
+          "name": "Modifica opera (Operatore/HR)",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/opere/1",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"titolo\": \"Titolo aggiornato\",\n  \"autore\": \"Mario Rossi\",\n  \"anno\": 2020,\n  \"tecnica\": \"Acrilico su tela\"\n}" }
+          }
+        },
+        {
+          "name": "Elimina opera (Operatore/HR)",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/opere/1", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        },
+        {
+          "name": "Carica immagine opera (Operatore/HR)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/upload",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": { "mode": "formdata", "formdata": [{ "key": "file", "type": "file", "src": "" }] }
+          }
+        },
+        { "name": "Elenco collezioni", "request": { "method": "GET", "url": "{{baseUrl}}/api/collezioni" } },
+        {
+          "name": "Crea collezione (Operatore/HR)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/collezioni",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"nome\": \"Arte contemporanea\",\n  \"descrizione\": \"Opere di artisti contemporanei\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Eventi",
+      "item": [
+        { "name": "Elenco eventi", "request": { "method": "GET", "url": "{{baseUrl}}/api/eventi" } },
+        {
+          "name": "Crea evento (Operatore/HR)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/eventi",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"titolo\": \"Visita serale\",\n  \"descrizione\": \"Apertura straordinaria\",\n  \"tipo\": \"VISITA_GUIDATA\",\n  \"dataInizio\": \"2026-10-01T18:00:00\",\n  \"dataFine\": \"2026-10-01T20:00:00\",\n  \"capienzaMax\": 25,\n  \"prezzo\": 10.00\n}" }
+          }
+        },
+        {
+          "name": "Modifica evento (Operatore/HR)",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/eventi/1",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"titolo\": \"Visita serale (nuovo orario)\",\n  \"tipo\": \"VISITA_GUIDATA\",\n  \"dataInizio\": \"2026-10-01T19:00:00\",\n  \"dataFine\": \"2026-10-01T21:00:00\",\n  \"capienzaMax\": 25\n}" }
+          }
+        },
+        {
+          "name": "Cambia stato evento (Operatore/HR)",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/eventi/1/stato?stato=DA_RIPROGRAMMARE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Elimina evento (Operatore/HR)",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/eventi/1", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        }
+      ]
+    },
+    {
+      "name": "Prenotazioni",
+      "item": [
+        {
+          "name": "Crea prenotazione",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/prenotazioni",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"eventoId\": 1,\n  \"numeroPosti\": 2\n}" }
+          }
+        },
+        {
+          "name": "Le mie prenotazioni",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/prenotazioni/mie", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        },
+        {
+          "name": "Elenco prenotazioni, filtrabile per evento (Operatore)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/prenotazioni?eventoId=1", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        },
+        {
+          "name": "Cerca per codice biglietto (Operatore)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/prenotazioni/cerca-biglietto/VS-1-1", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        },
+        {
+          "name": "Check-in biglietto (Operatore)",
+          "request": { "method": "PUT", "url": "{{baseUrl}}/api/prenotazioni/check-in/VS-1-1", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        },
+        {
+          "name": "Accetta nuova data (Visitatore)",
+          "request": { "method": "PUT", "url": "{{baseUrl}}/api/prenotazioni/1/accetta-nuova-data", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        },
+        {
+          "name": "Richiedi rimborso (Visitatore)",
+          "request": { "method": "PUT", "url": "{{baseUrl}}/api/prenotazioni/1/richiedi-rimborso", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        },
+        {
+          "name": "Risolvi d'ufficio (Operatore)",
+          "request": { "method": "PUT", "url": "{{baseUrl}}/api/prenotazioni/1/risolvi-ufficio?decisione=RIMBORSA", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        }
+      ]
+    },
+    {
+      "name": "Feedback",
+      "item": [
+        {
+          "name": "Invia feedback",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/feedback",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"prenotazioneId\": 1,\n  \"voto\": 5,\n  \"commento\": \"Esperienza molto positiva\"\n}" }
+          }
+        },
+        {
+          "name": "Feedback pubblici di un evento",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/feedback/evento/1" }
+        },
+        {
+          "name": "Elenco completo feedback (Operatore/HR)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/feedback", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        { "name": "Indicatori sintetici", "request": { "method": "GET", "url": "{{baseUrl}}/api/dashboard", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] } }
+      ]
+    },
+    {
+      "name": "Personale (HR)",
+      "item": [
+        { "name": "Elenco personale", "request": { "method": "GET", "url": "{{baseUrl}}/api/personale", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] } },
+        {
+          "name": "Profilo del dipendente autenticato",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/personale/me", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        },
+        {
+          "name": "Aggiorna i propri dati di contatto",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/personale/me",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"telefono\": \"+39 333 9998877\",\n  \"indirizzo\": \"Via Nuova 5, Taranto\"\n}" }
+          }
+        },
+        {
+          "name": "Assumi dipendente",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/personale",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"utenteId\": 3,\n  \"mansione\": \"Operatore di sala\",\n  \"codiceFiscale\": \"RSSMRA85M01H501Z\",\n  \"dataNascita\": \"1985-08-01\",\n  \"telefono\": \"+39 333 1234567\",\n  \"indirizzo\": \"Via Roma 10, Taranto\",\n  \"tipoContratto\": \"TEMPO_INDETERMINATO\",\n  \"livelloInquadramento\": \"Livello 3\",\n  \"iban\": \"IT60X0542811101000000123456\"\n}" }
+          }
+        },
+        {
+          "name": "Modifica dati dipendente (HR)",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/personale/2",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"mansione\": \"Responsabile di sala\",\n  \"tipoContratto\": \"TEMPO_INDETERMINATO\",\n  \"livelloInquadramento\": \"Livello 4\",\n  \"telefono\": \"\",\n  \"indirizzo\": \"\",\n  \"codiceFiscale\": \"\",\n  \"iban\": \"\"\n}" }
+          }
+        },
+        {
+          "name": "Reset password dipendente (HR)",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/personale/2/reset-password",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"nuovaPassword\": \"PasswordTemporanea789\"\n}" }
+          }
+        },
+        {
+          "name": "Cessa dipendente",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/personale/2", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        }
+      ]
+    },
+    {
+      "name": "Ferie",
+      "item": [
+        {
+          "name": "Richiedi ferie",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/ferie",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"tipo\": \"FERIE\",\n  \"dataInizio\": \"2026-08-10\",\n  \"dataFine\": \"2026-08-20\"\n}" }
+          }
+        },
+        {
+          "name": "Richiedi permesso",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/ferie",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"tipo\": \"PERMESSO\",\n  \"dataInizio\": \"2026-09-15\",\n  \"dataFine\": \"2026-09-15\",\n  \"oraInizio\": \"09:00\",\n  \"oraFine\": \"10:00\",\n  \"motivo\": \"Visita medica\"\n}" }
+          }
+        },
+        {
+          "name": "Le mie richieste",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/ferie/mie", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        },
+        {
+          "name": "Elenco completo richieste (HR)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/ferie", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        },
+        {
+          "name": "Approva/rifiuta richiesta (HR)",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/ferie/1/stato?stato=APPROVATA",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Turni",
+      "item": [
+        { "name": "Elenco turni (Operatore/HR)", "request": { "method": "GET", "url": "{{baseUrl}}/api/turni", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] } },
+        { "name": "Turni di un dipendente", "request": { "method": "GET", "url": "{{baseUrl}}/api/turni/dipendente/2", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] } },
+        {
+          "name": "Assegna turno (HR)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/turni",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"dipendenteId\": 2,\n  \"data\": \"2026-09-10\",\n  \"oraInizio\": \"09:00\",\n  \"oraFine\": \"13:00\",\n  \"reparto\": \"Sala espositiva\"\n}" }
+          }
+        },
+        {
+          "name": "Modifica turno (HR)",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/turni/1",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"dipendenteId\": 2,\n  \"data\": \"2026-09-10\",\n  \"oraInizio\": \"13:00\",\n  \"oraFine\": \"17:00\",\n  \"reparto\": \"Biglietteria\"\n}" }
+          }
+        },
+        {
+          "name": "Rimuovi turno (HR)",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/turni/1", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        }
+      ]
+    },
+    {
+      "name": "Notifiche",
+      "item": [
+        {
+          "name": "Notifiche non lette dell'utente autenticato",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/notifiche/mie", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        },
+        {
+          "name": "Segna notifica come letta",
+          "request": { "method": "PUT", "url": "{{baseUrl}}/api/notifiche/1/letta", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }] }
+        }
+      ]
+    },
+    {
+      "name": "Pagamenti (PayPal)",
+      "item": [
+        {
+          "name": "Crea ordine PayPal",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/pagamenti/crea-ordine",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"prenotazioneId\": 1\n}" }
+          }
+        },
+        {
+          "name": "Cattura ordine PayPal",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/pagamenti/ORDER_ID_RESTITUITO/cattura",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        }
+      ]
+    }
+  ]
+}
