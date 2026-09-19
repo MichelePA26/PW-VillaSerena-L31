@@ -311,7 +311,7 @@ PW-VillaSerena-L31/
 ## Documentazione aggiuntiva
 
 - **Report tecnico completo** (architettura, modello dati, scelte
-  progettuali, test): `Project_Work_Museo_Villa_Serena_5_aggiornato.docx`
+  progettuali, test): `Report_PW_Museo_Villa_Serena.odt`
 
 - **Guida al passaggio in produzione**: `Guida_Passaggio_Produzione.docx`
   e `PRODUCTION_CHECKLIST.md`
