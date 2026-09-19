@@ -12,7 +12,7 @@ ferie/permessi, turni, dashboard con indicatori sintetici).
 
 Per la descrizione completa dell'architettura, delle scelte progettuali e
 dei test effettuati, vedi il report tecnico incluso in questo repository
-(`Project_Work_Museo_Villa_Serena_5_aggiornato.docx`).
+(`Report_PW_Museo_Villa_Serena.odt`).
 
 ---
 
