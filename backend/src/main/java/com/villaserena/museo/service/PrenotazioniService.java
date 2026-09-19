@@ -45,10 +45,10 @@ public class PrenotazioniService {
         Utente utente = utenteAutenticato();
 
         int postiOccupati = prenotazioneRepository.findAll().stream()
-                .filter(p -> p.getEvento().getId().equals(evento.getId())
-                        && p.getStato() == Prenotazione.Stato.CONFERMATA || p.getStato() == Prenotazione.Stato.IN_ATTESA_PAGAMENTO)
-                .mapToInt(Prenotazione::getNumeroPosti)
-                .sum();
+            .filter(p -> p.getEvento().getId().equals(evento.getId())
+                    && (p.getStato() == Prenotazione.Stato.CONFERMATA || p.getStato() == Prenotazione.Stato.IN_ATTESA_PAGAMENTO))
+            .mapToInt(Prenotazione::getNumeroPosti)
+            .sum();
 
         if (postiOccupati + request.getNumeroPosti() > evento.getCapienzaMax()) {
             throw new RuntimeException("Capienza massima superata per l'evento selezionato");
