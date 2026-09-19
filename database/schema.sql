@@ -185,16 +185,16 @@ INSERT INTO collezione (nome, descrizione) VALUES
 ('Fotografia moderna', 'Percorso fotografico dagli anni Sessanta a oggi'),
 ('Arte digitale e new media', 'Installazioni interattive e opere generative');
 
-INSERT INTO opera (collezione_id, titolo, autore, anno, tecnica, descrizione, data_creazione, data_modifica, creato_da) VALUES
-(1, 'Composizione n.3', 'A. Ferretti', 1965, 'Olio su tela', 'Composizione astratta a colori caldi, esempio della fase matura dell''artista.', NOW(), NOW(), 1),
-(1, 'Ritratto senza volto', 'E. Marchetti', 1978, 'Tecnica mista su tavola', 'Ritratto che elude i tratti del volto, riflessione sull''identità e l''anonimato.', NOW(), NOW(), 1),
-(1, 'Studio per una piazza', 'G. Bruno', 1958, 'Olio su tela', 'Studio preparatorio per un dipinto di più ampio respiro dedicato agli spazi urbani.', NOW(), NOW(), 1),
-(2, 'Frammenti urbani', 'S. Conti', 2018, 'Installazione mista', 'Installazione che assembla materiali di recupero raccolti in contesti metropolitani.', NOW(), NOW(), 1),
-(2, 'Silenzio metropolitano', 'L. De Angelis', 2021, 'Acrilico su tela', 'Paesaggio urbano notturno, giocato su toni freddi e atmosfere sospese.', NOW(), NOW(), 1),
-(2, 'Geometrie sospese', 'F. Rinaldi', 2019, 'Scultura in acciaio', 'Scultura modulare in acciaio che esplora l''equilibrio tra vuoto e pieno.', NOW(), NOW(), 1),
-(3, 'Volti della città', 'P. Moretti', 1985, 'Stampa fotografica b/n', 'Reportage fotografico sulla vita quotidiana nei quartieri storici.', NOW(), NOW(), 1),
-(3, 'Istanti', 'R. Galli', 2002, 'Stampa fotografica a colori', 'Serie di scatti che catturano momenti fugaci della vita urbana contemporanea.', NOW(), NOW(), 1),
-(4, 'Flusso #1', 'Collettivo Nimbus', 2023, 'Installazione video generativa', 'Installazione generativa che rielabora in tempo reale i dati di affluenza del museo.', NOW(), NOW(), 1);
+INSERT INTO opera (collezione_id, titolo, autore, anno, tecnica, descrizione, immagine_url, data_creazione, data_modifica, creato_da) VALUES
+(1, 'Composizione n.3', 'A. Ferretti', 1965, 'Olio su tela', 'Composizione astratta a colori caldi, esempio della fase matura dell''artista.', 'http://localhost:8080/uploads/0174aa27-7982-468b-b138-34b663ea9366.png', NOW(), NOW(), 1),
+(1, 'Ritratto senza volto', 'E. Marchetti', 1978, 'Tecnica mista su tavola', 'Ritratto che elude i tratti del volto, riflessione sull''identità e l''anonimato.', 'http://localhost:8080/uploads/Ritratto_senza_volto.jpg', NOW(), NOW(), 1),
+(1, 'Studio per una piazza', 'G. Bruno', 1958, 'Olio su tela', 'Studio preparatorio per un dipinto di più ampio respiro dedicato agli spazi urbani.', 'http://localhost:8080/uploads/Studio_per_una_piazza.jpg', NOW(), NOW(), 1),
+(2, 'Frammenti urbani', 'S. Conti', 2018, 'Installazione mista', 'Installazione che assembla materiali di recupero raccolti in contesti metropolitani.', 'http://localhost:8080/uploads/Frammenti_urbani.jpg', NOW(), NOW(), 1),
+(2, 'Silenzio metropolitano', 'L. De Angelis', 2021, 'Acrilico su tela', 'Paesaggio urbano notturno, giocato su toni freddi e atmosfere sospese.', 'http://localhost:8080/uploads/Silenzio_metropolitano.jpg', NOW(), NOW(), 1),
+(2, 'Geometrie sospese', 'F. Rinaldi', 2019, 'Scultura in acciaio', 'Scultura modulare in acciaio che esplora l''equilibrio tra vuoto e pieno.', 'http://localhost:8080/uploads/Geometrie_sospese.jpg', NOW(), NOW(), 1),
+(3, 'Volti della città', 'P. Moretti', 1985, 'Stampa fotografica b/n', 'Reportage fotografico sulla vita quotidiana nei quartieri storici.', 'http://localhost:8080/uploads/Volti_della_città.jpg', NOW(), NOW(), 1),
+(3, 'Istanti', 'R. Galli', 2002, 'Stampa fotografica a colori', 'Serie di scatti che catturano momenti fugaci della vita urbana contemporanea.', 'http://localhost:8080/uploads/Istanti.jpg', NOW(), NOW(), 1),
+(4, 'Flusso #1', 'Collettivo Nimbus', 2023, 'Installazione video generativa', 'Installazione generativa che rielabora in tempo reale i dati di affluenza del museo.', 'http://localhost:8080/uploads/Flusso1.jpg', NOW(), NOW(), 1);
 
 INSERT INTO evento( titolo, descrizione, tipo, data_inizio, data_fine, capienza_max, stato, prezzo) VALUES
 ('Visita guidata collezione permanente', 'Percorso guidato tra le opere del Novecento', 'VISITA_GUIDATA', '2026-09-05 10:00:00', '2026-09-05 11:30:00', 20, 'PROGRAMMATO', NULL),
