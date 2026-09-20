@@ -157,9 +157,16 @@ CREATE TABLE pagamento (
 -- Dati di esempio
 -- Nota: i campi cifrati (codice_fiscale, iban) sono lasciati NULL in
 -- questo script perché la cifratura avviene a livello applicativo
--- (JPA AttributeConverter): un valore inserito qui in chiaro via SQL
--- non verrebbe letto correttamente dall'applicazione. Per popolarli,
--- usare l'endpoint POST /api/personale.
+-- (JPA AttributeConverter) con una chiave scelta da chi installa il
+-- progetto: un valore inserito qui in chiaro (o cifrato con una
+-- chiave diversa da quella configurata) non verrebbe letto
+-- correttamente dall'applicazione. Per popolarli, usare l'endpoint
+-- POST /api/personale oppure "Modifica dipendente" dal pannello HR.
+--
+-- Le date di eventi e turni sono calcolate rispetto alla data di
+-- esecuzione dello script (CURDATE()), non fissate a valori assoluti:
+-- così restano sempre "vicine ad oggi", indipendentemente da quando
+-- il progetto viene installato, invece di invecchiare nel tempo.
 
 INSERT INTO utente (nome, cognome, email, password_hash, ruolo) VALUES
 ('Maria', 'Rossi', 'maria.rossi@example.com', '$2a$10$examplehash1', 'HR'),
@@ -174,8 +181,8 @@ INSERT INTO utente (nome, cognome, email, password_hash, ruolo) VALUES
 INSERT INTO dipendente (utente_id, mansione, data_assunzione, tipo_contratto, livello_inquadramento) VALUES
 (1, 'Responsabile HR', '2019-03-01', 'TEMPO_INDETERMINATO', 'Quadro'),
 (2, 'Operatore di sala', '2021-06-15', 'TEMPO_INDETERMINATO', 'Livello 3'),
-(4, 'Curatrice collezioni', '2020-01-10', 'TEMPO_INDETERMINATO', 'Livello 4'),
-(5, 'Addetto biglietteria', '2022-09-01', 'PART_TIME', 'Livello 2'),
+(3, 'Curatrice collezioni', '2020-01-10', 'TEMPO_INDETERMINATO', 'Livello 4'),
+(8, 'Addetto biglietteria', '2022-09-01', 'PART_TIME', 'Livello 2'),
 (6, 'Guida turistica', '2023-04-15', 'TEMPO_DETERMINATO', 'Livello 2'),
 (7, 'Addetto laboratori didattici', '2024-05-20', 'STAGIONALE', 'Livello 1');
 
@@ -196,18 +203,71 @@ INSERT INTO opera (collezione_id, titolo, autore, anno, tecnica, descrizione, im
 (3, 'Istanti', 'R. Galli', 2002, 'Stampa fotografica a colori', 'Serie di scatti che catturano momenti fugaci della vita urbana contemporanea.', 'http://localhost:8080/uploads/Istanti.jpg', NOW(), NOW(), 1),
 (4, 'Flusso #1', 'Collettivo Nimbus', 2023, 'Installazione video generativa', 'Installazione generativa che rielabora in tempo reale i dati di affluenza del museo.', 'http://localhost:8080/uploads/Flusso1.jpg', NOW(), NOW(), 1);
 
-INSERT INTO evento( titolo, descrizione, tipo, data_inizio, data_fine, capienza_max, stato, prezzo) VALUES
-('Visita guidata collezione permanente', 'Percorso guidato tra le opere del Novecento', 'VISITA_GUIDATA', '2026-09-05 10:00:00', '2026-09-05 11:30:00', 20, 'PROGRAMMATO', NULL),
-('Laboratorio per famiglie', 'Attività creativa dedicata a bambini e famiglie', 'LABORATORIO', '2026-09-12 15:00:00', '2026-09-12 17:00:00', 15, 'PROGRAMMATO', NULL),
-('Mostra: Fotografia moderna', 'Apertura della mostra temporanea di fotografia', 'MOSTRA', '2026-09-20 18:00:00', '2026-09-20 21:00:00', 60, 'PROGRAMMATO', 15.00),
-('Visita guidata serale', 'Apertura straordinaria serale con visita guidata', 'VISITA_GUIDATA', '2026-10-03 19:00:00', '2026-10-03 20:30:00', 25, 'PROGRAMMATO', 10.00),
-('Laboratorio arte digitale', 'Introduzione alle installazioni interattive per ragazzi', 'LABORATORIO', '2026-10-10 16:00:00', '2026-10-10 18:00:00', 12, 'PROGRAMMATO', NULL),
-('Mostra: Arte contemporanea', 'Nuovo allestimento della collezione contemporanea', 'MOSTRA', '2026-10-18 17:00:00', '2026-10-18 20:00:00', 50, 'PROGRAMMATO', 15.00);
+-- Date sempre relative al momento di esecuzione dello script (CURDATE()),
+-- così restano "nel futuro prossimo" indipendentemente da quando viene
+-- installato il progetto.
+INSERT INTO evento (titolo, descrizione, tipo, data_inizio, data_fine, capienza_max, stato, prezzo) VALUES
+('Visita guidata collezione permanente', 'Percorso guidato tra le opere del Novecento', 'VISITA_GUIDATA',
+  TIMESTAMP(DATE_ADD(CURDATE(), INTERVAL 3 DAY), '10:00:00'), TIMESTAMP(DATE_ADD(CURDATE(), INTERVAL 3 DAY), '11:30:00'),
+  20, 'PROGRAMMATO', NULL),
+('Mostra: Fotografia moderna', 'Apertura della mostra temporanea di fotografia', 'MOSTRA',
+  TIMESTAMP(DATE_ADD(CURDATE(), INTERVAL 5 DAY), '18:00:00'), TIMESTAMP(DATE_ADD(CURDATE(), INTERVAL 5 DAY), '21:00:00'),
+  60, 'PROGRAMMATO', 15.00),
+('Laboratorio per famiglie', 'Attività creativa dedicata a bambini e famiglie', 'LABORATORIO',
+  TIMESTAMP(DATE_ADD(CURDATE(), INTERVAL 9 DAY), '15:00:00'), TIMESTAMP(DATE_ADD(CURDATE(), INTERVAL 9 DAY), '17:00:00'),
+  15, 'PROGRAMMATO', NULL),
+('Visita guidata serale', 'Apertura straordinaria serale con visita guidata', 'VISITA_GUIDATA',
+  TIMESTAMP(DATE_ADD(CURDATE(), INTERVAL 16 DAY), '19:00:00'), TIMESTAMP(DATE_ADD(CURDATE(), INTERVAL 16 DAY), '20:30:00'),
+  25, 'PROGRAMMATO', 10.00),
+('Laboratorio arte digitale', 'Introduzione alle installazioni interattive per ragazzi', 'LABORATORIO',
+  TIMESTAMP(DATE_ADD(CURDATE(), INTERVAL 22 DAY), '16:00:00'), TIMESTAMP(DATE_ADD(CURDATE(), INTERVAL 22 DAY), '18:00:00'),
+  12, 'PROGRAMMATO', NULL),
+('Mostra: Arte contemporanea', 'Nuovo allestimento della collezione contemporanea', 'MOSTRA',
+  TIMESTAMP(DATE_ADD(CURDATE(), INTERVAL 30 DAY), '17:00:00'), TIMESTAMP(DATE_ADD(CURDATE(), INTERVAL 30 DAY), '20:00:00'),
+  50, 'PROGRAMMATO', 15.00);
 
-INSERT INTO turno(dipendente_id, data, ora_inizio, ora_fine, reparto) VALUES
-(2, '2026-09-05', '09:00:00', '13:00:00', 'Sala espositiva'),
-(2, '2026-09-05', '13:00:00', '17:00:00', 'Biglietteria'),
-(3, '2026-09-05', '09:00:00', '17:00:00', 'Curatela mostre'),
-(4, '2026-09-12', '09:00:00', '13:00:00', 'Biglietteria'),
-(5, '2026-09-12', '14:00:00', '18:00:00', 'Visite guidate'),
-(6, '2026-09-20', '17:00:00', '21:00:00', 'Laboratori didattici');
+-- Prenotazioni di esempio: solo utenti con ruolo VISITATORE (Enrico
+-- Orsi id 4, Giulia Rendi id 5), coerentemente con il fatto che
+-- "Le mie prenotazioni" è una funzionalità riservata a quel ruolo.
+-- Il codice biglietto segue lo schema VS-{evento_id}-{prenotazione_id}
+-- usato dall'applicazione; con una tabella vuota gli id generati sono
+-- prevedibili (1, 2, 3, ...), quindi i codici sottostanti sono corretti
+-- solo se questo blocco INSERT viene eseguito su una tabella prenotazione
+-- vuota, come avviene qui.
+INSERT INTO prenotazione (utente_id, evento_id, numero_posti, stato, codice_biglietto) VALUES
+(4, 1, 2, 'CONFERMATA', 'VS-1-1'),
+(5, 1, 1, 'CONFERMATA', 'VS-1-2'),
+(4, 2, 2, 'CONFERMATA', 'VS-2-3'),
+(5, 3, 3, 'CONFERMATA', 'VS-3-4'),
+(4, 4, 1, 'CONFERMATA', 'VS-4-5'),
+(5, 2, 1, 'CONFERMATA', 'VS-2-6');
+
+-- Pagamenti completati per le prenotazioni relative a eventi a pagamento
+-- (evento 2: Mostra Fotografia moderna, 15.00; evento 4: Visita serale, 10.00).
+INSERT INTO pagamento (prenotazione_id, importo, valuta, stato, id_ordine_paypal, id_cattura_paypal) VALUES
+(3, 30.00, 'EUR', 'COMPLETATO', 'DEMO-ORDER-3', 'DEMO-CAPTURE-3'),
+(4, 45.00, 'EUR', 'COMPLETATO', 'DEMO-ORDER-4', 'DEMO-CAPTURE-4'),
+(5, 10.00, 'EUR', 'COMPLETATO', 'DEMO-ORDER-5', 'DEMO-CAPTURE-5');
+
+-- Feedback: l'utente che lascia il feedback è sempre lo stesso utente
+-- della prenotazione a cui si riferisce (regola applicata anche lato
+-- back-end in FeedbackService).
+INSERT INTO feedback (utente_id, prenotazione_id, voto, commento) VALUES
+(4, 1, 5, 'Visita molto interessante, guida preparata e disponibile.'),
+(5, 2, 4, 'Bella esperienza, magari un po'' affollato negli orari centrali.'),
+(4, 3, 5, 'I bambini si sono divertiti moltissimo, consigliato.');
+
+
+-- Turni distribuiti attorno alla data odierna (offset da -2 a +3
+-- giorni), così la vista calendario settimanale di default (che mostra
+-- la settimana contenente "oggi") mostra sempre almeno alcuni turni,
+-- indipendentemente da quando il progetto viene installato.
+INSERT INTO turno (dipendente_id, data, ora_inizio, ora_fine, reparto) VALUES
+(2, CURDATE(), '09:00:00', '13:00:00', 'Sala espositiva'),
+(2, CURDATE(), '13:00:00', '17:00:00', 'Biglietteria'),
+(3, CURDATE(), '09:00:00', '17:00:00', 'Curatela mostre'),
+(4, DATE_ADD(CURDATE(), INTERVAL 1 DAY), '09:00:00', '13:00:00', 'Biglietteria'),
+(5, DATE_ADD(CURDATE(), INTERVAL 1 DAY), '14:00:00', '18:00:00', 'Visite guidate'),
+(6, DATE_ADD(CURDATE(), INTERVAL 2 DAY), '17:00:00', '21:00:00', 'Laboratori didattici'),
+(2, DATE_ADD(CURDATE(), INTERVAL -1 DAY), '09:00:00', '13:00:00', 'Sala espositiva'),
+(3, DATE_ADD(CURDATE(), INTERVAL 3 DAY), '10:00:00', '14:00:00', 'Curatela mostre');

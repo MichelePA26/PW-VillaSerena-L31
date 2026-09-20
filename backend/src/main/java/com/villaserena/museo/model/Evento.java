@@ -18,6 +18,8 @@ public class Evento {
 
     @Enumerated(EnumType.STRING)
     private Tipo tipo;
+    
+    @Enumerated(EnumType.STRING)
     private Stato stato = Stato.PROGRAMMATO;
 
     private LocalDateTime dataInizio;
